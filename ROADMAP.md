@@ -8,7 +8,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
 *   **Joystick/Gamepad** -> `xpi_inputs/joystick`
-*   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
+*   **Keyboard** -> `xpi_inputs/keyboard`
 
 ## 🚧 High Priority (Next Up)
 *   **#24 MPU6050 (I2C)** - IMU 6DOF
@@ -80,24 +80,24 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 15. W25Qxx (Flash SPI)
 16. HW-MS03 (Radar)
 17. Smoke Sensors
-18. JSN-SR04T (Waterproof Ultrasonic)
+18. JSN-SR04T (Ultrasonic Sensor)
 19. DS18B20 (1-Wire Temp)
-20. TCS3200 (Color Freq)
-21. MAX30102 (Heartrate)
-22. HX711 (Load Cell)
-23. HR-202 (Humidity)
-24. SGP30 (CO2)
-25. MQ-x Series (Gas Analog)
-26. BME-680 (Env)
-27. ZP-16 (Gas)
-28. WS2812 (NeoPixel)
-29. VL53L1X (ToF)
-30. TOF10120 (ToF)
-31. FPM10A (Fingerprint)
-32. BF350 (Strain Gauge)
-33. HW-526 (Rotation)
-34. MAX471 (Current)
-35. KY-013 (Thermistor)
-36. TGS2600 (Air Quality)
-37. L298 Shield
-38. WS2812B Strip
+20. TCS3200 (Color Sensor)
+21. MAX30102 (Heartrate Sensor)
+22. HX711 (Load Cell Sensor)
+23. HR-202 (Humidity Sensor)
+24. SGP30 (CO2 Sensor)
+25. MQ-x (Gas Sensor)
+26. BME-680 (Environmental Sensor)
+27. ZP-16 (Gas Sensor)
+28. WS2812 (Addressable RGB LED)
+29. VL53L1X (Distance Laser Sensor)
+30. TOF10120 (Distance Laser Sensor)
+31. FPM10A (Fingerprint Sensor)
+32. BF350 (Load Cell/Strain Gauge)
+33. HW-526 (Rotation Sensor)
+34. MAX471 (Current Sensor)
+35. KY-013 (Thermistor/Analog Temp Sensor)
+36. TGS2600 (Air Quality PM10 Sensor)
+37. L298D/L298P (Powerful Motor Driver)
+38. WS2812B (RGB LEDs)
