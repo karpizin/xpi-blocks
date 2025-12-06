@@ -30,23 +30,7 @@ This document outlines important tasks that require further attention or clarifi
 *   **Current Blocker:** Direct `git clone` or fetching `blob` URLs from GitHub is not possible with current agent capabilities.
 *   **Resolution Required:** User needs to provide **RAW URLs** for the relevant files (e.g., `https://raw.githubusercontent.com/karpizin/bt-gamepad-reader/main/bt_gamepad_reader.py`) for analysis.
 
-## 2. RC (CRSF) Receiver Implementation
-
-**Task:** Implement a ROS2 driver for CRSF protocol data from RC receivers via UART.
-
-**Details:**
-*   Similar to SBUS, this will involve UART configuration and parsing a binary protocol.
-*   The implementation will likely reside in `xpi_inputs`.
-
-## 3. RC (PPM) Receiver Implementation
-
-**Task:** Implement a ROS2 driver for PPM protocol data from RC receivers via GPIO timing.
-
-**Details:**
-*   This will involve precise GPIO timing analysis, potentially using `gpiozero`'s capabilities or a dedicated library.
-*   The implementation will likely reside in `xpi_inputs`.
-
-## 4. MPU6050 (I2C) IMU Integration
+## 3. MPU6050 (I2C) IMU Integration
 
 **Task:** Develop a ROS2 driver for the MPU6050 6-DOF IMU sensor.
 
@@ -56,7 +40,7 @@ This document outlines important tasks that require further attention or clarifi
 *   Output will be `sensor_msgs/Imu`.
 *   The implementation will reside in `xpi_sensors`.
 
-## 5. TB6612FNG (GPIO) Motor Driver Implementation
+## 4. TB6612FNG (GPIO) Motor Driver Implementation
 
 **Task:** Develop a ROS2 driver for the TB6612FNG dual DC motor driver.
 
