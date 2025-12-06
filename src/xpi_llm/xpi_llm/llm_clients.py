@@ -17,8 +17,11 @@ if not logger.handlers:
 class LLMClient(ABC):
     """Abstract base class for LLM clients."""
     @abstractmethod
-    def generate(self, prompt: str, **kwargs) -> str:
-        """Sends a prompt to the LLM and returns the generated text."""
+    def generate(self, prompt: str, tools: list = None, **kwargs) -> tuple[str, dict]:
+        """
+        Sends a prompt to the LLM and returns the generated text and/or a tool_call.
+        Returns: (text_response, tool_call_dict)
+        """
         pass
 
     @abstractmethod
@@ -36,34 +39,53 @@ class OpenRouterClient(LLMClient):
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         logger.info(f"OpenRouterClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, temperature: float = 0.7, max_tokens: int = 150) -> str:
+    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "HTTP-Referer": "https://xpi-blocks.ai", # Replace with your app's actual name
             "X-Title": "XPI Blocks LLM", # Replace with your app's actual name
             "Content-Type": "application/json"
         }
-        data = {
+        messages = [{"role": "user", "content": prompt}]
+        
+        payload = {
             "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
+            "messages": messages,
             "temperature": temperature,
-            "max_tokens": max_tokens
+            "max_tokens": max_tokens,
+            "stream": False # We want a single response
         }
+        
+        if tools:
+            payload["tools"] = tools
+            payload["tool_choice"] = "auto" # Let the model decide whether to call a tool or respond normally
+
         try:
-            response = requests.post(self.base_url, headers=headers, json=data, timeout=30)
+            response = requests.post(self.base_url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
             result = response.json()
             if result and result.get("choices"):
-                return result["choices"][0]["message"]["content"]
+                choice = result["choices"][0]
+                message = choice["message"]
+                
+                tool_calls = message.get("tool_calls")
+                if tool_calls:
+                    # OpenRouter (and OpenAI) can return multiple tool calls, we'll take the first for simplicity
+                    tool_call = tool_calls[0]
+                    function_call = tool_call.get("function")
+                    if function_call:
+                        return "", {"name": function_call["name"], "arguments": json.loads(function_call["arguments"])}
+                
+                return message.get("content", ""), {} # Return text response if no tool call
             else:
                 logger.error(f"OpenRouter response missing choices: {result}")
-                return "Error: No response from OpenRouter."
+                return "Error: No response from OpenRouter.", {}
         except requests.exceptions.Timeout:
             logger.error("OpenRouter request timed out.")
-            return "Error: OpenRouter request timed out."
+            return "Error: OpenRouter request timed out.", {}
         except requests.exceptions.RequestException as e:
             logger.error(f"OpenRouter API error: {e}")
-            return f"Error: OpenRouter API error: {e}"
+            return f"Error: OpenRouter API error: {e}", {}
 
     def get_model_name(self) -> str:
         return self.model
@@ -73,7 +95,10 @@ class GeminiClient(LLMClient):
     def __init__(self, api_key: str, model: str = "gemini-pro"):
         try:
             import google.generativeai as genai
+            from google.generativeai.types import HarmCategory, HarmBlockThreshold
             self.genai = genai
+            self.HarmCategory = HarmCategory
+            self.HarmBlockThreshold = HarmBlockThreshold
         except ImportError:
             raise ImportError("Please install google-generativeai: pip install google-generativeai")
         
@@ -83,60 +108,120 @@ class GeminiClient(LLMClient):
         self.model = model
         logger.info(f"GeminiClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, temperature: float = 0.7, max_tokens: int = 150) -> str:
+    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+        model = self.genai.GenerativeModel(self.model)
+        
+        generation_config = self.genai.types.GenerationConfig(
+            temperature=temperature,
+            max_output_tokens=max_tokens,
+        )
+        
+        safety_settings = {
+            self.HarmCategory.HARM_CATEGORY_HARASSMENT: self.HarmBlockThreshold.BLOCK_NONE,
+            self.HarmCategory.HARM_CATEGORY_HATE_SPEECH: self.HarmBlockThreshold.BLOCK_NONE,
+            self.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: self.HarmBlockThreshold.BLOCK_NONE,
+            self.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: self.HarmBlockThreshold.BLOCK_NONE,
+        }
+
         try:
-            model = self.genai.GenerativeModel(self.model)
-            response = model.generate_content(
-                prompt,
-                generation_config=self.genai.types.GenerationConfig(
-                    temperature=temperature,
-                    max_output_tokens=max_tokens,
-                ),
-            )
-            return response.text
+            if tools:
+                # Gemini expects tools directly in the model.generate_content call
+                response = model.generate_content(
+                    prompt,
+                    tools=tools,
+                    tool_config=self.genai.types.ToolConfig(function_calling_config=self.genai.types.FunctionCallingConfig(mode='AUTO')),
+                    generation_config=generation_config,
+                    safety_settings=safety_settings
+                )
+            else:
+                response = model.generate_content(
+                    prompt,
+                    generation_config=generation_config,
+                    safety_settings=safety_settings
+                )
+
+            if response.candidates:
+                candidate = response.candidates[0]
+                if candidate.function_calls:
+                    # Gemini can return multiple function calls, we'll take the first for simplicity
+                    func_call = candidate.function_calls[0]
+                    return "", {"name": func_call.name, "arguments": func_call.args}
+                
+                if candidate.content and candidate.content.parts:
+                    return candidate.content.parts[0].text, {}
+            
+            return "Error: No valid response from Gemini.", {}
+
         except Exception as e:
             logger.error(f"Gemini API error: {e}")
-            return f"Error: Gemini API error: {e}"
+            # Handle blocked content specific to Gemini
+            if "safety settings" in str(e):
+                return "Error: Gemini response blocked by safety settings. Try rephrasing.", {}
+            return f"Error: Gemini API error: {e}", {}
 
     def get_model_name(self) -> str:
         return self.model
 
 class OllamaClient(LLMClient):
     """LLM client for Ollama (local LLMs)."""
+    # Ollama currently does not natively support complex function calling in its base API.
+    # We will simulate it by prompting the model to output JSON.
     def __init__(self, host: str = "http://localhost:11434", model: str = "llama2"):
         self.host = host
         self.model = model
         self.api_url = f"{self.host}/api/generate"
-        logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}")
+        logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}. Simulating tool calls via JSON prompt injection.")
 
-    def generate(self, prompt: str, temperature: float = 0.7, max_tokens: int = 150) -> str:
+    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+        full_prompt = prompt
+        if tools:
+            # For Ollama, we inject the tool definitions into the prompt and instruct the model to use them.
+            # This is a common workaround for models without native function calling.
+            tool_definitions = json.dumps([t['function'] for t in tools], indent=2)
+            full_prompt = (
+                f"{prompt}\n\n"
+                f"You have access to the following tools:\n```json\n{tool_definitions}\n```\n"
+                f"To use a tool, respond with a JSON object like this: "
+                f"`{{\"tool_call\": {{\"name\": \"tool_name\", \"arguments\": {{\"arg1\": \"value1\", \"arg2\": \"value2\"}}}}}}`\n"
+                f"If you don't need to use a tool, respond normally."
+            )
+        
         data = {
             "model": self.model,
-            "prompt": prompt,
+            "prompt": full_prompt,
             "options": {
                 "temperature": temperature,
                 "num_predict": max_tokens
             },
-            "stream": False # We want a single response
+            "stream": False
         }
         try:
             response = requests.post(self.api_url, json=data, timeout=120)
             response.raise_for_status()
             result = response.json()
             if result and result.get("response"):
-                return result["response"]
+                llm_response_text = result["response"]
+                # Try to parse if it's a tool call
+                try:
+                    parsed_json = json.loads(llm_response_text)
+                    if "tool_call" in parsed_json and "name" in parsed_json["tool_call"] and "arguments" in parsed_json["tool_call"]:
+                        return "", parsed_json["tool_call"]
+                except json.JSONDecodeError:
+                    pass # Not a tool call, return as normal text
+                
+                return llm_response_text, {}
             else:
                 logger.error(f"Ollama response missing 'response' field: {result}")
-                return "Error: No response from Ollama."
+                return "Error: No response from Ollama.", {}
         except requests.exceptions.Timeout:
             logger.error("Ollama request timed out.")
-            return "Error: Ollama request timed out."
+            return "Error: Ollama request timed out.", {}
         except requests.exceptions.ConnectionError:
             logger.error(f"Could not connect to Ollama server at {self.host}. Is it running?")
             return f"Error: Could not connect to Ollama server at {self.host}."
         except requests.exceptions.RequestException as e:
             logger.error(f"Ollama API error: {e}")
-            return f"Error: Ollama API error: {e}"
+            return f"Error: Ollama API error: {e}", {}
 
     def get_model_name(self) -> str:
         return self.model
@@ -160,8 +245,32 @@ if __name__ == "__main__":
         if openrouter_key:
             logger.info("\n--- Testing OpenRouter Client ---")
             openrouter_llm = llm_client_factory("openrouter", api_key=openrouter_key, model="mistralai/mistral-7b-instruct-v0.2")
-            response = openrouter_llm.generate("Hello, what is your name?")
-            logger.info(f"OpenRouter ({openrouter_llm.get_model_name()}): {response}")
+            
+            tools_example = [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "set_relay_state",
+                        "description": "Sets the state of a specific relay.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "relay_id": {"type": "integer", "description": "The ID of the relay to control (0-15)."},
+                                "state": {"type": "boolean", "description": "The desired state: true for ON, false for OFF."}
+                            },
+                            "required": ["relay_id", "state"]
+                        }
+                    }
+                }
+            ]
+            
+            text_response, tool_call = openrouter_llm.generate("Turn on relay 5.", tools=tools_example)
+            logger.info(f"OpenRouter Tool Call ({openrouter_llm.get_model_name()}): {tool_call}")
+            logger.info(f"OpenRouter Text Response ({openrouter_llm.get_model_name()}): {text_response}")
+
+            text_response, tool_call = openrouter_llm.generate("Tell me a joke.")
+            logger.info(f"OpenRouter Joke ({openrouter_llm.get_model_name()}): {text_response}")
+
         else:
             logger.warning("OPENROUTER_API_KEY not set, skipping OpenRouter test.")
     except Exception as e:
@@ -173,8 +282,13 @@ if __name__ == "__main__":
         if gemini_key:
             logger.info("\n--- Testing Gemini Client ---")
             gemini_llm = llm_client_factory("gemini", api_key=gemini_key)
-            response = gemini_llm.generate("Tell me a fun fact about robots.")
-            logger.info(f"Gemini ({gemini_llm.get_model_name()}): {response}")
+            
+            text_response, tool_call = gemini_llm.generate("Turn on relay 5.", tools=tools_example)
+            logger.info(f"Gemini Tool Call ({gemini_llm.get_model_name()}): {tool_call}")
+            logger.info(f"Gemini Text Response ({gemini_llm.get_model_name()}): {text_response}")
+
+            text_response, tool_call = gemini_llm.generate("Tell me a fun fact about robots.")
+            logger.info(f"Gemini Fun Fact ({gemini_llm.get_model_name()}): {text_response}")
         else:
             logger.warning("GEMINI_API_KEY not set, skipping Gemini test.")
     except Exception as e:
@@ -183,9 +297,14 @@ if __name__ == "__main__":
     # --- Ollama Example ---
     try:
         logger.info("\n--- Testing Ollama Client ---")
-        # Ensure Ollama server is running (e.g., `ollama run llama2`)
         ollama_llm = llm_client_factory("ollama", host="http://localhost:11434", model="llama2")
-        response = ollama_llm.generate("Why is the sky blue?")
-        logger.info(f"Ollama ({ollama_llm.get_model_name()}): {response}")
+        text_response, tool_call = ollama_llm.generate("Turn on relay 5.", tools=tools_example)
+        logger.info(f"Ollama Tool Call ({ollama_llm.get_model_name()}): {tool_call}")
+        logger.info(f"Ollama Text Response ({ollama_llm.get_model_name()}): {text_response}")
+        
+        text_response, tool_call = ollama_llm.generate("Why is the sky blue?")
+        logger.info(f"Ollama Why is the sky blue? ({ollama_llm.get_model_name()}): {text_response}")
+
     except Exception as e:
         logger.error(f"Ollama test failed: {e}. Make sure Ollama server is running and model 'llama2' is pulled.")
+

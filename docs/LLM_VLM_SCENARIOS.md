@@ -43,7 +43,7 @@ This document outlines potential scenarios for integrating Large Language Models
 *   **VLM Task:** Identify objects in the image.
 *   **LLM Task:** Answer user query using VLM data ("I see a blue cup on the table and a book next to it").
 
-### C.2. Intelligent Actuator Control (Tool Calling)
+### C.2. Intelligent Actuator Control (Tool Calling) - **IMPLEMENTED**
 *   **Input:** User text command ("Turn on Relay 1", "Set Servo 0 to 90 degrees", "Start motor").
 *   **LLM Task:** Interpret command and invoke corresponding ROS2 service/topic using a "Tool Calling" mechanism for our actuators (Relay, PCA9685).
 *   **Output:** Invocation of appropriate ROS2 interface.

@@ -15,6 +15,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Sonar Trend Analysis with LLM** -> `xpi_llm/sonar_trend_analyzer`
 
 
+*   **LLM Tool Calling** -> `xpi_llm/tool_calling`
+
 ## 🚧 High Priority (Next Up)
 *   **#24 MPU6050 (I2C)** - IMU 6DOF
 *   **#15 TB6612FNG (GPIO)** - Motor Driver
