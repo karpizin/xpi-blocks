@@ -6,9 +6,11 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ## ✅ Implemented
 *   **#27 Relay Module (GPIO)** -> `xpi_actuators/relay_node`
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
+*   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
+*   **Joystick/Gamepad** -> `xpi_inputs/joystick`
+*   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
 
 ## 🚧 High Priority (Next Up)
-*   **#35 HC-SR04 (GPIO)** - Distance Sensor (Ultrasonic) -> *Implemented in `xpi_sensors/sonar_node`*
 *   **#24 MPU6050 (I2C)** - IMU 6DOF
 *   **#15 TB6612FNG (GPIO)** - Motor Driver
 
