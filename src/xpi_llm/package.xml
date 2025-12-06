@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>xpi_llm</name>
+  <version>0.1.0</version>
+  <description>LLM/VLM integration for sensor analysis and smart control</description>
+  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  
+  <exec_depend>python3-numpy</exec_depend> # For data processing
+  <exec_depend>python3-openai</exec_depend> # Example for OpenAI API
+  <exec_depend>google-generativeai</exec_depend> # Example for Google Gemini API
+  <exec_depend>python3-requests</exec_depend> # For Ollama/local LLMs
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
