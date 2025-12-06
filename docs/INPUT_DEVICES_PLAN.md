@@ -56,5 +56,4 @@ This is the most complex category due to diverse protocols and hardware interfac
 
 ## 3. Next Steps (Implementation Order)
 
-1.  **RC (CRSF):** Similar to SBUS, may share decoding logic.
-2.  **RC (PPM):** GPIO timing, can be tricky.
+1.  **RC (PPM):** GPIO timing, can be tricky.

@@ -9,8 +9,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
 *   **Joystick/Gamepad** -> `xpi_inputs/joystick`
 *   **Keyboard** -> `xpi_inputs/keyboard`
-
 *   **SBUS Receiver** -> `xpi_inputs/rc_sbus`
+*   **CRSF Receiver** -> `xpi_inputs/rc_crsf`
+
+## 🚧 High Priority (Next Up)
+*   **#24 MPU6050 (I2C)** - IMU 6DOF
+*   **#15 TB6612FNG (GPIO)** - Motor Driver
 
 ## 📋 backlog: Supported Sensors & Actuators
 

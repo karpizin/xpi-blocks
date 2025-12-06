@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'sbus_receiver_node = xpi_inputs.sbus_receiver_node:main',
+            'crsf_receiver_node = xpi_inputs.crsf_receiver_node:main',
         ],
     },
 )
