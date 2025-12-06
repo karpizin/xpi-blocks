@@ -22,6 +22,8 @@ setup(
     license='MIT',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [], # No custom scripts yet for joystick, just launch files
+        'console_scripts': [
+            'sbus_receiver_node = xpi_inputs.sbus_receiver_node:main',
+        ],
     },
 )

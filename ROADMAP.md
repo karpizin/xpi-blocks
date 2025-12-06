@@ -10,9 +10,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Joystick/Gamepad** -> `xpi_inputs/joystick`
 *   **Keyboard** -> `xpi_inputs/keyboard`
 
-## 🚧 High Priority (Next Up)
-*   **#24 MPU6050 (I2C)** - IMU 6DOF
-*   **#15 TB6612FNG (GPIO)** - Motor Driver
+*   **SBUS Receiver** -> `xpi_inputs/rc_sbus`
 
 ## 📋 backlog: Supported Sensors & Actuators
 

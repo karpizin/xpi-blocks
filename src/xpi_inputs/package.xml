@@ -11,6 +11,7 @@
   <depend>sensor_msgs</depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>joy_linux</exec_depend> # For Linux-specific joy node
+  <exec_depend>python3-pyserial</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
