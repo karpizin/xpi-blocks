@@ -1,0 +1,23 @@
+{
+	"name": "XPI Blocks Dev",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-iot.vscode-ros",
+				"ms-vscode.cpptools",
+				"redhat.vscode-xml"
+			]
+		}
+	},
+	"remoteUser": "root",
+	"runArgs": [
+		"--privileged",
+		"--net=host"
+	],
+    "postCreateCommand": "apt-get update && rosdep update && rosdep install --from-paths src --ignore-src -r -y"
+}
