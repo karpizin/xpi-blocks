@@ -56,4 +56,4 @@ This is the most complex category due to diverse protocols and hardware interfac
 
 ## 3. Next Steps (Implementation Order)
 
-1.  **RC (PPM):** GPIO timing, can be tricky.
+*All input device implementations are now complete as per initial plan.*

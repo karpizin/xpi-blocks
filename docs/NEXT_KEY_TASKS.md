@@ -2,7 +2,25 @@
 
 This document outlines important tasks that require further attention or clarification before implementation.
 
-## 1. Advanced Joystick/Gamepad Integration
+## 1. LLM/VLM Integration for Smart Control and Analysis (HIGH PRIORITY)
+
+**Task:** Develop examples demonstrating how to use Large Language Models (LLM) and Vision-Language Models (VLM) for advanced sensor data analysis (filtering, anomaly detection, trend identification) and intelligent actuator control (via tool calling or Model-Controller-Perception loops).
+
+**Details:**
+*   **Sensor Analysis:**
+    *   Feed sensor data streams (e.g., IMU, range, vision) to LLMs for high-level interpretation.
+    *   Anomaly detection in sensor readings using LLM's pattern recognition.
+    *   Trend analysis (e.g., "Is the temperature consistently rising?")
+*   **Actuator Control:**
+    *   Implement "tool calling" mechanism where LLM can invoke ROS2 services/actions to control actuators (e.g., "move forward", "turn left", "open gripper").
+    *   Model-Controller-Perception (MCP) loops: LLM as the high-level planner/reasoner.
+*   **VLM Integration:**
+    *   Use VLM for scene understanding from camera feeds (e.g., "identify objects," "detect obstacles").
+    *   Integrate VLM output with control logic.
+*   **Challenges:** Latency, computational requirements, safety (for actuator control).
+*   **Possible Tools:** OpenAI APIs, Google Gemini API, local LLMs (e.g., with Ollama), vision APIs.
+
+## 2. Advanced Joystick/Gamepad Integration
 
 **Task:** Analyze and integrate concepts from `https://github.com/karpizin/bt-gamepad-reader` and `https://github.com/karpizin/usb-gamepad-reader` for robust Bluetooth and USB gamepad support.
 

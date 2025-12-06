@@ -12,9 +12,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **SBUS Receiver** -> `xpi_inputs/rc_sbus`
 *   **CRSF Receiver** -> `xpi_inputs/rc_crsf`
 
-## 🚧 High Priority (Next Up)
-*   **#24 MPU6050 (I2C)** - IMU 6DOF
-*   **#15 TB6612FNG (GPIO)** - Motor Driver
+*   **PPM Receiver** -> `xpi_inputs/rc_ppm`
 
 ## 📋 backlog: Supported Sensors & Actuators
 
