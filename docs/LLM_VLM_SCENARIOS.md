@@ -14,7 +14,7 @@ This document outlines potential scenarios for integrating Large Language Models
 *   **LLM Task:** Analyze changes in distance over time. Identify trends: "approaching an object", "moving away", "moving parallel to a wall".
 *   **Output:** Textual description of the trend ("Moving away from obstacle", "Approaching wall at 0.1 m/s").
 
-### A.3. Pattern Recognition (Simple Sonar)
+### A.3. Pattern Recognition (Simple Sonar) - **IMPLEMENTED**
 *   **Input:** Stream of `sensor_msgs/Range`.
 *   **LLM Task:** Detect simple patterns: "Object at fixed distance", "Object at distance X, then disappeared, then reappeared".
 *   **Output:** Description of the detected pattern ("Object detected at 0.5m, then disappeared for 3 seconds, then reappeared.").

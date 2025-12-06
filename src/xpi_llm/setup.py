@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'sonar_trend_analyzer_node = xpi_llm.sonar_trend_analyzer_node:main',
             'tool_calling_node = xpi_llm.tool_calling_node:main',
+            'sonar_pattern_analyzer_node = xpi_llm.sonar_pattern_analyzer_node:main',
         ],
     },
 )
