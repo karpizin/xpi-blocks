@@ -1,8 +1,6 @@
 from setuptools import setup
-import os
-from glob import glob
 
-package_name = 'xpi_actuators'
+package_name = 'xpi_commons'
 
 setup(
     name=package_name,
@@ -12,20 +10,15 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        # Include all launch files
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
-    description='Output device blocks for XPI',
+    description='Common utilities and HAL for XPI blocks',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
-            'relay_node = xpi_actuators.relay_node:main',
-            'pca9685_node = xpi_actuators.pca9685_node:main',
-        ],
+        'console_scripts': [],
     },
 )

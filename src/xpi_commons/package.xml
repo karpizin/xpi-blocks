@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>xpi_actuators</name>
+  <name>xpi_commons</name>
   <version>0.1.0</version>
-  <description>Output device blocks for XPI (Relays, LEDs, Motors)</description>
+  <description>Common utilities and HAL for XPI blocks</description>
   <maintainer email="user@example.com">XPI Maintainer</maintainer>
   <license>MIT</license>
 
   <depend>rclpy</depend>
-  <depend>std_msgs</depend>
-  <depend>xpi_commons</depend>
-  <exec_depend>python3-gpiozero</exec_depend>
   <exec_depend>python3-smbus2</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
