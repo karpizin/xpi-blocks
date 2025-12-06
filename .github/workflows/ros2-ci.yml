@@ -9,6 +9,9 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write # <--- Add this line
     steps:
       - uses: actions/checkout@v3
 
