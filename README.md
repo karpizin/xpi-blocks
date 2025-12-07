@@ -1,13 +1,13 @@
 # XPI-Blocks: The ROS2 & Raspberry Pi Building Blocks Library
 
 ## 🎯 Mission
-To create a **comprehensive, modular, and perfectly documented** library of examples (blocks) for ROS2 and Raspberry Pi.
-**Goal:** Lower the barrier to entry for robotics. A developer should be able to pick a "block" (code + diagram), connect the peripheral, and have a working ROS2 node in 5 minutes.
+To create a **comprehensive, modular, and perfectly documented** library of examples (blocks) for ROS2 and Raspberry Pi. This project aims to **lower the barrier to entry for robotics and enable intelligent behaviors through LLM/VLM integration**.
+**Goal:** A developer should be able to pick a "block" (code + diagram), connect the peripheral, and have a working ROS2 node in 5 minutes.
 
 ## 🏗 Block Architecture
 Each example in this library is an atomic "Block" containing:
 *   **ROS2 Node:** Clean, idiomatic code (Python/C++).
-*   **Hardware Interface:** Hardware abstraction (GPIO, I2C, SPI, UART).
+*   **Hardware Interface:** Hardware abstraction (GPIO, I2C, SPI, UART) or intelligent LLM/VLM interfaces.
 *   **Launch file:** Launch configuration with sane defaults.
 *   **Documentation:**
     *   Wiring Diagram.
@@ -18,25 +18,42 @@ Each example in this library is an atomic "Block" containing:
 ## 📂 Repository Structure
 ```text
 xpi-blocks/
-├── docs/               # Global documentation and guides
-├── blocks/             # Main modules
-│   ├── inputs/         # Input devices
-│   │   ├── joystick/   # Gamepads (Xbox, PS4, Generic)
-│   │   ├── rc_sbus/    # Radio Control (FrSky, ELRS via SBUS/CRSF)
-│   │   ├── keyboard/   # Teleop wrappers
-│   │   └── ...
-│   ├── actuators/      # Actuators
-│   │   ├── motors_dc/  # DC Motor drivers (L298N, BTS7960)
-│   │   ├── servos/     # Servo control (Direct PWM, PCA9685)
-│   │   ├── steppers/   # Stepper drivers (A4988, TMC2208)
-│   │   └── relays/     # GPIO switching & Power distribution
-│   └── sensors/        # Sensors
-│       ├── imu/        # MPU6050, BNO055, etc.
-│       ├── lidar/      # 2D Lidars (RPLidar, LD06)
-│       ├── vision/     # RPi Cam, USB Cam, OpenCV wrappers
-│       └── range/      # Distance sensors (HC-SR04, VL53L0X)
-└── scripts/            # Setup utilities (Docker setup, udev rules)
+├── docs/               # Global documentation and guides (e.g., ARCHITECTURE.md, ROADMAP.md, LLM_VLM_SCENARIOS.md, NEXT_KEY_TASKS.md)
+├── blocks/             # Individual block documentation (e.g., wiring, usage)
+│   ├── inputs/         # Input devices (joystick, keyboard, RC receivers)
+│   ├── actuators/      # Actuators (motors, servos, relays)
+│   ├── sensors/        # Sensors (IMU, lidar, range)
+│   └── llm/            # LLM/VLM integration blocks
+├── src/                # ROS2 packages
+│   ├── xpi_commons/    # Common utilities, HAL for GPIO/I2C
+│   ├── xpi_inputs/     # Input device drivers
+│   ├── xpi_actuators/  # Actuator drivers
+│   ├── xpi_sensors/    # Sensor drivers
+│   └── xpi_llm/        # LLM/VLM integration nodes
+└── scripts/            # Setup utilities (Docker, udev rules)
 ```
+
+## 🚀 Getting Started
+
+1.  **Clone the repository:**
+    ```bash
+    git clone git@github.com:karpizin/xpi-blocks.git
+    cd xpi-blocks
+    ```
+2.  **Install ROS2 dependencies:**
+    ```bash
+    rosdep update
+    rosdep install --from-paths src --ignore-src -r -y
+    ```
+3.  **Build the workspace:**
+    ```bash
+    colcon build --symlink-install
+    ```
+4.  **Source the workspace:**
+    ```bash
+    . install/setup.bash
+    ```
+    Now you can run the example nodes and launch files!
 
 ## 🛠 Tech Stack & Standards
 *   **Primary OS:** Ubuntu Server 22.04 LTS (64-bit) for Raspberry Pi.
@@ -44,6 +61,8 @@ xpi-blocks/
 *   **Compatibility:** Code is forward-compatible with Jazzy/Ubuntu 24.04 where possible.
 *   **Language:** Python 3.10+ (primary), C++ (time-critical).
 *   **GPIO Access:** `gpiozero` (Standardized HAL).
+*   **I2C Access:** `smbus2` via `xpi_commons` (Standardized HAL).
+*   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
 *   **Containerization:** `Dockerfile` support for rapid deployment.
 
 ## 📋 Prerequisites
@@ -55,8 +74,15 @@ Before using these blocks, ensure you have:
     source /opt/ros/humble/setup.bash
     ```
 4.  **GPIO Privileges:** User must be in `gpio` group (or `dialout` depending on OS).
+5.  **I2C Enabled:** `sudo raspi-config` -> Interface Options -> I2C.
+6.  **UART Configured:** For RC receivers, UART needs to be freed from console (`sudo raspi-config`).
 
 ## 📝 Documentation Guidelines
 *   **README Driven:** Documentation is written before code.
 *   **Visuals:** Photos of real wiring + Fritzing/Schematic diagrams.
 *   **Troubleshooting:** Dedicated section for common issues in every block.
+
+## 📈 Project Status & Roadmap
+*   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
+*   See [LLM_VLM_SCENARIOS.md](LLM_VLM_SCENARIOS.md) for the LLM/VLM integration plan.
+*   See [NEXT_KEY_TASKS.md](NEXT_KEY_TASKS.md) for high-priority future tasks.

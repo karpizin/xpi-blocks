@@ -13,10 +13,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **CRSF Receiver** -> `xpi_inputs/rc_crsf`
 *   **PPM Receiver** -> `xpi_inputs/rc_ppm`
 *   **Sonar Trend Analysis with LLM** -> `xpi_llm/sonar_trend_analyzer`
-
-
 *   **LLM Tool Calling** -> `xpi_llm/tool_calling`
-
 *   **Sonar Pattern Analysis with LLM** -> `xpi_llm/sonar_pattern_analyzer`
 
 ## 🚧 High Priority (Next Up)

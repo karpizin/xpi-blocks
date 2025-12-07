@@ -11,7 +11,8 @@ src/
 ├── xpi_commons/          # Shared utilities, HAL base classes, mock definitions
 ├── xpi_inputs/           # Nodes for Joysticks, RC, Keyboards
 ├── xpi_sensors/          # Nodes for LiDARs, IMUs, Cameras
-└── xpi_actuators/        # Nodes for Motors, Servos, Relays
+├── xpi_actuators/        # Nodes for Motors, Servos, Relays
+└── xpi_llm/              # Nodes for LLM/VLM integration, tool calling, sensor analysis
 ```
 
 ## 2. Node Design Standard
@@ -35,16 +36,32 @@ We adopt a **Tiered Node Architecture**:
 ## 4. Hardware Abstraction Layer (HAL)
 To ensure compatibility across Raspberry Pi generations (4, 5, Zero) and allow easy mocking.
 
-*   **Library:** We standardize on **`gpiozero`**.
-    *   *Why?* It provides a clean, object-oriented API, excellent documentation, and built-in support for different pin factories (RPi.GPIO, lgpio, native), which is crucial for RPi 5 support.
-*   **Interface Pattern:** Nodes should utilize `gpiozero` objects within their initialization.
-*   **Mocking:** `gpiozero` supports "Mock Pin Factories". We will use this for CI/CD and laptop development tests.
+*   **Library:** We standardize on **`gpiozero`** for GPIO and **`smbus2`** (via `xpi_commons`) for I2C.
+    *   *Why?* `gpiozero` provides a clean, object-oriented API for GPIO. `smbus2` offers direct I2C access. Both are wrapped with mock factories in `xpi_commons` for testing.
+*   **Interface Pattern:** Nodes should utilize `gpiozero` objects or `xpi_commons.i2c_helper.get_smbus()` for hardware access.
+*   **Mocking:** Both `gpiozero` and `xpi_commons.i2c_helper` support "Mock Pin Factories" / "Mock SMBus" for CI/CD and laptop development tests.
 
 ## 5. Topics & Interfaces
 *   **Standard Types:** Use `sensor_msgs`, `geometry_msgs`, `std_msgs` whenever possible.
     *   *Example:* A distance sensor must publish `sensor_msgs/Range`, not a custom `float32`.
 *   **Namespacing:** All topics should be remappable, but default to generic names (e.g., `~/scan`, `~/cmd_vel`).
 
-## 6. Dev Environment & CI
+## 6. LLM Integration Architecture
+This section details how Large Language Models (LLM) and Vision-Language Models (VLM) are integrated.
+
+*   **LLM Client Abstraction (`xpi_llm/llm_clients.py`):**
+    *   Provides a unified `LLMClient` interface for different LLM providers (Google Gemini, OpenRouter, Ollama).
+    *   Allows seamless switching between cloud and local models.
+    *   Supports basic text generation and Tool Calling (Function Calling).
+*   **Tool Calling:**
+    *   LLM nodes (e.g., `xpi_llm/tool_calling_node.py`) define available "tools" (ROS2 actions, services, topics) in a structured format (JSON schema).
+    *   The LLM interprets natural language commands and decides whether to invoke a tool, generating arguments.
+    *   The ROS2 node then executes the corresponding ROS2 interface.
+*   **Prompting Guidelines:**
+    *   Prompts should be clear, concise, and include context (e.g., "You are an AI assistant analyzing robot sonar data...").
+    *   For Tool Calling, instructions on expected JSON output or tool usage should be part of the prompt (especially for Ollama which requires prompt-based tool simulation).
+*   **Output:** LLM analysis/responses are typically published as `std_msgs/String`.
+
+## 7. Dev Environment & CI
 *   **Docker:** A `devcontainer` setup is mandatory to ensure reproducible builds across OS (macOS/Windows/Linux).
 *   **Linting:** Strict `ament_flake8` and `ament_pep257` compliance.
