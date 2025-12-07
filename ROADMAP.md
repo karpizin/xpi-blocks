@@ -3,7 +3,7 @@
 Total devices targeted: 80+
 Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
-## ✅ Implemented
+*   **LED Matrix 8x8 (MAX7219)** -> `xpi_actuators/led_matrix`
 *   **#27 Relay Module (GPIO)** -> `xpi_actuators/relay_node`
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`

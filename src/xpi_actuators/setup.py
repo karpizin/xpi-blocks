@@ -29,6 +29,7 @@ setup(
             'tb6612_driver_node = xpi_actuators.tb6612_driver_node:main',
             'ws2812_driver_node = xpi_actuators.ws2812_driver_node:main',
             'led_bar_node = xpi_actuators.led_bar_node:main',
+            'led_matrix_node = xpi_actuators.led_matrix_node:main',
         ],
     },
 )
