@@ -22,20 +22,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
 
-## 📋 backlog: Supported Sensors & Actuators
-
-### Light & Color (I2C)
-*   [ ] #1 BH1750 - Light sensor
-*   [ ] #3 OPT3001 - High sensitivity light sensor
-*   [ ] #10 TCS34725 - RGB Color sensor
-*   [ ] #25 MAX44009 - Light sensor
-*   [ ] #26 TSL2561 - Light sensor
-*   [ ] #34 BH1745NUC - Light sensor
-
-### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
-*   [ ] #2 BMP085/180 - Temp/Pressure
-*   [ ] #6 SHT20/HTU21D - Temp/Humidity
-*   [ ] #9 BME280 - Temp/Hum/Press
+*   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
 *   [ ] #11 LM75A - Temp + Thermostat
 *   [ ] #37 CCS811 - CO2
 *   [ ] #39 HDC1080 - Temp/Humidity
