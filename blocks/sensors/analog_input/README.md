@@ -112,3 +112,112 @@ The ADS1115 acts as a bridge for many types of analog sensors:
     *   Verify module is powered.
     *   Ensure proper grounding.
     *   Adjust `pga` if input voltage is outside the selected range (leads to saturation).
+
+---
+
+# Analog Sensor Interpreter
+
+This block provides a ROS2 node that subscribes to raw voltage outputs from an ADS1115 (or similar ADC) and interprets these voltages into meaningful physical units (e.g., temperature, illuminance, current, soil moisture, etc.) based on user-defined sensor configurations.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   Running `xpi_sensors/ads1115_node`
+*   Various analog sensors connected to the ADS1115 (thermistors, LDRs, current sensors, soil moisture, etc.)
+
+## 🚀 Quick Start
+1.  **Launch the ADS1115 driver:**
+    ```bash
+    # Example: Reading voltages from ADS1115 channels 0 and 1
+    ros2 launch xpi_sensors ads1115.launch.py channels:="[0, 1]"
+    ```
+2.  **Prepare Sensor Configurations:**
+    *   Create a JSON string that describes each analog sensor connected to the ADS1115.
+    *   This JSON string will be passed as the `sensor_configs_json` parameter.
+
+    **Example `sensor_configs_json` for a Thermistor on Ch 0 and LDR on Ch 1:**
+    ```json
+    [
+        {
+            "channel": 0,
+            "type": "thermistor",
+            "R_ref": 10000.0,
+            "B_const": 3950.0,
+            "V_supply": 3.3
+        },
+        {
+            "channel": 1,
+            "type": "ldr",
+            "R_ref": 10000.0,
+            "V_supply": 3.3,
+            "lux_factor": 500000.0
+        }
+    ]
+    ```
+    *   **Common `config` fields for sensors:**
+        *   `channel` (int, required): ADS1115 channel (0-3).
+        *   `type` (string, required): Sensor type (`thermistor`, `ldr`, `acs712`, `voltage_divider`, `soil_moisture`, etc.).
+        *   `V_supply` (float, optional, default: 3.3): Supply voltage for voltage dividers.
+    *   **`thermistor` specific fields:**
+        *   `R_ref` (float, default: 10000.0): Reference resistor in series with thermistor.
+        *   `B_const` (float, default: 3950.0): Thermistor Beta constant.
+        *   `T_nominal` (float, default: 298.15): Nominal temperature in Kelvin (25°C).
+    *   **`ldr` specific fields:**
+        *   `R_ref` (float, default: 10000.0): Reference resistor in series with LDR.
+        *   `lux_factor` (float, default: 500000.0): Calibration factor for lux conversion (highly sensor-dependent).
+    *   **`acs712` specific fields:**
+        *   `sensitivity_mv_per_a` (float, default: 185.0): Sensitivity in mV/A.
+        *   `offset_voltage` (float, default: 2.5): Output voltage at 0A.
+    *   **`voltage_divider` specific fields:**
+        *   `ratio` (float, default: 2.0): Total voltage / measured voltage.
+    *   **`soil_moisture` specific fields:**
+        *   `min_voltage` (float): Voltage reading when sensor is driest.
+        *   `max_voltage` (float): Voltage reading when sensor is wettest.
+    *   **`temt6000`, `guva_s12`, `ml8511` specific fields:**
+        *   `offset_voltage` (float, default: 0.0)
+        *   `scale_factor` (float, default: 1.0)
+
+3.  **Launch the Analog Sensor Interpreter Node:**
+    ```bash
+    # Example using the JSON above via an environment variable
+    export XPI_SENSOR_CONFIGS='[{"channel": 0, "type": "thermistor", "R_ref": 10000.0, "B_const": 3950.0, "V_supply": 3.3}, {"channel": 1, "type": "ldr", "R_ref": 10000.0, "V_supply": 3.3, "lux_factor": 500000.0}]'
+    ros2 launch xpi_sensors analog_sensor_interpreter.launch.py \
+        sensor_configs_json:="${XPI_SENSOR_CONFIGS}" adc_node_name:=ads1115_adc
+    ```
+
+## 📡 Interface
+### Subscribers
+*   `/<adc_node_name>/voltage_ch<CHANNEL_NUMBER>` (`std_msgs/Float32`): Voltage readings from the ADC for each configured channel.
+
+### Publishers (dynamic based on `sensor_configs_json`)
+*   `~/temperature_ch<CHANNEL_NUMBER>` (`sensor_msgs/Temperature`): For `thermistor` type.
+*   `~/illuminance_ch<CHANNEL_NUMBER>` (`sensor_msgs/Illuminance`): For `ldr`, `temt6000`, `guva_s12`, `ml8511` types.
+*   `~/current_ch<CHANNEL_NUMBER>` (`std_msgs/Float32`): For `acs712`, `max471` types (Amperes).
+*   `~/voltage_divider_ch<CHANNEL_NUMBER>` (`std_msgs/Float32`): For `voltage_divider` type (Volts).
+*   `~/soil_moisture_ch<CHANNEL_NUMBER>` (`std_msgs/Float32`): For `soil_moisture` type (%).
+*   `~/analog_range_ch<CHANNEL_NUMBER>` (`sensor_msgs/Range`): For `vibration`, `noise_level` types (raw voltage).
+
+### Parameters
+*   `adc_node_name` (string, default: `ads1115_adc`): ROS2 name of the ADS1115 node publishing voltages.
+*   `publish_rate` (float, default: `10.0`): Frequency to publish interpreted sensor readings in Hz.
+*   `frame_id` (string, default: `analog_sensors_link`): Frame ID for messages.
+*   `sensor_configs_json` (string, default: `'[]'`): JSON string defining sensor types and calibration parameters.
+
+## ✅ Verification
+1.  Launch `ads1115.launch.py` and `analog_sensor_interpreter.launch.py` with your configurations.
+2.  Monitor the interpreted topics (e.g., `/analog_sensor_interpreter/temperature_ch0`).
+    ```bash
+    ros2 topic echo /analog_sensor_interpreter/temperature_ch0
+    ```
+3.  Vary the physical input (e.g., temperature for a thermistor, light for LDR) and observe the interpreted values.
+
+## ⚠️ Troubleshooting
+*   **No interpreted data?**
+    *   Verify `ads1115_node` is running and publishing on the correct topics.
+    *   Check `analog_sensor_interpreter_node` logs for JSON parsing errors or "Unsupported sensor type" warnings.
+    *   Ensure `adc_node_name` parameter in the interpreter matches the name of your ADS1115 node.
+    *   Review your `sensor_configs_json` for syntax errors or incorrect `channel` numbers.
+*   **Incorrect readings?**
+    *   Review calibration parameters (`R_ref`, `B_const`, `sensitivity_mv_per_a`, etc.) for your specific sensor.
+    *   Ensure `V_supply` matches the actual voltage used in your voltage divider circuits.
+    *   Adjust ADS1115 `pga` settings for optimal voltage range.
+
