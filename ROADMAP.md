@@ -29,6 +29,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Unipolar Stepper (ULN2003)** -> `xpi_actuators/unipolar_stepper`
 *   **A4988/DRV8825 Stepper (Step/Dir)** -> `xpi_actuators/a4988_driver`
 *   **L298/L293 Stepper/DC Driver** -> `xpi_actuators/l298_driver`
+*   **Analog Sensor Interpreter (via ADS1115)** -> `xpi_sensors/analog_sensor_interpreter`
 
 
 ## 🚧 High Priority (Next Up)
@@ -62,4 +63,41 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
 
-*   **Analog Sensor Interpreter (via ADS1115)** -> `xpi_sensors/analog_sensor_interpreter`
+## 🔮 TODO List (Planned)
+1. MPU9250 (9DOF IMU)
+2. BMX055 (9DOF IMU)
+3. LED 7-segment (single digit, GPIO)
+4. LCD1602/1604 (I2C) - via PCF8574
+5. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
+6. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
+7. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
+8. VEML6070 - UV sensor
+9. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+10. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+11. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
+12. AT24Cxxx - memory chip (I2C)
+13. MICS-6814 - CO NO2 NH3 gas sensor
+14. DSM501A - PM2.5 sensor
+15. DHT22 (DHT11) - humidity and temperature sensor
+16. W25Qxx (Flash SPI)
+17. HW-MS03 - radar sensor module (human sensor)
+18. NAP07 HIS07 - smoke sensor
+19. JSN-SR04T - ultrasonic sensor (distance)
+20. TCS3200 (GY-31) - color sensor
+21. MAX30102 - heartrate sensor
+22. HX711 (cell weight sensor) - digital load sensor
+23. HR-202 - humidity sensor
+24. SGP30 - CO2 sensor
+25. MQ-x - various gas sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
+26. BME-680 - environmental sensor
+27. ZP-16 - gas sensor
+28. VL53L1X - distance laser sensor
+29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
+30. FPM10A - fingerprint sensor  (UART)
+31. BF350 - load cell/strain gauge
+32. HW-526 - rotation sensor
+33. MAX471 - current sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
+34. KY-013 - thermistor/analog temperature sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
+35. TGS2600 - air quality PM10 sensor
+36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
+37. WS2812B (WS2813, APA102, SK6812) RGB leds with serial connection (PWM, SPI)
