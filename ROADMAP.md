@@ -18,6 +18,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 
+*   **GPIO Digital Input** -> `xpi_sensors/gpio_digital_input`
+
 ## 🚧 High Priority (Next Up)
 *   **#24 MPU6050 (I2C)** - IMU 6DOF
 

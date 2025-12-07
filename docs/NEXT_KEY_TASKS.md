@@ -43,12 +43,3 @@ This document outlines important tasks that require further attention or clarifi
 *   It will involve reading accelerometer and gyroscope data, potentially applying simple filtering or integration.
 *   Output will be `sensor_msgs/Imu`.
 *   The implementation will reside in `xpi_sensors`.
-
-## 4. TB6612FNG (GPIO) Motor Driver Implementation
-
-**Task:** Develop a ROS2 driver for the TB6612FNG dual DC motor driver.
-
-**Details:**
-*   This will involve controlling motor direction (GPIO) and speed (PWM via GPIO).
-*   Output will be `geometry_msgs/Twist` or custom motor commands.
-*   The implementation will reside in `xpi_actuators`.
