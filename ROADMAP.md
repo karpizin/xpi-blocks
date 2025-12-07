@@ -70,7 +70,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #32 DS1302 - RTC (GPIO)
 *   [ ] #33 APDS-9960 - Proximity/Gesture
 
-## 🔮 TODO List (Planned)
+*   **LED Bar** -> `xpi_actuators/led_bar`
 1. MPU9250 (9DOF IMU)
 2. BMX055 (9DOF IMU)
 3. 74HC595 (Shift Register Out)

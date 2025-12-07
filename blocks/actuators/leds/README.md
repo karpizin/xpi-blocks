@@ -83,3 +83,68 @@ Connect the data input of your WS2812 strip to a suitable GPIO pin on the Raspbe
     *   **Resistor/Level Shifter:** Try adding the optional resistor or a 5V logic level shifter.
     *   **DMA conflict:** If other hardware is using DMA, try a different `led_dma` channel or `led_pin`.
 *   **"rpi_ws281x not found"**: Ensure `pip install rpi_ws281x` was successful.
+
+---
+
+# LED Bar Graph Display
+
+This block provides a ROS2 driver for controlling an LED Bar Graph using multiple GPIO pins. It allows you to set the number of LEDs lit or control individual LEDs.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   LED Bar Graph module OR multiple individual LEDs with current-limiting resistors (e.g., 220-330 Ohm for 3.3V).
+*   Jumper Wires
+
+## 🔌 Wiring
+Connect each LED segment (or individual LED) to a dedicated GPIO pin. Remember to include current-limiting resistors for individual LEDs.
+
+| LED Bar Pin | Raspberry Pi GPIO (BCM) | Note                                      |
+|-------------|-------------------------|-------------------------------------------|
+| LED 1       | GPIO 2                  | Configurable via `pins` parameter.        |
+| LED 2       | GPIO 3                  | ...                                       |
+| ...         | ...                     | ...                                       |
+| Common GND  | GND                     | Common Ground                             |
+| VCC         | 3.3V                    | For active-high LEDs (optional, depends on LED bar module) |
+
+## 🚀 Quick Start
+1.  **Ensure GPIO access:** Your user needs to be in the `gpio` group.
+2.  **Launch the LED bar driver:**
+    ```bash
+    # Example: Control an 8-LED bar graph connected to GPIOs 2,3,4,17,27,22,10,9
+    ros2 launch xpi_actuators led_bar.launch.py pins:="[2, 3, 4, 17, 27, 22, 10, 9]"
+    ```
+    *Note: The `pins` argument must be passed as a JSON-formatted string representing a list.*
+
+## 📡 Interface
+### Subscribers
+*   `~/set_count` (`std_msgs/UInt8`): Set the number of LEDs to light up (0 to `len(pins)`).
+    *   Example: `/led_bar_display/set_count`
+*   `~/set_individual` (`std_msgs/Int8MultiArray`): Set the state of individual LEDs (0 for OFF, 1 for ON). The array length must match the `pins` count.
+    *   Example: `/led_bar_display/set_individual`
+
+### Parameters
+*   `pins` (list of int, default: `[2, 3, 4, 17, 27, 22, 10, 9]`): A list of BCM GPIO pin numbers connected to the LEDs.
+*   `invert_logic` (bool, default: `false`): Set to `true` if LEDs are active low (e.g., connected to GND via a transistor).
+*   `initial_value` (int, default: `0`): Number of LEDs to light up initially.
+*   `mock_hardware` (bool, default: `false`): Run in mock mode without real GPIO.
+
+## ✅ Verification
+1.  Launch the driver with your LED bar graph connected.
+2.  Send commands to control the LEDs:
+    *   Light up 3 LEDs:
+        ```bash
+        ros2 topic pub --once /led_bar_display/set_count std_msgs/msg/UInt8 "{data: 3}"
+        ```
+    *   Set specific LEDs (e.g., first and third ON, rest OFF for an 8-LED bar):
+        ```bash
+        ros2 topic pub --once /led_bar_display/set_individual std_msgs/msg/Int8MultiArray "{data: [1, 0, 1, 0, 0, 0, 0, 0]}"
+        ```
+3.  Observe the LED bar graph changing its state.
+
+## ⚠️ Troubleshooting
+*   **LEDs not lighting up / erratic behavior?**
+    *   Double-check wiring, especially GND and VCC.
+    *   Ensure current-limiting resistors are used for individual LEDs.
+    *   Verify GPIO pin numbers.
+    *   Check for permissions errors (`sudo usermod -a -G gpio $USER`).
+    *   Try setting `invert_logic:=true` if your LEDs behave unexpectedly (e.g., always on, or off when they should be on).
