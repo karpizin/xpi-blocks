@@ -20,8 +20,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 *   **GPIO Digital Input** -> `xpi_sensors/gpio_digital_input`
 
-## 🚧 High Priority (Next Up)
-*   **#24 MPU6050 (I2C)** - IMU 6DOF
+*   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
 
 ## 📋 backlog: Supported Sensors & Actuators
 

@@ -34,12 +34,4 @@ This document outlines important tasks that require further attention or clarifi
 *   Publishes: `geometry_msgs/Twist` for teleoperation, or custom messages/topics for specific actuator control (e.g., `/robot/roll_cmd`, `/robot/pitch_cmd`).
 *   This node provides the layer between raw RC protocol data and meaningful robot commands, addressing the "left_58%" type of interpretation.
 
-## 3. MPU6050 (I2C) IMU Integration
 
-**Task:** Develop a ROS2 driver for the MPU6050 6-DOF IMU sensor.
-
-**Details:**
-*   This will use the `xpi_commons` I2C helper.
-*   It will involve reading accelerometer and gyroscope data, potentially applying simple filtering or integration.
-*   Output will be `sensor_msgs/Imu`.
-*   The implementation will reside in `xpi_sensors`.
