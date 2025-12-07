@@ -57,7 +57,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #7a PCA9685_TB6612 - I2C Motor Driver
 *   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
-*   [ ] #29 L298/L293 - Bipolar Stepper/DC
+*   **#29 L298/L293 - Bipolar Stepper/DC** -> `xpi_actuators/l298_driver`
 *   [ ] #36 L9110H + MCP21017 - I2C Motor Driver
 *   [ ] #38 L9110H - Simple DC Driver
 

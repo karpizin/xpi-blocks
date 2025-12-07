@@ -158,3 +158,124 @@ A4988 typically uses MS1, MS2, MS3 for 1, 1/2, 1/4, 1/8, 1/16 microstepping. DRV
 *   **Motor moving in wrong direction?**
     *   Toggle the `DIR` pin logic (swap physical connection or invert in software if driver allows).
 
+---
+
+# L298 / L293 Stepper and Dual DC Motor Driver
+
+This block provides a ROS2 driver for controlling bipolar stepper motors or two DC motors using the versatile L298 or L293 motor driver boards. These drivers are capable of handling higher currents and voltages compared to some smaller alternatives, making them suitable for more powerful motors.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   L298N or L293D Motor Driver Module
+*   Bipolar Stepper Motor OR 2x DC Motors
+*   External Power Supply (e.g., 5V-35V) for motors. **Do NOT power motors from the Pi!**
+*   Jumper Wires
+
+## 🔌 Wiring
+Connect the L298/L293 driver board to the Raspberry Pi's GPIO pins. The motors connect to the driver board.
+
+### Stepper Motor Mode Wiring Example (Full-step, 4-wire bipolar)
+
+| L298/L293 Pin | Raspberry Pi GPIO (BCM) | Note                                      |
+|---------------|-------------------------|-------------------------------------------|
+| IN1           | GPIO 17                 | Configurable via `stepper_in1_pin`        |
+| IN2           | GPIO 27                 | Configurable via `stepper_in2_pin`        |
+| IN3           | GPIO 22                 | Configurable via `stepper_in3_pin`        |
+| IN4           | GPIO 23                 | Configurable via `stepper_in4_pin`        |
+| ENA (optional)| GPIO 5                  | Optional, configurable via `stepper_enable_pin` (active high) |
+| +V_MOTOR      | External PSU +          | Motor Power Supply                        |
+| GND           | External PSU - & RPi GND| Common Ground                             |
+| +5V (optional)| 5V                      | If L298 has a 5V regulator, can power Pi logic |
+
+### Dual DC Motor Mode Wiring Example
+
+| L298/L293 Pin | Raspberry Pi GPIO (BCM) | Note                                      |
+|---------------|-------------------------|-------------------------------------------|
+| **Motor A**   |                         |                                           |
+| IN1           | GPIO 17                 | Configurable via `motor_a_in1_pin`        |
+| IN2           | GPIO 27                 | Configurable via `motor_a_in2_pin`        |
+| ENA           | GPIO 5 (PWM)            | Optional, configurable via `motor_a_pwm_pin` |
+|               |                         |                                           |
+| **Motor B**   |                         |                                           |
+| IN3           | GPIO 22                 | Configurable via `motor_b_in1_pin`        |
+| IN4           | GPIO 23                 | Configurable via `motor_b_in2_pin`        |
+| ENB           | GPIO 6 (PWM)            | Optional, configurable via `motor_b_pwm_pin` |
+|               |                         |                                           |
+| **Common**    |                         |                                           |
+| +V_MOTOR      | External PSU +          | Motor Power Supply                        |
+| GND           | External PSU - & RPi GND| Common Ground                             |
+| +5V (optional)| 5V                      | If L298 has a 5V regulator, can power Pi logic |
+
+## 🚀 Quick Start
+1.  **Ensure GPIO access:** Your user needs to be in the `gpio` group.
+2.  **Launch the L298 driver in Stepper Mode:**
+    ```bash
+    ros2 launch xpi_actuators l298.launch.py driver_mode:=stepper \
+        stepper_in1_pin:=17 stepper_in2_pin:=27 stepper_in3_pin:=22 stepper_in4_pin:=23
+    ```
+3.  **Launch the L298 driver in Dual DC Motor Mode:**
+    ```bash
+    ros2 launch xpi_actuators l298.launch.py driver_mode:=dc_dual \
+        motor_a_in1_pin:=17 motor_a_in2_pin:=27 motor_a_pwm_pin:=5 \
+        motor_b_in1_pin:=22 motor_b_in2_pin:=23 motor_b_pwm_pin:=6
+    ```
+
+## 📡 Interface
+The interface varies based on `driver_mode` parameter.
+
+### Stepper Mode Subscribers
+*   `~/cmd_steps` (`std_msgs/Int32`): Move the motor by the specified number of steps. Positive for clockwise, negative for counter-clockwise.
+*   `~/cmd_speed` (`std_msgs/Float32`): Set the motor speed for continuous rotation.
+    *   Value: `-1.0` (full speed reverse) to `1.0` (full speed forward), `0.0` (stop).
+    *   Speed is relative to `stepper_motor_max_rpm`.
+
+### Dual DC Motor Mode Subscribers
+*   `~/motor_a/cmd_speed` (`std_msgs/Float32`): Speed command for Motor A.
+    *   Value: `-1.0` (full reverse) to `1.0` (full forward), `0.0` (stop).
+*   `~/motor_b/cmd_speed` (`std_msgs/Float32`): Speed command for Motor B.
+    *   Value: `-1.0` (full reverse) to `1.0` (full forward), `0.0` (stop).
+
+### Parameters
+*   `driver_mode` (string, default: `stepper`): Choose 'stepper' or 'dc_dual'.
+*   `mock_hardware` (bool, default: `false`): Run in mock mode.
+
+*   **Stepper Mode Specific Parameters:**
+    *   `stepper_in1_pin`, `stepper_in2_pin`, `stepper_in3_pin`, `stepper_in4_pin` (int, defaults: `17, 27, 22, 23`): BCM GPIO pins for IN1-IN4.
+    *   `stepper_enable_pin` (int, default: `None`): Optional BCM GPIO pin for ENABLE (active high).
+    *   `stepper_steps_per_revolution` (int, default: `200`): Full steps for a revolution.
+    *   `stepper_step_delay_s` (float, default: `0.005`): Min delay between steps.
+    *   `stepper_motor_max_rpm` (int, default: `60`): Max RPM for speed calculation.
+
+*   **Dual DC Motor Mode Specific Parameters:**
+    *   `motor_a_in1_pin`, `motor_a_in2_pin` (int, defaults: `17, 27`): BCM GPIO pins for Motor A direction.
+    *   `motor_a_pwm_pin` (int, default: `None`): Optional BCM GPIO pin for Motor A PWM (ENA).
+    *   `motor_b_in1_pin`, `motor_b_in2_pin` (int, defaults: `22, 23`): BCM GPIO pins for Motor B direction.
+    *   `motor_b_pwm_pin` (int, default: `None`): Optional BCM GPIO pin for Motor B PWM (ENB).
+    *   `dc_pwm_frequency` (int, default: `1000`): PWM frequency for DC motor speed.
+
+## ✅ Verification
+### Stepper Mode
+1.  Launch in stepper mode.
+2.  Send commands to `~/cmd_steps` or `~/cmd_speed`.
+    ```bash
+    ros2 topic pub --once /l298_motor_driver/cmd_steps std_msgs/msg/Int32 "{data: 200}"
+    ```
+### Dual DC Motor Mode
+1.  Launch in dual DC motor mode.
+2.  Send commands to `~/motor_a/cmd_speed` or `~/motor_b/cmd_speed`.
+    ```bash
+    ros2 topic pub --once /l298_motor_driver/motor_a/cmd_speed std_msgs/msg/Float32 "{data: 0.8}"
+    ```
+
+## ⚠️ Troubleshooting
+*   **Motors not moving / erratic behavior?**
+    *   Double-check all wiring (IN1-IN4, ENA/ENB, V_MOTOR, GND).
+    *   Ensure external power supply for motors is connected and appropriate for motor voltage.
+    *   Verify GPIO pin numbers.
+    *   Check `stepper_step_delay_s` for steppers.
+    *   Check for permissions errors (`sudo usermod -a -G gpio $USER`).
+*   **Motor moving in wrong direction?**
+    *   Swap IN1/IN2 (for DC) or IN1/IN4 (for stepper).
+*   **"Error initializing GPIO"**: Check `mock_hardware` parameter for testing without physical driver.
+
+
