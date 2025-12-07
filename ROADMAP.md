@@ -97,7 +97,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 24. MQ-x (Gas Sensor)
 25. BME-680 (Environmental Sensor)
 26. ZP-16 (Gas Sensor)
-27. WS2812 (Addressable RGB LED)
+*   **#28 WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
 28. VL53L1X (Distance Laser Sensor)
 29. TOF10120 (Distance Laser Sensor)
 30. FPM10A (Fingerprint Sensor)
