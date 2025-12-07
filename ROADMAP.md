@@ -15,14 +15,28 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Sonar Trend Analysis with LLM** -> `xpi_llm/sonar_trend_analyzer`
 *   **LLM Tool Calling** -> `xpi_llm/tool_calling`
 *   **Sonar Pattern Analysis with LLM** -> `xpi_llm/sonar_pattern_analyzer`
-
-*   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
-
+*   **DS18B20 (1-Wire Temp Sensor)** -> `xpi_sensors/ds18b20`
 *   **GPIO Digital Input** -> `xpi_sensors/gpio_digital_input`
-
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
-
+*   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
+
+## 🚧 High Priority (Next Up)
+
+
+## 📋 backlog: Supported Sensors & Actuators
+
+### Light & Color (I2C)
+*   [ ] #1 BH1750 - Light sensor
+*   [ ] #3 OPT3001 - High sensitivity light sensor
+*   [ ] #10 TCS34725 - RGB Color sensor
+*   [ ] #25 MAX44009 - Light sensor
+*   [ ] #26 TSL2561 - Light sensor
+*   [ ] #34 BH1745NUC - Light sensor
+
+### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
+*   [ ] #2 BMP085/180 - Temp/Pressure
+*   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   [ ] #11 LM75A - Temp + Thermostat
 *   [ ] #37 CCS811 - CO2
 *   [ ] #39 HDC1080 - Temp/Humidity
@@ -36,7 +50,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### Motors & Drivers
 *   [ ] #7a PCA9685_TB6612 - I2C Motor Driver
-*   [ ] #15 TB6612FNG - Dual DC Motor (GPIO)
 *   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
 *   [ ] #28 ULN2003 - Unipolar Stepper
@@ -71,29 +84,27 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 11. AT24Cxxx (EEPROM)
 12. MICS-6814 (Gas)
 13. DSM501A (PM2.5)
-14. DHT22/11 (Temp/Hum - GPIO)
+14. DHT22 (DHT11) - humidity and temperature sensor
 15. W25Qxx (Flash SPI)
 16. HW-MS03 (Radar)
 17. Smoke Sensors
 18. JSN-SR04T (Ultrasonic Sensor)
-19. DS18B20 (1-Wire Temp)
-20. TCS3200 (Color Sensor)
-21. MAX30102 (Heartrate Sensor)
-22. HX711 (Load Cell Sensor)
-23. HR-202 (Humidity Sensor)
-24. SGP30 (CO2 Sensor)
-25. MQ-x (Gas Sensor)
-26. BME-680 (Environmental Sensor)
-27. ZP-16 (Gas Sensor)
-*   **#28 WS2812 (Addressable RGB LED)**
-*   **#29 VL53L1X (Distance Laser Sensor)**
-*   **#30 TOF10120 (Distance Laser Sensor)**
-*   **#31 FPM10A (Fingerprint Sensor)**
-*   **#32 BF350 (Load Cell/Strain Gauge)**
-*   **#33 HW-526 (Rotation Sensor)**
-*   **#34 MAX471 (Current Sensor)**
-*   **#35 KY-013 (Thermistor/Analog Temp Sensor)**
-*   **#36 TGS2600 (Air Quality PM10 Sensor)**
-*   **#37 L298D/L298P (Powerful Motor Driver)**
-*   **#38 WS2812B (RGB LEDs)**
-*   **DS18B20 (1-Wire Temp Sensor)** -> `xpi_sensors/ds18b20`
+19. TCS3200 (Color Sensor)
+20. MAX30102 (Heartrate Sensor)
+21. HX711 (Load Cell Sensor)
+22. HR-202 (Humidity Sensor)
+23. SGP30 (CO2 Sensor)
+24. MQ-x (Gas Sensor)
+25. BME-680 (Environmental Sensor)
+26. ZP-16 (Gas Sensor)
+27. WS2812 (Addressable RGB LED)
+28. VL53L1X (Distance Laser Sensor)
+29. TOF10120 (Distance Laser Sensor)
+30. FPM10A (Fingerprint Sensor)
+31. BF350 (Load Cell/Strain Gauge)
+32. HW-526 (Rotation Sensor)
+33. MAX471 (Current Sensor)
+34. KY-013 (Thermistor/Analog Temp Sensor)
+35. TGS2600 (Air Quality PM10 Sensor)
+36. L298D/L298P (Powerful Motor Driver)
+37. WS2812B (RGB LEDs)
