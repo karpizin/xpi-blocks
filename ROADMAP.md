@@ -35,7 +35,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
-*   [ ] #2 BMP085/180 - Temp/Pressure
+*   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   [ ] #11 LM75A - Temp + Thermostat
 *   [ ] #37 CCS811 - CO2

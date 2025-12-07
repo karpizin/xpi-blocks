@@ -28,6 +28,7 @@ setup(
             'gpio_digital_input_node = xpi_sensors.gpio_digital_input_node:main',
             'mpu6050_node = xpi_sensors.mpu6050_node:main',
             'bme280_node = xpi_sensors.bme280_node:main',
+            'bmp085_node = xpi_sensors.bmp085_node:main',
         ],
     },
 )
