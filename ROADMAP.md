@@ -57,7 +57,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #7a PCA9685_TB6612 - I2C Motor Driver
 *   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
-*   **#28 ULN2003 - Unipolar Stepper** -> `xpi_actuators/unipolar_stepper`
 *   [ ] #29 L298/L293 - Bipolar Stepper/DC
 *   [ ] #36 L9110H + MCP21017 - I2C Motor Driver
 *   [ ] #38 L9110H - Simple DC Driver
@@ -78,18 +77,14 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ## 🔮 TODO List (Planned)
 1. MPU9250 (9DOF IMU)
 2. BMX055 (9DOF IMU)
-3. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
-4. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
-5. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
-6. VEML6070 - UV sensor
-7. Soil moisture sensor (along with ADS1115)
-8. Vibration sensor (along with ADS1115)
-9. Noise level sensor (based on microphone with ADS1115)
-10. TM1637 - 4/6-digit 7-segment display (GPIO)
-11. LED 7-segment (single digit, GPIO)
-12. LCD1602/1604 (I2C) - via PCF8574
-13. AT24Cxxx - memory chip (I2C)
-14. MICS-6814 - CO NO2 NH3 gas sensor
+*   **A4988/DRV8825 Stepper driver (Step/Dir)** -> `xpi_actuators/a4988_driver`
+4. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
+5. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
+6. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
+7. VEML6070 - UV sensor
+8. Soil moisture sensor (along with ADS1115)
+9. Vibration sensor (along with ADS1115)
+10. Noise level sensor (based on microphone with ADS1115)
 15. DSM501A - PM2.5 sensor
 16. DHT22 (DHT11) - humidity and temperature sensor
 17. W25Qxx (Flash SPI)

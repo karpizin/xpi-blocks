@@ -69,3 +69,92 @@ Connect the ULN2003 driver board to the Raspberry Pi's GPIO pins. The motor itse
     *   Verify `steps_per_revolution` is correct for your motor.
 *   **Permissions error?**
     *   Add your user to the `gpio` group.
+
+---
+
+# A4988 / DRV8825 Bipolar Stepper Motor Driver (Step/Dir)
+
+This block provides a ROS2 driver for controlling bipolar stepper motors using common Step/Dir drivers like A4988 or DRV8825. These drivers offer microstepping capabilities for smoother and quieter operation.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   Bipolar Stepper Motor (e.g., NEMA17)
+*   A4988 or DRV8825 Stepper Driver Module
+*   External Power Supply (e.g., 8V-35V for A4988, up to 45V for DRV8825) for the motor. **Do NOT power the motor from the Pi!**
+*   Jumper Wires
+
+## 🔌 Wiring
+Connect the A4988/DRV8825 driver board to the Raspberry Pi's GPIO pins. The stepper motor connects to the driver board.
+
+| A4988/DRV8825 Pin | Raspberry Pi GPIO (BCM) | Note                                      |
+|-------------------|-------------------------|-------------------------------------------|
+| STEP              | GPIO 17                 | Configurable via `step_pin` parameter     |
+| DIR               | GPIO 27                 | Configurable via `dir_pin` parameter      |
+| ENABLE            | GPIO 22                 | Optional, configurable via `enable_pin` (active low) |
+| MS1, MS2, MS3     | GPIO 5, 6, 13           | Configurable via `microstep_pins` (for microstepping) |
+| VMOT              | External PSU +          | Motor Power Supply                        |
+| GND               | External PSU - & RPi GND| Common Ground                             |
+| VDD               | 3.3V/5V                 | Logic Power for Driver (often 3.3V from Pi) |
+
+**Important Note on Microstepping Pins:**
+A4988 typically uses MS1, MS2, MS3 for 1, 1/2, 1/4, 1/8, 1/16 microstepping. DRV8825 uses MS0, MS1, MS2 for up to 1/32 microstepping. Refer to your driver's datasheet for exact pin functions and truth table. This driver assumes typical connections.
+
+## 🚀 Quick Start
+1.  **Ensure GPIO access:** Your user needs to be in the `gpio` group.
+2.  **Adjust current limit:** Most A4988/DRV8825 boards have a small potentiometer. Adjust it to set the current limit according to your motor's specifications.
+3.  **Launch the stepper motor driver:**
+    ```bash
+    # Example: A4988 with 1/16 microstepping, enable pin on GPIO 22, MS pins on 5,6,13
+    ros2 launch xpi_actuators a4988.launch.py \
+        step_pin:=17 dir_pin:=27 enable_pin:=22 \
+        microstep_pins:="[5, 6, 13]" microstep_setting:=16
+    ```
+    *Note: The `microstep_pins` argument must be passed as a JSON-formatted string representing a list.*
+
+## 📡 Interface
+### Subscribers
+*   `~/cmd_steps` (`std_msgs/Int32`): Move the motor by the specified number of steps. Positive for clockwise, negative for counter-clockwise.
+    *   This refers to *microsteps*.
+*   `~/cmd_speed` (`std_msgs/Float32`): Set the motor speed for continuous rotation.
+    *   Value: `-1.0` (full speed reverse) to `1.0` (full speed forward), `0.0` (stop).
+    *   Speed is relative to `motor_max_rpm`.
+
+### Parameters
+*   `step_pin` (int, default: `17`): BCM GPIO pin for STEP signal.
+*   `dir_pin` (int, default: `27`): BCM GPIO pin for DIR signal.
+*   `enable_pin` (int, default: `None`): Optional BCM GPIO pin for ENABLE (active low). Set to `None` if not used.
+*   `microstep_pins` (list of int, default: `[]`): List of BCM GPIO pins for MS1, MS2, MS3 (or MS0, MS1, MS2 for DRV8825).
+*   `microstep_setting` (int, default: `16`): Microstep resolution (1, 2, 4, 8, 16, etc.).
+*   `steps_per_revolution_fullstep` (int, default: `200`): Number of full steps per motor revolution (e.g., 200 for 1.8 degree).
+*   `step_delay_s` (float, default: `0.001`): Minimum delay in seconds between each step pulse.
+*   `motor_max_rpm` (int, default: `60`): Maximum RPM to calculate continuous speed.
+*   `mock_hardware` (bool, default: `false`): Run in mock mode.
+
+## ✅ Verification
+1.  Launch the driver with your stepper motor and driver board connected.
+2.  Send commands:
+    *   Move 200 microsteps clockwise (e.g., 1/16 microstep on a 1.8 deg motor means 1/16 of a full step):
+        ```bash
+        ros2 topic pub --once /a4988_stepper_driver/cmd_steps std_msgs/msg/Int32 "{data: 200}"
+        ```
+    *   Rotate continuously counter-clockwise at half speed:
+        ```bash
+        ros2 topic pub --once /a4988_stepper_driver/cmd_speed std_msgs/msg/Float32 "{data: -0.5}"
+        ```
+    *   Stop continuous rotation:
+        ```bash
+        ros2 topic pub --once /a4988_stepper_driver/cmd_speed std_msgs/msg/Float32 "{data: 0.0}"
+        ```
+3.  Observe the stepper motor moving.
+
+## ⚠️ Troubleshooting
+*   **Motor not moving / vibrating?**
+    *   Double-check wiring of STEP, DIR, ENABLE, MS pins to GPIOs.
+    *   Ensure external motor power supply is connected and providing adequate voltage/current.
+    *   Adjust the current limit potentiometer on the driver board.
+    *   Check `step_delay_s`. If it's too low, the motor might not keep up.
+    *   Verify `steps_per_revolution_fullstep` and `microstep_setting` are correct.
+    *   Check for permissions errors (`sudo usermod -a -G gpio $USER`).
+*   **Motor moving in wrong direction?**
+    *   Toggle the `DIR` pin logic (swap physical connection or invert in software if driver allows).
+

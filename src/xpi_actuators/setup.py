@@ -32,6 +32,7 @@ setup(
             'led_matrix_node = xpi_actuators.led_matrix_node:main',
             'ssd1306_node = xpi_actuators.ssd1306_node:main',
             'unipolar_stepper_node = xpi_actuators.unipolar_stepper_node:main',
+            'a4988_driver_node = xpi_actuators.a4988_driver_node:main',
         ],
     },
 )
