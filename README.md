@@ -7,7 +7,7 @@ To create a **comprehensive, modular, and perfectly documented** library of exam
 ## 🏗 Block Architecture
 Each example in this library is an atomic "Block" containing:
 *   **ROS2 Node:** Clean, idiomatic code (Python/C++).
-*   **Hardware Interface:** Hardware abstraction (GPIO, I2C, SPI, UART) or intelligent LLM/VLM interfaces.
+*   **Hardware Interface:** Hardware abstraction (GPIO, I2C, SPI, UART, 1-Wire) or intelligent LLM/VLM interfaces.
 *   **Launch file:** Launch configuration with sane defaults.
 *   **Documentation:**
     *   Wiring Diagram.
@@ -21,8 +21,8 @@ xpi-blocks/
 ├── docs/               # Global documentation and guides (e.g., ARCHITECTURE.md, ROADMAP.md, LLM_VLM_SCENARIOS.md, NEXT_KEY_TASKS.md)
 ├── blocks/             # Individual block documentation (e.g., wiring, usage)
 │   ├── inputs/         # Input devices (joystick, keyboard, RC receivers)
-│   ├── actuators/      # Actuators (motors, servos, relays)
-│   ├── sensors/        # Sensors (IMU, lidar, range)
+│   ├── actuators/      # Actuators (motors, servos, relays, steppers, LEDs, displays)
+│   ├── sensors/        # Sensors (IMU, lidar, range, environment, analog, 1-wire, digital-input)
 │   └── llm/            # LLM/VLM integration blocks
 ├── src/                # ROS2 packages
 │   ├── xpi_commons/    # Common utilities, HAL for GPIO/I2C
@@ -61,7 +61,10 @@ xpi-blocks/
 *   **Compatibility:** Code is forward-compatible with Jazzy/Ubuntu 24.04 where possible.
 *   **Language:** Python 3.10+ (primary), C++ (time-critical).
 *   **GPIO Access:** `gpiozero` (Standardized HAL).
-*   **I2C Access:** `smbus2` via `xpi_commons` (Standardized HAL).
+*   **I2C Access:** `smbus2` via `xpi_commons` (Standardized HAL) and libraries like `luma.oled`.
+*   **SPI Access:** `luma.led_matrix` for displays.
+*   **UART Access:** `pyserial` for RC receivers.
+*   **1-Wire Access:** Kernel modules (`w1_gpio`, `w1_therm`).
 *   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
 *   **Containerization:** `Dockerfile` support for rapid deployment.
 
@@ -73,9 +76,11 @@ Before using these blocks, ensure you have:
     ```bash
     source /opt/ros/humble/setup.bash
     ```
-4.  **GPIO Privileges:** User must be in `gpio` group (or `dialout` depending on OS).
+4.  **GPIO Privileges:** User must be in `gpio` group (or `dialout` for UART, `i2c` for I2C, `spi` for SPI, `users` for 1-Wire).
 5.  **I2C Enabled:** `sudo raspi-config` -> Interface Options -> I2C.
-6.  **UART Configured:** For RC receivers, UART needs to be freed from console (`sudo raspi-config`).
+6.  **SPI Enabled:** `sudo raspi-config` -> Interface Options -> SPI.
+7.  **1-Wire Enabled:** `sudo raspi-config` -> Interface Options -> 1-Wire.
+8.  **UART Configured:** For RC receivers, UART needs to be freed from console (`sudo raspi-config`).
 
 ## 📝 Documentation Guidelines
 *   **README Driven:** Documentation is written before code.
