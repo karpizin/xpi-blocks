@@ -86,3 +86,73 @@ You must enable the SPI interface on your Raspberry Pi.
     *   **Permissions:** `luma.led_matrix` uses `/dev/spidev0.x`, ensure user has access (usually in `spi` group, `sudo usermod -a -G spi $USER`).
     *   **`cascaded_devices`:** Ensure this parameter matches the physical number of chained matrices.
     *   **`luma.led_matrix` not found**: `pip install luma.led_matrix spidev` was successful.
+
+---
+
+# TM1637 7-Segment Display Driver
+
+This block provides a ROS2 driver for controlling a TM1637-based 4-digit or 6-digit 7-segment display module. It allows displaying numbers and text, as well as adjusting brightness.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   TM1637 4-digit or 6-digit 7-segment display module
+*   Jumper Wires
+
+## 🔌 Wiring
+Connect the TM1637 module to any two available GPIO pins on the Raspberry Pi.
+
+| TM1637 Pin | Raspberry Pi GPIO (BCM) | Note                                      |
+|------------|-------------------------|-------------------------------------------|
+| VCC        | 3.3V/5V                 | Power for the module (check module spec)  |
+| GND        | GND                     | Common Ground                             |
+| CLK        | GPIO 23                 | Configurable via `clk_pin` parameter      |
+| DIO        | GPIO 24                 | Configurable via `dio_pin` parameter      |
+
+## 🚀 Quick Start
+1.  **Install `tm1637` library:**
+    ```bash
+    pip install tm1637
+    ```
+2.  **Ensure GPIO access:** Your user needs to be in the `gpio` group.
+3.  **Launch the TM1637 driver:**
+    ```bash
+    # Example: 4-digit display on CLK=GPIO23, DIO=GPIO24
+    ros2 launch xpi_actuators tm1637.launch.py clk_pin:=23 dio_pin:=24 display_digits:=4 default_text:="1234"
+    ```
+
+## 📡 Interface
+### Subscribers
+*   `~/display_text` (`std_msgs/String`): Displays text or numbers on the 7-segment display.
+*   `~/set_brightness` (`std_msgs/UInt8`): Sets the display brightness (0-7, 7 being brightest).
+
+### Parameters
+*   `clk_pin` (int, default: `23`): BCM GPIO pin for CLK.
+*   `dio_pin` (int, default: `24`): BCM GPIO pin for DIO.
+*   `brightness` (int, default: `7`): Initial brightness (0-7).
+*   `mock_hardware` (bool, default: `false`): Run in mock mode.
+*   `display_digits` (int, default: `4`): Number of digits on your display (4 or 6).
+*   `default_text` (string, default: `----`): Text to show on startup.
+
+## ✅ Verification
+1.  Launch the driver with your TM1637 display connected.
+2.  Send commands:
+    *   Display a number:
+        ```bash
+        ros2 topic pub --once /tm1637_display/display_text std_msgs/msg/String "{data: '98.7'}"
+        ```
+    *   Change brightness:
+        ```bash
+        ros2 topic pub --once /tm1637_display/set_brightness std_msgs/msg/UInt8 "{data: 2}"
+        ```
+3.  Observe the 7-segment display.
+
+## ⚠️ Troubleshooting
+*   **Display not working / blank?**
+    *   Double-check wiring (CLK, DIO, VCC, GND).
+    *   Verify GPIO access.
+    *   Ensure `tm1637` library is installed (`pip install tm1637`).
+    *   The `tm1637` library may sometimes require `sudo` to access GPIO directly if `gpiozero` is not used as a backend.
+*   **Garbage on display?**
+    *   Check `display_digits` parameter matches your physical display.
+    *   Ensure the published string fits the number of digits.
+

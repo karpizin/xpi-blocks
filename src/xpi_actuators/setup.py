@@ -34,6 +34,7 @@ setup(
             'unipolar_stepper_node = xpi_actuators.unipolar_stepper_node:main',
             'a4988_driver_node = xpi_actuators.a4988_driver_node:main',
             'l298_driver_node = xpi_actuators.l298_driver_node:main',
+            'tm1637_node = xpi_actuators.tm1637_node:main',
         ],
     },
 )
