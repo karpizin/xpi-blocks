@@ -3,7 +3,7 @@
 Total devices targeted: 80+
 Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
-*   **LED Matrix 8x8 (MAX7219)** -> `xpi_actuators/led_matrix`
+## ✅ Implemented
 *   **#27 Relay Module (GPIO)** -> `xpi_actuators/relay_node`
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
@@ -20,6 +20,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
+*   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
+*   **#28 WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
+*   **LED Bar** -> `xpi_actuators/led_bar`
+*   **LED Matrix 8x8 (MAX7219)** -> `xpi_actuators/led_matrix`
+*   **I2C OLED (SSD1306)** -> `xpi_actuators/ssd1306`
+
 
 ## 🚧 High Priority (Next Up)
 
@@ -35,7 +41,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
-*   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   [ ] #11 LM75A - Temp + Thermostat
 *   [ ] #37 CCS811 - CO2
@@ -45,7 +50,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### IO Expanders & ADC (I2C)
 *   [ ] #4 MCP23017 - 16 GPIO Expander
-*   **#5 ADS1115 - ADC chip, 4 channels (I2C)** -> `xpi_sensors/ads1115`
+*   [ ] #5 ADS1115 - 4-CH ADC (Vital for analog sensors) - *Already Implemented*
 *   [ ] #12 PCF8574 - 8 GPIO Expander
 
 ### Motors & Drivers
@@ -70,41 +75,40 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #32 DS1302 - RTC (GPIO)
 *   [ ] #33 APDS-9960 - Proximity/Gesture
 
-*   **LED Bar** -> `xpi_actuators/led_bar`
+## 🔮 TODO List (Planned)
 1. MPU9250 (9DOF IMU)
 2. BMX055 (9DOF IMU)
-3. 74HC595 (Shift Register Out)
-4. 74HC165 (Shift Register In)
-5. PIR Sensors (HC-SR501, etc.)
-6. VEML6070 (UV)
-7. Soil Moisture (Analog)
-8. Vibration (Analog)
-9. Noise Level (Analog)
-10. SSD1306 (OLED)
-11. AT24Cxxx (EEPROM)
-12. MICS-6814 (Gas)
-13. DSM501A (PM2.5)
-14. DHT22 (DHT11) - humidity and temperature sensor
-15. W25Qxx (Flash SPI)
-16. HW-MS03 (Radar)
-17. Smoke Sensors
-18. JSN-SR04T (Ultrasonic Sensor)
-19. TCS3200 (Color Sensor)
-20. MAX30102 (Heartrate Sensor)
-21. HX711 (Load Cell Sensor)
-22. HR-202 (Humidity Sensor)
-23. SGP30 (CO2 Sensor)
-24. MQ-x (Gas Sensor)
-25. BME-680 (Environmental Sensor)
-26. ZP-16 (Gas Sensor)
-*   **#28 WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
-28. VL53L1X (Distance Laser Sensor)
-29. TOF10120 (Distance Laser Sensor)
-30. FPM10A (Fingerprint Sensor)
-31. BF350 (Load Cell/Strain Gauge)
-32. HW-526 (Rotation Sensor)
-33. MAX471 (Current Sensor)
-34. KY-013 (Thermistor/Analog Temp Sensor)
-35. TGS2600 (Air Quality PM10 Sensor)
-36. L298D/L298P (Powerful Motor Driver)
-37. WS2812B (RGB LEDs)
+3. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
+4. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
+5. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
+6. VEML6070 - UV sensor
+7. Soil moisture sensor (along with ADS1115)
+8. Vibration sensor (along with ADS1115)
+9. Noise level sensor (based on microphone with ADS1115)
+10. AT24Cxxx - memory chip (I2C)
+11. MICS-6814 - CO NO2 NH3 gas sensor
+12. DSM501A - PM2.5 sensor
+13. DHT22 (DHT11) - humidity and temperature sensor
+14. W25Qxx - memory chip (SPI)
+15. HW-MS03 - radar sensor module (human sensor)
+16. NAP07 HIS07 - smoke sensor
+17. JSN-SR04T - ultrasonic sensor (distance)
+18. TCS3200 (GY-31) - color sensor
+19. MAX30102 - heartrate sensor
+20. HX711 (cell weight sensor) - digital load sensor
+21. HR-202 - humidity sensor
+22. SGP30 - CO2 sensor
+23. MQ-x - various gas sensor (along with ads1115, I2C)
+24. BME-680 - temperature, humidity, pressure sensor
+25. ZP-16 - gas sensor
+26. WS2812 - addressable & stackable RGB led (GPIO) - *Already Implemented*
+27. VL53L1X - distance laser sensor
+28. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
+29. FPM10A - fingerprint sensor  (UART)
+30. BF350 - load cell/strain gauge
+31. HW-526 - rotation sensor
+32. MAX471 - current sensor (along with ads1115, I2C)
+33. KY-013 - thermistor/analog temperature sensor (along with ads1115, I2C)
+34. TGS2600 - air quality PM10 sensor
+35. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor.
+36. WS2812B (WS2813, APA102, SK6812) RGB leds with serial connection (PWM, SPI)
