@@ -45,7 +45,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### IO Expanders & ADC (I2C)
 *   [ ] #4 MCP23017 - 16 GPIO Expander
-*   [ ] #5 ADS1115 - 4-CH ADC (Vital for analog sensors)
+*   **#5 ADS1115 - ADC chip, 4 channels (I2C)** -> `xpi_sensors/ads1115`
 *   [ ] #12 PCF8574 - 8 GPIO Expander
 
 ### Motors & Drivers

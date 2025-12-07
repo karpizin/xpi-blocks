@@ -29,6 +29,7 @@ setup(
             'mpu6050_node = xpi_sensors.mpu6050_node:main',
             'bme280_node = xpi_sensors.bme280_node:main',
             'bmp085_node = xpi_sensors.bmp085_node:main',
+            'ads1115_node = xpi_sensors.ads1115_node:main',
         ],
     },
 )
