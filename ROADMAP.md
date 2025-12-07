@@ -88,7 +88,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 22. HX711 (cell weight sensor) - digital load sensor
 23. HR-202 - humidity sensor
 24. SGP30 - CO2 sensor
-25. MQ-x - various gas sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
+*   **MQ-x Gas Sensors (via Analog Sensor Interpreter)** -> `xpi_sensors/analog_sensor_interpreter` - *Now covered by Analog Sensor Interpreter*
 26. BME-680 - environmental sensor
 27. ZP-16 - gas sensor
 28. VL53L1X - distance laser sensor

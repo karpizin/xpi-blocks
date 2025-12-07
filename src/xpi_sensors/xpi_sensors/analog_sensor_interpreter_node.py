@@ -191,21 +191,53 @@ class AnalogSensorInterpreterNode(Node):
                     moisture_msg.data = max(0.0, min(100.0, moisture_percent)) # Clamp 0-100
                     pub.publish(moisture_msg)
                 
-                elif sensor_type == 'vibration' or sensor_type == 'noise_level':
-                    # Generic analog level, use sensor_msgs/Range (min/max range can be voltage levels)
-                    # Or a custom message for 'level'
-                    # For now, just publish raw voltage
-                    range_msg = Range()
-                    range_msg.header.stamp = current_time
-                    range_msg.header.frame_id = f'{self.frame_id}_ch{channel}'
-                    range_msg.range = voltage
-                    range_msg.min_range = config.get('min_voltage', 0.0)
-                    range_msg.max_range = config.get('max_voltage', 3.3)
-                    pub.publish(range_msg)
-
-            except Exception as e:
-                self.get_logger().error(f"Error interpreting channel {channel} ({sensor_type}): {e}")
-
+                            elif sensor_type == 'vibration' or sensor_type == 'noise_level':
+                                # Generic analog level, use sensor_msgs/Range (min/max range can be voltage levels)
+                                # Or a custom message for 'level'
+                                # For now, just publish raw voltage
+                                range_msg = Range()
+                                range_msg.header.stamp = current_time
+                                range_msg.header.frame_id = f'{self.frame_id}_ch{channel}'
+                                range_msg.range = voltage
+                                range_msg.min_range = config.get('min_voltage', 0.0)
+                                range_msg.max_range = config.get('max_voltage', 3.3)
+                                pub.publish(range_msg)
+                            
+                            elif sensor_type == 'mq_gas':
+                                # MQ-series gas sensors need calibration: R0 (resistance in clean air), Rs/R0 vs PPM curve
+                                # Assume a voltage divider (Vcc - RL - sensor_heater - sensor_resistance - GND)
+                                # And the voltage is read across the sensor_resistance (between sensor and GND)
+                                
+                                # First, get sensor resistance (Rs) from measured voltage
+                                V_supply = config.get('V_supply', 5.0) # MQ sensors often use 5V
+                                RL = config.get('RL', 10000.0) # Load resistor value
+                                if voltage >= V_supply or voltage <= 0:
+                                    Rs = float('inf') if voltage <= 0 else 0.0
+                                else:
+                                    Rs = RL * (V_supply - voltage) / voltage
+                                
+                                R0 = config.get('R0', 100000.0) # R0 from calibration in clean air
+                                gas_type = config.get('gas_type', 'unknown')
+                                
+                                if Rs == 0 or R0 == 0:
+                                    ppm = float('nan')
+                                else:
+                                    Rs_R0 = Rs / R0
+                                    # This is a very simplified example. Real calibration uses curves (e.g., log-log plot).
+                                    # These parameters (A, B) come from linearizing the log-log plot (e.g., for MQ-2 for LPG)
+                                    # PPM = A * (Rs/R0)^B
+                                    A = config.get('A_calib', 10000.0) # A for PPM = A * (Rs/R0)^B
+                                    B = config.get('B_calib', -2.5) # B for PPM = A * (Rs/R0)^B
+                                    ppm = A * (Rs_R0**B)
+                                
+                                # Publish as Float32, with sensor type and unit in frame_id or metadata
+                                gas_msg = Float32()
+                                gas_msg.data = ppm
+                                # Consider adding custom message type for gas concentrations in future
+                                pub.publish(gas_msg)
+                
+                            except Exception as e:
+                                self.get_logger().error(f"Error interpreting channel {channel} ({sensor_type}): {e}")
 def main(args=None):
     rclpy.init(args=args)
     node = AnalogSensorInterpreterNode()

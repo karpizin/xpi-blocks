@@ -101,6 +101,14 @@ The ADS1115 acts as a bridge for many types of analog sensors:
 *   **Wiring:** To measure voltages higher than 3.3V (but up to the Pi's absolute max, typically 5V), create a voltage divider. For example, to measure a 5V source, use two equal resistors (e.g., 10kΩ and 10kΩ) to divide the voltage by 2. Connect the divided voltage to an ADS1115 Analog Input.
 *   **Interpretation:** Read the divided voltage, then multiply by the division ratio to get the actual source voltage.
 
+### 6. MQ-series Gas Sensors (e.g., MQ-2, MQ-3, MQ-7)
+*   **Wiring:** These sensors typically require a voltage divider.
+    *   VCC (e.g., 5V) -> MQ-Sensor -> ADS1115 Analog Input -> Load Resistor (RL) -> GND.
+    *   Heater pins of MQ sensor usually connect to 5V.
+*   **Interpretation:** The sensor's resistance (Rs) changes with gas concentration. We measure the voltage across the load resistor (RL) to derive Rs. Requires calibration to convert Rs/R0 ratio to PPM.
+    *   **Calibration:** You typically need to measure R0 (sensor resistance in clean air) and use power-law curves (like `PPM = A * (Rs/R0)^B`) found in datasheets or derived experimentally.
+    *   **Warm-up:** MQ sensors require a significant warm-up time (minutes to hours) to stabilize.
+
 ## ⚠️ Troubleshooting
 *   **"Failed to initialize ADS1115" / "I/O Error"**:
     *   Double-check I2C wiring (SDA/SCL, VDD/GND).
