@@ -20,15 +20,19 @@ This document outlines important tasks that require further attention or clarifi
 *   **Challenges:** Latency, computational requirements, safety (for actuator control).
 *   **Possible Tools:** OpenAI APIs, Google Gemini API, local LLMs (e.g., with Ollama), vision APIs.
 
-## 2. Advanced Joystick/Gamepad Integration
+## 2. RC Mapper / Interpreter Node (HIGH PRIORITY)
 
-**Task:** Analyze and integrate concepts from `https://github.com/karpizin/bt-gamepad-reader` and `https://github.com/karpizin/usb-gamepad-reader` for robust Bluetooth and USB gamepad support.
+**Task:** Create a ROS2 node that maps raw `sensor_msgs/Joy` input from RC receivers (SBUS, CRSF, PPM) into more semantic or device-specific commands (e.g., `geometry_msgs/Twist`, individual motor speeds/angles, percentages).
 
 **Details:**
-*   The goal is to improve the existing `xpi_inputs/joystick` block, especially for Bluetooth connections which can be finicky.
-*   The original plan was to fetch and summarize key Python files (`bt_gamepad_reader.py`, `usb_gamepad_reader.py`) and their `README.md` files.
-*   **Current Blocker:** Direct `git clone` or fetching `blob` URLs from GitHub is not possible with current agent capabilities.
-*   **Resolution Required:** User needs to provide **RAW URLs** for the relevant files (e.g., `https://raw.githubusercontent.com/karpizin/bt-gamepad-reader/main/bt_gamepad_reader.py`) for analysis.
+*   Subscribes to `sensor_msgs/Joy` messages (e.g., from `/sbus_receiver/joy`).
+*   Uses ROS2 parameters (potentially loaded from YAML) for:
+    *   Channel mapping (e.g., `channel_0_is_roll`, `channel_1_is_pitch`).
+    *   Calibration values (min/max/center pulse widths/stick positions for each channel).
+    *   Deadzones.
+    *   Scaling to output types (e.g., percent, m/s, rad/s, 0-180 degrees).
+*   Publishes: `geometry_msgs/Twist` for teleoperation, or custom messages/topics for specific actuator control (e.g., `/robot/roll_cmd`, `/robot/pitch_cmd`).
+*   This node provides the layer between raw RC protocol data and meaningful robot commands, addressing the "left_58%" type of interpretation.
 
 ## 3. MPU6050 (I2C) IMU Integration
 

@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'relay_node = xpi_actuators.relay_node:main',
             'pca9685_node = xpi_actuators.pca9685_node:main',
+            'tb6612_driver_node = xpi_actuators.tb6612_driver_node:main',
         ],
     },
 )
