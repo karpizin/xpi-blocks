@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'sonar_node = xpi_sensors.sonar_node:main',
+            'ds18b20_node = xpi_sensors.ds18b20_node:main',
         ],
     },
 )

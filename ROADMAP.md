@@ -97,14 +97,15 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 25. MQ-x (Gas Sensor)
 26. BME-680 (Environmental Sensor)
 27. ZP-16 (Gas Sensor)
-28. WS2812 (Addressable RGB LED)
-29. VL53L1X (Distance Laser Sensor)
-30. TOF10120 (Distance Laser Sensor)
-31. FPM10A (Fingerprint Sensor)
-32. BF350 (Load Cell/Strain Gauge)
-33. HW-526 (Rotation Sensor)
-34. MAX471 (Current Sensor)
-35. KY-013 (Thermistor/Analog Temp Sensor)
-36. TGS2600 (Air Quality PM10 Sensor)
-37. L298D/L298P (Powerful Motor Driver)
-38. WS2812B (RGB LEDs)
+*   **#28 WS2812 (Addressable RGB LED)**
+*   **#29 VL53L1X (Distance Laser Sensor)**
+*   **#30 TOF10120 (Distance Laser Sensor)**
+*   **#31 FPM10A (Fingerprint Sensor)**
+*   **#32 BF350 (Load Cell/Strain Gauge)**
+*   **#33 HW-526 (Rotation Sensor)**
+*   **#34 MAX471 (Current Sensor)**
+*   **#35 KY-013 (Thermistor/Analog Temp Sensor)**
+*   **#36 TGS2600 (Air Quality PM10 Sensor)**
+*   **#37 L298D/L298P (Powerful Motor Driver)**
+*   **#38 WS2812B (RGB LEDs)**
+*   **DS18B20 (1-Wire Temp Sensor)** -> `xpi_sensors/ds18b20`
