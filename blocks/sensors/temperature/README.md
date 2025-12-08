@@ -69,3 +69,78 @@ You must enable the 1-Wire interface on your Raspberry Pi.
 *   **No temperature readings:**
     *   Ensure the sensor is correctly connected and powered.
     *   Check for errors in the node's logs.
+
+---
+
+# LM75A Digital Temperature Sensor
+
+This block provides a ROS2 driver for the LM75A, a simple digital temperature sensor with a thermostat function, communicating via I2C. It publishes `sensor_msgs/Temperature` messages.
+
+## 📦 Bill of Materials
+*   Raspberry Pi
+*   LM75A module (I2C interface)
+*   Jumper Wires
+
+## 🔌 Wiring
+Connect the LM75A module to the I2C pins on the Raspberry Pi.
+
+| LM75A Pin | Raspberry Pi | Note |
+|-----------|--------------|-----------------------------------|
+| VCC       | 3.3V         | Power for the module (Pin 1)      |
+| GND       | GND          | Common Ground (Pin 6)             |
+| SDA       | GPIO 2 (SDA) | Data line (Pin 3)                 |
+| SCL       | GPIO 3 (SCL) | Clock line (Pin 5)                |
+| A0, A1, A2| GND/3.3V     | Sets I2C address (e.g., all to GND for 0x48) |
+
+**Important I2C Configuration on Raspberry Pi:**
+You must enable the I2C interface on your Raspberry Pi.
+
+1.  **Enable I2C:**
+    ```bash
+    sudo raspi-config
+    # Interface Options -> P3 I2C -> Yes
+    ```
+2.  **Verify I2C Address:** Check the LM75A's I2C address (e.g., 0x48 if A0, A1, A2 are all connected to GND)
+    ```bash
+    sudo apt install i2c-tools
+    i2cdetect -y 1 # Or 0 if using an older Pi
+    # Look for '48' (or your configured address) in the output.
+    ```
+
+## 🚀 Quick Start
+1.  **Perform I2C Configuration** as described above.
+2.  **Launch the LM75A driver**:
+    ```bash
+    ros2 launch xpi_sensors lm75a.launch.py i2c_address:=0x48
+    ```
+    (Adjust `i2c_address` if necessary).
+
+## 📡 Interface
+### Publishers
+*   `~/temperature` (`sensor_msgs/Temperature`): Publishes ambient temperature in Celsius.
+
+### Parameters
+*   `i2c_bus` (int, default: `1`): I2C bus number.
+*   `i2c_address` (int, default: `0x48`): I2C address of the LM75A.
+*   `publish_rate` (float, default: `1.0`): Frequency to publish data in Hz.
+*   `frame_id` (string, default: `lm75a_link`): Frame ID for messages.
+*   `mock_hardware` (bool, default: `false`): Run in mock mode without real LM75A hardware.
+
+## ✅ Verification
+1.  Launch the driver with your LM75A connected and I2C enabled.
+2.  In a new terminal, monitor the `/lm75a_temp_sensor/temperature` topic:
+    ```bash
+    ros2 topic echo /lm75a_temp_sensor/temperature
+    ```
+    You should see temperature readings.
+
+## ⚠️ Troubleshooting
+*   **"Failed to initialize LM75A" / "I/O Error"**:
+    *   Double-check I2C wiring (SDA/SCL, VCC/GND).
+    *   Verify I2C is enabled (`sudo raspi-config`).
+    *   Ensure the correct `i2c_address` is used.
+    *   Check for I2C permissions (`sudo usermod -a -G i2c $USER`).
+*   **No data / erratic data**:
+    *   Check physical connections.
+    *   Verify module is powered.
+    *   Ensure proper grounding.

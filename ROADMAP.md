@@ -47,7 +47,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
-*   [ ] #11 LM75A - Temp + Thermostat
+*   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
 *   [ ] #37 CCS811 - CO2
 *   [ ] #39 HDC1080 - Temp/Humidity
 *   [ ] #40 LPS22HB - Pressure/Temp
