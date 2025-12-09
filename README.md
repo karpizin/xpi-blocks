@@ -88,6 +88,7 @@ Before using these blocks, ensure you have:
 *   **Troubleshooting:** Dedicated section for common issues in every block.
 
 ## 📈 Project Status & Roadmap
+*   **[📚 LIBRARY INDEX (Full List of Blocks)](docs/BLOCKS_INDEX.md)** - Start here to find specific devices.
 *   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
-*   See [LLM_VLM_SCENARIOS.md](LLM_VLM_SCENARIOS.md) for the LLM/VLM integration plan.
+*   See [LLM_VLM_SCENARIOS.md](docs/LLM_VLM_SCENARIOS.md) for the LLM/VLM integration plan.
 *   See [NEXT_KEY_TASKS.md](NEXT_KEY_TASKS.md) for high-priority future tasks.

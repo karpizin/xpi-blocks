@@ -30,6 +30,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **A4988/DRV8825 Stepper (Step/Dir)** -> `xpi_actuators/a4988_driver`
 *   **L298/L293 Stepper/DC Driver** -> `xpi_actuators/l298_driver`
 *   **Analog Sensor Interpreter (via ADS1115)** -> `xpi_sensors/analog_sensor_interpreter`
+*   **BH1750 (Light Sensor)** -> `xpi_sensors/bh1750_node`
+*   **Camera (USB/CSI)** -> `blocks/sensors/camera` (Wrapper for `v4l2_camera`)
 
 
 ## 🚧 High Priority (Next Up)
@@ -37,10 +39,17 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ## 📋 backlog: Supported Sensors & Actuators
 
+### Sensors (Vision)
+*   [ ] **Camera (USB/CSI)** - *Implemented via v4l2_camera wrapper*
+
 ### Light & Color (I2C)
-*   [ ] #1 BH1750 - Light sensor
-*   [ ] #3 OPT3001 - High sensitivity light sensor
 *   [ ] #10 TCS34725 - RGB Color sensor
+*   [ ] #3 OPT3001 - High sensitivity light sensor
+*   [ ] **TSL2591** - High Dynamic Range Light Sensor
+*   [ ] **LTR-390** - UV Light Sensor
+*   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
+*   [ ] **AS7341** - 11-Channel Spectral Color Sensor
+*   [ ] **APDS-9960** - RGB, Gesture, Proximity
 *   [ ] #25 MAX44009 - Light sensor
 *   [ ] #26 TSL2561 - Light sensor
 *   [ ] #34 BH1745NUC - Light sensor

@@ -17,9 +17,15 @@ if not logger.handlers:
 class LLMClient(ABC):
     """Abstract base class for LLM clients."""
     @abstractmethod
-    def generate(self, prompt: str, tools: list = None, **kwargs) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, **kwargs) -> tuple[str, dict]:
         """
         Sends a prompt to the LLM and returns the generated text and/or a tool_call.
+        
+        Args:
+            prompt: The text prompt.
+            tools: Optional list of tool definitions.
+            image_data: Optional raw bytes of an image (e.g. JPEG encoded) for VLM tasks.
+            
         Returns: (text_response, tool_call_dict)
         """
         pass
@@ -39,29 +45,46 @@ class OpenRouterClient(LLMClient):
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         logger.info(f"OpenRouterClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         headers = {
             "Authorization": f"Bearer {self.api_key}",
-            "HTTP-Referer": "https://xpi-blocks.ai", # Replace with your app's actual name
-            "X-Title": "XPI Blocks LLM", # Replace with your app's actual name
+            "HTTP-Referer": "https://xpi-blocks.ai", 
+            "X-Title": "XPI Blocks LLM",
             "Content-Type": "application/json"
         }
-        messages = [{"role": "user", "content": prompt}]
+        
+        # Build message content
+        if image_data:
+            import base64
+            base64_image = base64.b64encode(image_data).decode('utf-8')
+            content = [
+                {"type": "text", "text": prompt},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/jpeg;base64,{base64_image}"
+                    }
+                }
+            ]
+        else:
+            content = prompt
+
+        messages = [{"role": "user", "content": content}]
         
         payload = {
             "model": self.model,
             "messages": messages,
             "temperature": temperature,
             "max_tokens": max_tokens,
-            "stream": False # We want a single response
+            "stream": False 
         }
         
         if tools:
             payload["tools"] = tools
-            payload["tool_choice"] = "auto" # Let the model decide whether to call a tool or respond normally
+            payload["tool_choice"] = "auto"
 
         try:
-            response = requests.post(self.base_url, headers=headers, json=payload, timeout=30)
+            response = requests.post(self.base_url, headers=headers, json=payload, timeout=60) # Increased timeout for images
             response.raise_for_status()
             result = response.json()
             if result and result.get("choices"):
@@ -70,13 +93,12 @@ class OpenRouterClient(LLMClient):
                 
                 tool_calls = message.get("tool_calls")
                 if tool_calls:
-                    # OpenRouter (and OpenAI) can return multiple tool calls, we'll take the first for simplicity
                     tool_call = tool_calls[0]
                     function_call = tool_call.get("function")
                     if function_call:
                         return "", {"name": function_call["name"], "arguments": json.loads(function_call["arguments"])}
                 
-                return message.get("content", ""), {} # Return text response if no tool call
+                return message.get("content", ""), {}
             else:
                 logger.error(f"OpenRouter response missing choices: {result}")
                 return "Error: No response from OpenRouter.", {}
@@ -92,7 +114,7 @@ class OpenRouterClient(LLMClient):
 
 class GeminiClient(LLMClient):
     """LLM client for Google Gemini API."""
-    def __init__(self, api_key: str, model: str = "gemini-pro"):
+    def __init__(self, api_key: str, model: str = "gemini-1.5-flash"): # Defaulting to a VLM capable model
         try:
             import google.generativeai as genai
             from google.generativeai.types import HarmCategory, HarmBlockThreshold
@@ -108,7 +130,7 @@ class GeminiClient(LLMClient):
         self.model = model
         logger.info(f"GeminiClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         model = self.genai.GenerativeModel(self.model)
         
         generation_config = self.genai.types.GenerationConfig(
@@ -123,11 +145,19 @@ class GeminiClient(LLMClient):
             self.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: self.HarmBlockThreshold.BLOCK_NONE,
         }
 
+        content = [prompt]
+        if image_data:
+            # Gemini expects 'data' and 'mime_type' for blobs
+            image_blob = {
+                "mime_type": "image/jpeg",
+                "data": image_data
+            }
+            content.append(image_blob)
+
         try:
             if tools:
-                # Gemini expects tools directly in the model.generate_content call
                 response = model.generate_content(
-                    prompt,
+                    content,
                     tools=tools,
                     tool_config=self.genai.types.ToolConfig(function_calling_config=self.genai.types.FunctionCallingConfig(mode='AUTO')),
                     generation_config=generation_config,
@@ -135,7 +165,7 @@ class GeminiClient(LLMClient):
                 )
             else:
                 response = model.generate_content(
-                    prompt,
+                    content,
                     generation_config=generation_config,
                     safety_settings=safety_settings
                 )
@@ -143,7 +173,6 @@ class GeminiClient(LLMClient):
             if response.candidates:
                 candidate = response.candidates[0]
                 if candidate.function_calls:
-                    # Gemini can return multiple function calls, we'll take the first for simplicity
                     func_call = candidate.function_calls[0]
                     return "", {"name": func_call.name, "arguments": func_call.args}
                 
@@ -154,7 +183,6 @@ class GeminiClient(LLMClient):
 
         except Exception as e:
             logger.error(f"Gemini API error: {e}")
-            # Handle blocked content specific to Gemini
             if "safety settings" in str(e):
                 return "Error: Gemini response blocked by safety settings. Try rephrasing.", {}
             return f"Error: Gemini API error: {e}", {}
@@ -166,25 +194,14 @@ class OllamaClient(LLMClient):
     """LLM client for Ollama (local LLMs)."""
     # Ollama currently does not natively support complex function calling in its base API.
     # We will simulate it by prompting the model to output JSON.
-    def __init__(self, host: str = "http://localhost:11434", model: str = "llama2"):
+    def __init__(self, host: str = "http://localhost:11434", model: str = "llava"): # Defaulting to llava for vision
         self.host = host
         self.model = model
         self.api_url = f"{self.host}/api/generate"
-        logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}. Simulating tool calls via JSON prompt injection.")
+        logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}.")
 
-    def generate(self, prompt: str, tools: list = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         full_prompt = prompt
-        if tools:
-            # For Ollama, we inject the tool definitions into the prompt and instruct the model to use them.
-            # This is a common workaround for models without native function calling.
-            tool_definitions = json.dumps([t['function'] for t in tools], indent=2)
-            full_prompt = (
-                f"{prompt}\n\n"
-                f"You have access to the following tools:\n```json\n{tool_definitions}\n```\n"
-                f"To use a tool, respond with a JSON object like this: "
-                f"`{{\"tool_call\": {{\"name\": \"tool_name\", \"arguments\": {{\"arg1\": \"value1\", \"arg2\": \"value2\"}}}}}}`\n"
-                f"If you don't need to use a tool, respond normally."
-            )
         
         data = {
             "model": self.model,
@@ -195,19 +212,39 @@ class OllamaClient(LLMClient):
             },
             "stream": False
         }
+
+        if image_data:
+            import base64
+            # Ollama expects images as base64 string array
+            base64_image = base64.b64encode(image_data).decode('utf-8')
+            data["images"] = [base64_image]
+
+        if tools and not image_data: # Tool calling with vision models is tricky in Ollama, skipping logic for simplicity if image present
+            # For Ollama, we inject the tool definitions into the prompt and instruct the model to use them.
+            tool_definitions = json.dumps([t['function'] for t in tools], indent=2)
+            full_prompt = (
+                f"{prompt}\n\n"
+                f"You have access to the following tools:\n```json\n{tool_definitions}\n```\n"
+                f"To use a tool, respond with a JSON object like this: "
+                f"`{{\"tool_call\": {{\"name\": \"tool_name\", \"arguments\": {{\"arg1\": \"value1\", \"arg2\": \"value2\"}}}}}}`\n"
+                f"If you don't need to use a tool, respond normally."
+            )
+            data["prompt"] = full_prompt
+        
         try:
             response = requests.post(self.api_url, json=data, timeout=120)
             response.raise_for_status()
             result = response.json()
             if result and result.get("response"):
                 llm_response_text = result["response"]
-                # Try to parse if it's a tool call
-                try:
-                    parsed_json = json.loads(llm_response_text)
-                    if "tool_call" in parsed_json and "name" in parsed_json["tool_call"] and "arguments" in parsed_json["tool_call"]:
-                        return "", parsed_json["tool_call"]
-                except json.JSONDecodeError:
-                    pass # Not a tool call, return as normal text
+                # Try to parse if it's a tool call (only if we injected tools)
+                if tools:
+                    try:
+                        parsed_json = json.loads(llm_response_text)
+                        if "tool_call" in parsed_json and "name" in parsed_json["tool_call"] and "arguments" in parsed_json["tool_call"]:
+                            return "", parsed_json["tool_call"]
+                    except json.JSONDecodeError:
+                        pass 
                 
                 return llm_response_text, {}
             else:
