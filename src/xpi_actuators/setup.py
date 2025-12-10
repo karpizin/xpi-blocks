@@ -36,6 +36,7 @@ setup(
             'l298_driver = xpi_actuators.l298_driver_node:main',
             'a4988_driver = xpi_actuators.a4988_driver_node:main',
             'esc_driver = xpi_actuators.esc_driver_node:main',
+            'direct_servo = xpi_actuators.direct_servo_node:main',
         ],
     },
 )

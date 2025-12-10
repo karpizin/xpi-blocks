@@ -23,7 +23,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
 *   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
-*   **#28 WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
+*   **WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
 *   **LED Bar** -> `xpi_actuators/led_bar`
 *   **LED Matrix 8x8 (MAX7219)** -> `xpi_actuators/led_matrix`
 *   **I2C OLED (SSD1306)** -> `xpi_actuators/ssd1306`
@@ -34,7 +34,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Analog Sensor Interpreter (via ADS1115)** -> `xpi_sensors/analog_sensor_interpreter`
 *   **BH1750 (Light Sensor)** -> `xpi_sensors/bh1750_node`
 *   **Camera (USB/CSI)** -> `blocks/sensors/camera` (Wrapper for `v4l2_camera`)
-
+*   **Direct GPIO Servo** -> `xpi_actuators/direct_servo`
 
 ## 🚧 High Priority (Next Up)
 
@@ -115,6 +115,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### 🆕 Proposed Actuators
 38. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
-39. **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
+39. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
 40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
