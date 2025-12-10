@@ -111,3 +111,9 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 35. TGS2600 - air quality PM10 sensor
 36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
 37. WS2812B (WS2813, APA102, SK6812) RGB leds with serial connection (PWM, SPI)
+
+### 🆕 Proposed Actuators
+38. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
+39. **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
+40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
+41. **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
