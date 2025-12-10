@@ -32,6 +32,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## ⚙️ Actuators (Motion)
 *   **[DC Motor (TB6612)](../blocks/actuators/motors_dc/README.md)** - Dual DC motor driver control.
 *   **[DC/Stepper (L298N)](../blocks/actuators/motors_dc/README.md)** - High power motor driver.
+*   **[ESC BLDC Motor](../blocks/actuators/motors_esc/README.md)** - Brushless motor control (Drone/Car).
 *   **[Servo Controller (PCA9685)](../blocks/actuators/servos/README.md)** - 16-channel PWM servo driver.
 *   **[Stepper (ULN2003)](../blocks/actuators/steppers/README.md)** - Cheap 5V unipolar stepper motor.
 *   **[Stepper (A4988/DRV8825)](../blocks/actuators/steppers/README.md)** - Precision bipolar stepper driver.

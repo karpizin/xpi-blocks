@@ -19,6 +19,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **DS18B20 (1-Wire Temp Sensor)** -> `xpi_sensors/ds18b20`
 *   **GPIO Digital Input** -> `xpi_sensors/gpio_digital_input`
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
+*   **ESC Motor Driver** -> `xpi_actuators/esc_driver`
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
 *   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
@@ -116,4 +117,4 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 38. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
 39. **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
 40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
-41. **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
+41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
