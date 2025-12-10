@@ -9,6 +9,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
 *   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
 
+## 📡 Communication & Interfaces
+*   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
+
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.

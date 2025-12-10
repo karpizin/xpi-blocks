@@ -23,12 +23,14 @@ xpi-blocks/
 │   ├── inputs/         # Input devices (joystick, keyboard, RC receivers)
 │   ├── actuators/      # Actuators (motors, servos, relays, steppers, LEDs, displays)
 │   ├── sensors/        # Sensors (IMU, lidar, range, environment, analog, 1-wire, digital-input)
+│   ├── comms/          # Communication bridges (Serial, UDP, etc.)
 │   └── llm/            # LLM/VLM integration blocks
 ├── src/                # ROS2 packages
 │   ├── xpi_commons/    # Common utilities, HAL for GPIO/I2C
 │   ├── xpi_inputs/     # Input device drivers
 │   ├── xpi_actuators/  # Actuator drivers
 │   ├── xpi_sensors/    # Sensor drivers
+│   ├── xpi_comms/      # Communication nodes
 │   └── xpi_llm/        # LLM/VLM integration nodes
 └── scripts/            # Setup utilities (Docker, udev rules)
 ```
