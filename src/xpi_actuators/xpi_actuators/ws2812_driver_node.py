@@ -1,14 +1,13 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import ColorRGBA
+from std_msgs.msg import ColorRGBA, String, Float32
+from rclpy.parameter import ParameterDescriptor
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import time
-import os
-import math
+from xpi_actuators.lib.led_effects import LedEffects
 
 try:
     from rpi_ws281x import PixelStrip, Color
-    # Optional: Mock Color and PixelStrip for non-RPi environments
 except ImportError:
     class Color:
         def __init__(self, r, g, b, w=0):
@@ -27,28 +26,31 @@ except ImportError:
         def getPixelColor(self, pixel):
             return Color(0,0,0)
 
-
 class WS2812DriverNode(Node):
     """
-    ROS2 Node for controlling WS2812B/NeoPixel addressable LEDs.
-    Subscribes to ColorRGBA messages to set individual pixel colors.
+    ROS2 Node for controlling WS2812B/NeoPixel addressable LEDs with Effect Library support.
     """
 
     def __init__(self):
         super().__init__('ws2812_driver_node')
 
-        # 1. Declare Parameters
-        self.declare_parameter('led_count', 30)          # Number of LED pixels.
-        self.declare_parameter('led_pin', 18)            # GPIO pin connected to the pixels (18 uses PWM, 10 uses PCM).
-        self.declare_parameter('led_freq_hz', 800000)    # LED signal frequency in hertz (usually 800khz).
-        self.declare_parameter('led_dma', 10)            # DMA channel to use for generating signal (try 10).
-        self.declare_parameter('led_brightness', 255)    # Set to 0 for darkest and 255 for brightest.
-        self.declare_parameter('led_invert', False)      # True to invert the signal (when using NPN transistor level shift).
-        self.declare_parameter('led_channel', 0)         # Set to '1' for GPIOs 13, 19, 40, 52.
-        self.declare_parameter('mock_hardware', False)   # For testing without real WS2812
-        self.declare_parameter('update_rate', 30.0)      # Max Hz for publishing updates to LEDs
+        # 1. Hardware Parameters
+        self.declare_parameter('led_count', 30, ParameterDescriptor(description='Number of LED pixels'))
+        self.declare_parameter('led_pin', 18, ParameterDescriptor(description='GPIO pin (PWM/PCM)'))
+        self.declare_parameter('led_freq_hz', 800000)
+        self.declare_parameter('led_dma', 10)
+        self.declare_parameter('led_brightness', 255)
+        self.declare_parameter('led_invert', False)
+        self.declare_parameter('led_channel', 0)
+        self.declare_parameter('mock_hardware', False)
+        self.declare_parameter('update_rate', 30.0)
 
-        # 2. Read Parameters
+        # 2. Effect Parameters (Initial State)
+        self.declare_parameter('initial_effect', 'solid', ParameterDescriptor(description='Startup effect name'))
+        self.declare_parameter('initial_speed', 1.0, ParameterDescriptor(description='Effect speed'))
+        self.declare_parameter('initial_color', [0, 0, 0], ParameterDescriptor(description='Initial RGB color [0-255, 0-255, 0-255]'))
+
+        # Read Params
         self.led_count = self.get_parameter('led_count').value
         self.led_pin = self.get_parameter('led_pin').value
         self.led_freq_hz = self.get_parameter('led_freq_hz').value
@@ -59,12 +61,19 @@ class WS2812DriverNode(Node):
         self.mock_mode = self.get_parameter('mock_hardware').value
         self.update_rate = self.get_parameter('update_rate').value
 
-        self.strip = None
-        self.pixel_colors = [Color(0,0,0)] * self.led_count # Store current pixel states
+        # Effect State
+        self.current_effect = self.get_parameter('initial_effect').value
+        self.effect_speed = self.get_parameter('initial_speed').value
+        ic = self.get_parameter('initial_color').value
+        self.current_color = (ic[0], ic[1], ic[2])
+
+        # Initialize Logic
+        self.effects_lib = LedEffects(self.led_count)
         
+        # Initialize Hardware
+        self.strip = None
         if not self.mock_mode:
             try:
-                # Create NeoPixel object with appropriate configuration.
                 self.strip = PixelStrip(
                     self.led_count,
                     self.led_pin,
@@ -74,100 +83,57 @@ class WS2812DriverNode(Node):
                     self.led_brightness,
                     self.led_channel
                 )
-                # Intialize the library (must be called once before other functions).
                 self.strip.begin()
-                self.get_logger().info(f'WS2812: Initialized with {self.led_count} LEDs on GPIO {self.led_pin}.')
-                self.set_all_pixels(Color(0,0,0)) # Turn off all LEDs initially
+                self.get_logger().info(f'WS2812: Initialized {self.led_count} LEDs on GPIO {self.led_pin}.')
             except Exception as e:
-                self.get_logger().error(f'WS2812: Failed to initialize rpi_ws281x: {e}. '
-                                        'Ensure you have `rpi_ws281x` installed and running with sudo/correct permissions. '
-                                        'Falling back to mock mode.')
+                self.get_logger().error(f'WS2812 Init Failed: {e}. Falling back to mock.')
                 self.mock_mode = True
         
         if self.mock_mode:
-            self.get_logger().warn('WS2812: Running in MOCK mode. No real LEDs will be controlled.')
-            self.mock_pattern_step = 0
-            self.last_mock_update = time.monotonic()
+            self.get_logger().warn('WS2812: Running in MOCK mode.')
 
-
-        # 3. Subscribers (for individual pixel control)
-        qos_profile = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST)
-
-        self.pixel_subscriptions = {}
-        for i in range(self.led_count):
-            self.pixel_subscriptions[i] = self.create_subscription(
-                ColorRGBA,
-                f'~/pixel_{i}/set_color',
-                lambda msg, pixel_id=i: self._set_pixel_callback(pixel_id, msg),
-                qos_profile
-            )
-        self.get_logger().info(f'WS2812: Subscribing to individual pixel color topics.')
+        # 3. Interfaces
+        # Topics
+        self.create_subscription(String, '~/set_effect', self.cb_set_effect, 10)
+        self.create_subscription(Float32, '~/set_speed', self.cb_set_speed, 10)
+        self.create_subscription(ColorRGBA, '~/set_color', self.cb_set_color, 10)
         
-        # Subscriber for whole strip
-        self.strip_subscription = self.create_subscription(
-            ColorRGBA, # Single ColorRGBA to set all pixels to
-            '~/strip/set_color',
-            self._set_strip_color_callback,
-            qos_profile
-        )
-        self.get_logger().info(f'WS2812: Subscribing to strip color topic.')
+        # Timer
+        self.timer = self.create_timer(1.0 / self.update_rate, self.update_loop)
+        self.get_logger().info(f'WS2812: Ready. Effect: {self.current_effect}, Speed: {self.effect_speed}')
 
-        # Timer to periodically call show() or mock updates
-        self.timer = self.create_timer(1.0 / self.update_rate, self.timer_callback)
+    def cb_set_effect(self, msg):
+        self.current_effect = msg.data
+        self.get_logger().info(f"Switched effect to: {self.current_effect}")
 
+    def cb_set_speed(self, msg):
+        self.effect_speed = msg.data
 
-    def _set_pixel_callback(self, pixel_id: int, msg: ColorRGBA):
-        """Callback to set the color of a specific pixel."""
-        if 0 <= pixel_id < self.led_count:
-            if not self.mock_mode and self.strip:
-                color = Color(int(msg.r*255), int(msg.g*255), int(msg.b*255), int(msg.a*255))
-                self.strip.setPixelColor(pixel_id, color)
-                # self.strip.show() # Call show() in timer_callback for efficiency
-                self.pixel_colors[pixel_id] = color
-                self.get_logger().debug(f"Set pixel {pixel_id} to R:{msg.r*255} G:{msg.g*255} B:{msg.b*255}")
-            else:
-                self.get_logger().debug(f"Mock: Set pixel {pixel_id} to R:{msg.r*255} G:{msg.g*255} B:{msg.b*255}")
-        else:
-            self.get_logger().warn(f"Invalid pixel ID: {pixel_id}. Must be between 0 and {self.led_count-1}.")
+    def cb_set_color(self, msg):
+        # Setting a solid color implies switching to 'solid' effect or 'blink' etc base color
+        # We update the stored color. If the current effect uses it, it will change.
+        # If we want to force 'solid' mode on color set:
+        self.current_color = (int(msg.r * 255), int(msg.g * 255), int(msg.b * 255))
+        # Optional: Force solid effect if user sets color manually?
+        # self.current_effect = 'solid' 
 
-    def _set_strip_color_callback(self, msg: ColorRGBA):
-        """Callback to set all pixels to a single color."""
-        color = Color(int(msg.r*255), int(msg.g*255), int(msg.b*255), int(msg.a*255))
+    def update_loop(self):
+        # 1. Calculate next frame
+        pixels = self.effects_lib.update(self.current_effect, self.current_color, self.effect_speed)
+        
+        # 2. Render
         if not self.mock_mode and self.strip:
-            for i in range(self.led_count):
-                self.strip.setPixelColor(i, color)
-            # self.strip.show() # Call show() in timer_callback for efficiency
-            self.pixel_colors = [color] * self.led_count
-            self.get_logger().info(f"Set all pixels to R:{msg.r*255} G:{msg.g*255} B:{msg.b*255}")
-        else:
-            self.get_logger().info(f"Mock: Set all pixels to R:{msg.r*255} G:{msg.g*255} B:{msg.b*255}")
-            self.pixel_colors = [color] * self.led_count
-
-
-    def set_all_pixels(self, color):
-        if not self.mock_mode and self.strip:
-            for i in range(self.strip.numPixels()):
-                self.strip.setPixelColor(i, color)
+            for i, (r, g, b) in enumerate(pixels):
+                # Optimize: Check if changed? RPi_WS281x handles it reasonably well.
+                # rpi_ws281x expects Color(r,g,b)
+                self.strip.setPixelColor(i, Color(r, g, b))
             self.strip.show()
-        self.pixel_colors = [color] * self.led_count
-
-    def timer_callback(self):
-        """Periodically update the LED strip (or simulate in mock mode)."""
-        if self.mock_mode:
-            # Simulate a simple chasing pattern in mock mode
-            current_time = time.monotonic()
-            if (current_time - self.last_mock_update) > (1.0 / self.update_rate):
-                self.mock_pattern_step = (self.mock_pattern_step + 1) % self.led_count
-                # self.get_logger().debug(f"Mock: LED {self.mock_pattern_step} active.")
-                self.last_mock_update = current_time
-        elif self.strip:
-            # Only call show if there's been changes
-            self.strip.show() # This sends the data to the strip
-            
+        
     def destroy_node(self):
         if not self.mock_mode and self.strip:
-            self.set_all_pixels(Color(0,0,0)) # Turn off all LEDs on shutdown
-            self.get_logger().info('WS2812: Turning off LEDs.')
+            for i in range(self.strip.numPixels()):
+                self.strip.setPixelColor(i, Color(0,0,0))
+            self.strip.show()
         super().destroy_node()
 
 def main(args=None):

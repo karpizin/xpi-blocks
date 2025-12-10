@@ -111,7 +111,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 34. KY-013 - thermistor/analog temperature sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
 35. TGS2600 - air quality PM10 sensor
 36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
-37. WS2812B (WS2813, APA102, SK6812) RGB leds with serial connection (PWM, SPI)
+37. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
 
 ### 🆕 Proposed Actuators
 38. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
