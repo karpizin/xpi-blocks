@@ -33,6 +33,7 @@ setup(
             'analog_sensor_interpreter_node = xpi_sensors.analog_sensor_interpreter_node:main',
             'lm75a_node = xpi_sensors.lm75a_node:main',
             'bh1750_node = xpi_sensors.bh1750_node:main',
+            'opt3001_node = xpi_sensors.opt3001_node:main',
         ],
     },
 )
