@@ -90,6 +90,17 @@ The node publishes to **two** topics simultaneously:
     *   **Axis 3:** Right Stick Horizontal (Angular Z, inverted to match standard).
     *   Useful for feeding into `joy_mapper_node` for complex logic (e.g., servo control).
 
+### Control your Robot (via Joy Mapper)
+To use the Web Joystick as a standard controller for your robot (Arcade Drive), run the mapper with the web-specific configuration:
+
+```bash
+ros2 run xpi_inputs joy_mapper_node --ros-args --params-file src/xpi_inputs/config/mapper_web.yaml
+```
+
+This configuration maps:
+*   **Left Stick (Vertical):** Forward/Backward Speed.
+*   **Right Stick (Horizontal):** Turning Speed.
+
 ### Customizing the UI
 The HTML/JS code is located in:
 `src/xpi_inputs/web_static/index.html`
