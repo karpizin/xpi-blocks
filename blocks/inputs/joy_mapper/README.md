@@ -37,6 +37,7 @@ The `bindings` parameter is a list of strings using the format:
 | `toggle_btn` | Toggles output (True/False) on button press | `Bool` | (Ignored) | `"toggle_btn:0:lights:Bool"` |
 | `momentary_btn` | True when held, False when released | `Bool` | (Ignored) | `"momentary_btn:1:horn:Bool"` |
 | `axis` | Maps axis value directly to topic | `Float32` | Multiplier | `"axis:5:gripper:Float32:180.0"` |
+| `axis_as_btn` | True if axis > param (threshold) | `Bool` | Threshold | `"axis_as_btn:4:switch:Bool:0.5"` |
 
 *   **INDEX:** The index of the button or axis in the `joy.buttons[]` or `joy.axes[]` array. Use `ros2 topic echo /joy` to find these indices for your controller.
 *   **TOPIC:** The output ROS2 topic name (relative to node namespace).

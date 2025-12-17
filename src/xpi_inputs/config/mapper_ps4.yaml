@@ -1,0 +1,32 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Arcade) ---
+    enable_drive: true
+    drive_type: "arcade"
+    
+    # DualShock 4 Standard Layout
+    axis_linear: 1       # Left Stick Y (Up/Down)
+    axis_angular: 3      # Right Stick X (Left/Right) - often Axis 2 or 3 depending on driver (ds4drv vs kernel)
+    
+    # Scale
+    scale_linear: 1.0
+    scale_angular: 1.5
+    deadzone: 0.1
+
+    # --- Bindings ---
+    bindings:
+      # Cross (X) - Toggle Headlights
+      - "toggle_btn:0:headlights:Bool"
+      
+      # Circle (O) - Horn
+      - "momentary_btn:1:horn:Bool"
+      
+      # Triangle - Enable Turbo Mode (Example)
+      - "toggle_btn:2:turbo_mode:Bool"
+      
+      # R2 Trigger (Axis 5) - Gripper Open/Close
+      # DS4 Triggers are -1.0 (released) to 1.0 (pressed). 
+      # Note: Joy Mapper currently takes raw value. You might get -1.0 to 1.0 output.
+      # If mapped to Servo (0..180), -1.0 might be out of range or clipped.
+      # Future TODO: Add offset/map function to mapper.
+      - "axis:5:gripper_pos:Float32:90.0" 

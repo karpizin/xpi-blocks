@@ -1,0 +1,28 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Arcade) ---
+    enable_drive: true
+    drive_type: "arcade"
+    
+    # RadioMaster / CRSF Standard Channel Map (AETR or TAER)
+    # Axis 1 = Pitch (Ch 2) -> Linear
+    # Axis 0 = Roll (Ch 1)  -> Angular
+    axis_linear: 1
+    axis_angular: 0
+    scale_linear: 2.0
+    scale_angular: 3.0
+    deadzone: 0.02
+
+    # --- Bindings ---
+    bindings:
+      # Switch SA (Channel 5 / Axis 4) -> Arming / Mode
+      # Using 'axis_as_btn' with threshold 0.5
+      # If switch is UP (> 0.5), mode_active is True.
+      - "axis_as_btn:4:mode_active:Bool:0.5"
+      
+      # Switch SB (Channel 6 / Axis 5) -> Lights
+      # 3-pos switch mapped to Float for complex logic or just analog control
+      - "axis:5:aux_lights_analog:Float32:100.0"
+      
+      # Potentiometer S1 (Channel 9 / Axis 8) -> Camera Pan
+      - "axis:8:camera_pan:Float32:180.0"

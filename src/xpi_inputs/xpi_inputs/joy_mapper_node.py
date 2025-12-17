@@ -75,18 +75,20 @@ class JoyMapperNode(Node):
                 # Init toggle state
                 if b_type == 'toggle_btn':
                     self.toggle_states[index] = False
+                
+                # Init axis as btn state
+                if b_type == 'axis_as_btn':
+                    self.axis_states[index] = False
 
             except Exception as e:
                 self.get_logger().error(f"Failed to parse binding '{binding}': {e}")
-
-        # --- Subscription ---
-        self.sub_joy = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
-        self.get_logger().info("Joy Mapper Initialized")
 
     def joy_callback(self, msg):
         # Init prev_buttons on first run
         if not self.prev_buttons:
             self.prev_buttons = [0] * len(msg.buttons)
+            # Init axis states defaults if not set (safe guard)
+            if not hasattr(self, 'axis_states'): self.axis_states = {}
 
         # --- 1. Drive Handling ---
         if self.drive_enabled:
@@ -123,14 +125,11 @@ class JoyMapperNode(Node):
                 rising_edge = (current_state == 1 and prev_state == 0)
 
                 if b_type == 'momentary_btn':
-                    # Publish True while held, False when released (or just True?)
-                    # Ideally Bool usually means state.
                     m = Bool()
                     m.data = bool(current_state)
                     pub.publish(m)
 
                 elif b_type == 'toggle_btn':
-                    # Toggle on Press (Rising Edge)
                     if rising_edge:
                         self.toggle_states[idx] = not self.toggle_states[idx]
                         m = Bool()
@@ -139,16 +138,33 @@ class JoyMapperNode(Node):
                         self.get_logger().info(f"Toggled {item['topic']} to {m.data}")
 
             # --- Axes ---
-            elif b_type == 'axis':
+            elif 'axis' in b_type:
                 if idx >= len(msg.axes): continue
-                
                 val = msg.axes[idx]
-                # Optional: param acts as multiplier (scale)
-                out_val = val * param
+
+                if b_type == 'axis':
+                    # Scale output
+                    out_val = val * param
+                    m = Float32()
+                    m.data = float(out_val)
+                    pub.publish(m)
                 
-                m = Float32()
-                m.data = float(out_val)
-                pub.publish(m)
+                elif b_type == 'axis_as_btn':
+                    # Threshold check (param is threshold)
+                    # Example: If stick > 0.5 -> True
+                    new_state = (val > param)
+                    
+                    # Publish only on change to avoid spam, or continuous?
+                    # Switches on RC stay in position.
+                    # Let's publish on change.
+                    if idx not in self.axis_states: self.axis_states[idx] = not new_state # Force update first time
+                    
+                    if new_state != self.axis_states.get(idx):
+                        self.axis_states[idx] = new_state
+                        m = Bool()
+                        m.data = new_state
+                        pub.publish(m)
+                        self.get_logger().info(f"Axis Switch {item['topic']} -> {new_state}")
 
         # Update History
         self.prev_buttons = msg.buttons
