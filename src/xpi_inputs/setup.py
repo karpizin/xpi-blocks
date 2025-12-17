@@ -28,6 +28,7 @@ setup(
             'crsf_receiver_node = xpi_inputs.crsf_receiver_node:main',
             'ppm_receiver_node = xpi_inputs.ppm_receiver_node:main',
             'joy_mapper_node = xpi_inputs.joy_mapper_node:main',
+            'keyboard_to_joy_node = xpi_inputs.keyboard_to_joy_node:main',
         ],
     },
 )
