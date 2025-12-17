@@ -1,0 +1,34 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Arcade) ---
+    enable_drive: true
+    drive_type: "arcade"
+    
+    # Generic SBUS Mapping (AETR Standard - FrSky / Futaba / OpenTX)
+    # Most SBUS receivers output 16 channels.
+    # We assume xpi_inputs/sbus_receiver_node maps Ch1 -> Axis 0, Ch2 -> Axis 1...
+    
+    # Channel 2 (Elevator/Pitch) -> Linear (Gas) -> Axis 1
+    # Channel 1 (Aileron/Roll)   -> Angular (Turn) -> Axis 0
+    # Note: If direction is wrong, use negative scale in your own copy.
+    axis_linear: 1
+    axis_angular: 0
+    
+    scale_linear: 1.5
+    scale_angular: 2.0
+    deadzone: 0.05
+
+    # --- Bindings ---
+    bindings:
+      # Channel 5 (AUX 1) -> 2-Position Switch (Arming)
+      # Usually a switch: Low (~1000us) -> Axis -1.0, High (~2000us) -> Axis 1.0
+      # Threshold 0.0 effectively splits the range.
+      - "axis_as_btn:4:arm_switch:Bool:0.0"
+      
+      # Channel 6 (AUX 2) -> 3-Position Switch (Mode Selection)
+      # Mapped to Float32 for multi-state logic downstream
+      - "axis:5:flight_mode:Float32:1.0"
+      
+      # Channel 3 (Throttle) -> Used for manual control of something else?
+      # e.g., if this is a Rover and Throttle stick controls a robotic arm height
+      - "axis:2:arm_lift:Float32:1.0"
