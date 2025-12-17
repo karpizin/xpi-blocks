@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,6 +27,7 @@ setup(
             'sbus_receiver_node = xpi_inputs.sbus_receiver_node:main',
             'crsf_receiver_node = xpi_inputs.crsf_receiver_node:main',
             'ppm_receiver_node = xpi_inputs.ppm_receiver_node:main',
+            'joy_mapper_node = xpi_inputs.joy_mapper_node:main',
         ],
     },
 )

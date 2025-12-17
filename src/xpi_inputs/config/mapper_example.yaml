@@ -1,0 +1,27 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Arcade) ---
+    enable_drive: true
+    drive_type: "arcade"
+    axis_linear: 1       # Left Stick Y
+    axis_angular: 3      # Right Stick X
+    scale_linear: 1.0    # Max Speed m/s
+    scale_angular: 1.5   # Max Turn rad/s
+    deadzone: 0.05
+
+    # --- Button & Axis Bindings ---
+    # Syntax: "type:index:topic:msg_type:param"
+    bindings:
+      # Toggle Headlights (Button A / 0)
+      - "toggle_btn:0:headlights:Bool"
+      
+      # Horn (Button B / 1) - Only active while held
+      - "momentary_btn:1:horn:Bool"
+      
+      # Servo Gripper (Right Trigger Axis 5)
+      # Param 180.0 scales input (0..1) to degrees (0..180)
+      - "axis:5:gripper_pos:Float32:180.0"
+      
+      # Camera Pan (Left Stick X Axis 0)
+      # Scale -1.0 to invert direction
+      - "axis:0:camera_pan:Float32:-90.0"
