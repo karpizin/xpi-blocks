@@ -15,6 +15,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.
 *   **[Web Virtual Joystick](../blocks/inputs/web_joystick/README.md)** - Smartphone control via browser.
+*   **[Telegram Bot Control](../blocks/inputs/telegram_bot/README.md)** - Remote control via chat buttons and photos.
 *   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
 *   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.

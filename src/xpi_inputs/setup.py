@@ -32,6 +32,7 @@ setup(
             'keyboard_to_joy_node = xpi_inputs.keyboard_to_joy_node:main',
             'mouse_node = xpi_inputs.mouse_node:main',
             'web_joystick_node = xpi_inputs.web_joystick_node:main',
+            'telegram_bot_node = xpi_inputs.telegram_bot_node:main',
         ],
     },
 )

@@ -2,3 +2,6 @@ evdev
 fastapi
 uvicorn
 websockets
+python-telegram-bot
+opencv-python-headless
+numpy

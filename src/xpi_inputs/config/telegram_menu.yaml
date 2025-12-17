@@ -1,0 +1,25 @@
+telegram_bot_node:
+  ros__parameters:
+    # --- Auth ---
+    token: "REPLACE_WITH_YOUR_BOT_TOKEN"
+    allowed_users: [12345678, 87654321] # Get ID from @userinfobot
+
+    # --- Menu Layout ---
+    # List of strings. Each string is a ROW. Buttons separated by '|'.
+    menu_layout: [
+      "📷 Photo | ℹ️ Status",
+      "💡 Light ON | 🌑 Light OFF",
+      "🔊 Beep"
+    ]
+
+    # --- Actions Map ---
+    # "Trigger:topic:Type:Value"
+    # Special: "Trigger:internal:photo"
+    actions:
+      - "📷 Photo:internal:photo"
+      - "ℹ️ Status:system_status:Empty"
+      
+      - "💡 Light ON:light_switch:Bool:True"
+      - "🌑 Light OFF:light_switch:Bool:False"
+      
+      - "🔊 Beep:buzzer:Bool:True"
