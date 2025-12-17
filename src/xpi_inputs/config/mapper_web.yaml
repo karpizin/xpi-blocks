@@ -1,0 +1,20 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Arcade) ---
+    enable_drive: true
+    drive_type: "arcade"
+    
+    # Matches web_joystick_node output logic:
+    # Left Stick Vertical (Throttle) -> Axis 1
+    # Right Stick Horizontal (Steering) -> Axis 3 (Inverted internally by node to match ROS standard)
+    axis_linear: 1
+    axis_angular: 3
+    
+    scale_linear: 1.0    # Max Speed m/s
+    scale_angular: 1.5   # Max Turn rad/s
+    deadzone: 0.05       # Small deadzone for touch input jitter
+
+    # --- Bindings ---
+    # Web Joystick currently has no buttons, so this list is empty.
+    # If buttons are added to HTML later, map them here.
+    bindings: []
