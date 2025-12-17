@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XPI-Blocks Web Controller</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #222; color: white; font-family: sans-serif; touch-action: none; }
+        #zone_left { position: absolute; left: 0; bottom: 0; width: 50%; height: 50%; border-right: 1px solid #444; }
+        #zone_right { position: absolute; right: 0; bottom: 0; width: 50%; height: 50%; }
+        #status { position: absolute; top: 10px; left: 10px; color: #0f0; }
+        .label { position: absolute; bottom: 10px; width: 100%; text-align: center; color: #555; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="status">Connecting...</div>
+    
+    <div id="zone_left">
+        <div class="label">Throttle (Left Stick)</div>
+    </div>
+    <div id="zone_right">
+        <div class="label">Steering (Right Stick)</div>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+        
+        let ws;
+        let reconnectInterval = 1000;
+
+        // State
+        let axisLinear = 0.0;
+        let axisAngular = 0.0;
+
+        function connect() {
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                statusEl.textContent = 'Connected ✅';
+                statusEl.style.color = '#0f0';
+            };
+            
+            ws.onclose = () => {
+                statusEl.textContent = 'Disconnected ❌';
+                statusEl.style.color = '#f00';
+                setTimeout(connect, reconnectInterval);
+            };
+        }
+
+        connect();
+
+        // Send updates periodically to avoid flooding
+        setInterval(() => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                // Protocol: JSON { lx: float, az: float }
+                // lx: Linear X (Throttle), az: Angular Z (Steering)
+                const payload = {
+                    lx: axisLinear,
+                    az: axisAngular
+                };
+                ws.send(JSON.stringify(payload));
+            }
+        }, 50); // 20Hz update rate
+
+        // --- Nipple.js Setup ---
+        
+        // Left Stick (Linear / Throttle)
+        const managerLeft = nipplejs.create({
+            zone: document.getElementById('zone_left'),
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            color: 'cyan',
+            size: 120
+        });
+
+        managerLeft.on('move', (evt, data) => {
+            if (data.vector) {
+                // NippleJS y is positive UP (good), but vector.y is component
+                // Range is roughly -1 to 1 depending on size
+                // Force limits
+                const force = Math.min(data.force, 2.0) / 2.0; // Normalize somewhat
+                // data.vector.y is unit vector. Multiply by force.
+                axisLinear = data.vector.y * force;
+            }
+        });
+
+        managerLeft.on('end', () => {
+            axisLinear = 0.0;
+        });
+
+        // Right Stick (Angular / Steering)
+        const managerRight = nipplejs.create({
+            zone: document.getElementById('zone_right'),
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            color: 'magenta',
+            size: 120
+        });
+
+        managerRight.on('move', (evt, data) => {
+            if (data.vector) {
+                const force = Math.min(data.force, 2.0) / 2.0;
+                // data.vector.x is unit vector. Negative is Left.
+                // ROS Standard: Left Turn = Positive Angular Z.
+                // So Joystick Left (neg X) -> Positive Z.
+                // axisAngular = -data.vector.x * force;
+                // Wait, typical arcade: Left Stick -> Left Turn.
+                axisAngular = -data.vector.x * force; 
+            }
+        });
+
+        managerRight.on('end', () => {
+            axisAngular = 0.0;
+        });
+
+    </script>
+</body>
+</html>

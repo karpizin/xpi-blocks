@@ -14,6 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'web_static'), glob('web_static/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -30,6 +31,7 @@ setup(
             'joy_mapper_node = xpi_inputs.joy_mapper_node:main',
             'keyboard_to_joy_node = xpi_inputs.keyboard_to_joy_node:main',
             'mouse_node = xpi_inputs.mouse_node:main',
+            'web_joystick_node = xpi_inputs.web_joystick_node:main',
         ],
     },
 )
