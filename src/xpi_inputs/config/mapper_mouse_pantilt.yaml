@@ -1,0 +1,22 @@
+joy_mapper_node:
+  ros__parameters:
+    # --- Drive Control (Optional) ---
+    enable_drive: false 
+    
+    # --- Bindings for Pan/Tilt Camera ---
+    # Mouse Node should be run in 'position' mode for absolute control
+    # or 'velocity' mode for rate control.
+    bindings:
+      # Mouse X (Axis 0) -> Pan Servo
+      # Scale 180.0 maps -1..1 range to -180..180 (needs clamp on servo driver side)
+      # or 90.0 for -90..90
+      - "axis:0:servo_pan:Float32:90.0"
+      
+      # Mouse Y (Axis 1) -> Tilt Servo
+      - "axis:1:servo_tilt:Float32:90.0"
+      
+      # Left Click (Button 0) -> Fire Laser
+      - "momentary_btn:0:laser_fire:Bool"
+      
+      # Wheel (Axis 2) -> Zoom / Focus
+      - "axis:2:camera_zoom:Float32:10.0"
