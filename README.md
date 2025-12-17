@@ -68,6 +68,7 @@ xpi-blocks/
 *   **UART Access:** `pyserial` for RC receivers.
 *   **1-Wire Access:** Kernel modules (`w1_gpio`, `w1_therm`).
 *   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
+*   **Universal Input:** `joy_mapper_node` converts any Joystick, Mouse, or Keyboard into standard robot commands (`Twist`, `Bool`, `Float32`) via YAML config.
 *   **Containerization:** `Dockerfile` support for rapid deployment.
 
 ## 📋 Prerequisites

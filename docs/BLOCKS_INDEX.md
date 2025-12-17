@@ -14,6 +14,8 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.
+*   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
+*   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.
 *   **[RC Receiver (SBUS)](../blocks/inputs/rc_sbus/README.md)** - FrSky/Futaba radio integration.
 *   **[RC Receiver (CRSF)](../blocks/inputs/rc_crsf/README.md)** - TBS Crossfire / ELRS integration.
@@ -21,6 +23,9 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 🌡️ Sensors (Environment & Physics)
 *   **[BH1750 Light Sensor](../blocks/sensors/bh1750/README.md)** - Ambient light intensity (Lux).
+*   **[OPT3001 Light Sensor](../blocks/sensors/opt3001/README.md)** - High-precision ambient light (Lux).
+*   **[TSL2561 Light Sensor](../blocks/sensors/tsl2561/README.md)** - Dual-diode wide dynamic range light sensor.
+*   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
 *   **[DS18B20 Temperature](../blocks/sensors/temperature/README.md)** - Waterproof 1-Wire temperature sensor.

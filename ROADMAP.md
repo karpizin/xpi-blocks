@@ -35,6 +35,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **BH1750 (Light Sensor)** -> `xpi_sensors/bh1750_node`
 *   **Camera (USB/CSI)** -> `blocks/sensors/camera` (Wrapper for `v4l2_camera`)
 *   **Direct GPIO Servo** -> `xpi_actuators/direct_servo`
+*   **#3 OPT3001 (Light Sensor)** -> `xpi_sensors/opt3001_node`
+*   **#10 TCS34725 (RGB Color)** -> `xpi_sensors/tcs34725_node`
+*   **#26 TSL2561 (Light Sensor)** -> `xpi_sensors/tsl2561_node`
+*   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
+*   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`
+*   **Keyboard-as-Gamepad** -> `xpi_inputs/keyboard_to_joy_node`
 
 ## 🚧 High Priority (Next Up)
 
@@ -45,15 +51,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **Camera (USB/CSI)** - *Implemented via v4l2_camera wrapper*
 
 ### Light & Color (I2C)
-*   [ ] #10 TCS34725 - RGB Color sensor
-*   [ ] #3 OPT3001 - High sensitivity light sensor
 *   [ ] **TSL2591** - High Dynamic Range Light Sensor
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
 *   [ ] **AS7341** - 11-Channel Spectral Color Sensor
 *   [ ] **APDS-9960** - RGB, Gesture, Proximity
 *   [ ] #25 MAX44009 - Light sensor
-*   [ ] #26 TSL2561 - Light sensor
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
