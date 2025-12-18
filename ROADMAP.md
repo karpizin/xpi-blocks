@@ -43,6 +43,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Keyboard-as-Gamepad** -> `xpi_inputs/keyboard_to_joy_node`
 *   **Web Virtual Joystick** -> `xpi_inputs/web_joystick_node`
 *   **Telegram Bot Control** -> `xpi_inputs/telegram_bot_node`
+*   **Gesture Control (MediaPipe)** -> `xpi_inputs/gesture_control_node`
 
 ## 🚧 High Priority (Next Up)
 

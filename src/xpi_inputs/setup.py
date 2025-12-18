@@ -33,6 +33,7 @@ setup(
             'mouse_node = xpi_inputs.mouse_node:main',
             'web_joystick_node = xpi_inputs.web_joystick_node:main',
             'telegram_bot_node = xpi_inputs.telegram_bot_node:main',
+            'gesture_control_node = xpi_inputs.gesture_control_node:main',
         ],
     },
 )
