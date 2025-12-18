@@ -10,6 +10,7 @@ This block enables you to control your robot using hand gestures captured by a c
     *   **Discrete:** Static gestures trigger fixed commands (Stop, Forward, Left...).
     *   **Joy Publisher:** Publishes raw hand coordinates and gesture flags to `sensor_msgs/Joy` for custom mapping.
 *   **Recognized Gestures:** FIST, OPEN (Palm), POINTING (Index), THUMB_UP.
+*   **Dynamic Gestures:** SWIPE_LEFT, SWIPE_RIGHT (Fast horizontal movement).
 
 ## 🚀 Setup
 
@@ -50,6 +51,8 @@ In `joy` mode, the node publishes to `/gesture_ctl/joy`:
 *   **Button 1:** OPEN detected
 *   **Button 2:** POINTING detected
 *   **Button 3:** THUMB_UP detected
+*   **Button 4:** SWIPE_LEFT detected
+*   **Button 5:** SWIPE_RIGHT detected
 
 You can use this with `joy_mapper_node` to map gestures to arbitrary robot actions (e.g., Thumb Up -> Turn on Lights).
 

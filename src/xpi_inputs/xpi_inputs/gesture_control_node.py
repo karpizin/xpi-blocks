@@ -7,6 +7,8 @@ from std_msgs.msg import String
 import cv2
 import numpy as np
 import mediapipe as mp
+from collections import deque
+import time
 
 class GestureClassifier:
     def __init__(self):
@@ -14,7 +16,7 @@ class GestureClassifier:
         self.mp_draw = mp.solutions.drawing_utils
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
-            max_num_hands=1,
+            max_num_hands=2, # Support 2 hands
             min_detection_confidence=0.7,
             min_tracking_confidence=0.5
         )
@@ -41,14 +43,6 @@ class GestureClassifier:
         return results
 
     def is_finger_up(self, lm, tip_idx, mcp_idx, is_thumb=False):
-        # Simple heuristic: Tip is higher (lower Y value) than MCP?
-        # Only works if hand is upright.
-        # Better: Distance from Wrist.
-        # Even better: Vector logic.
-        
-        # Let's use simple Y check for vertical hand, and X check for Thumb?
-        # Robust method: TIP distance to WRIST > MCP distance to WRIST.
-        
         wrist = lm[0]
         tip = lm[tip_idx]
         mcp = lm[mcp_idx]
@@ -76,7 +70,7 @@ class GestureClassifier:
         if count == 0: return "FIST"
         if count == 5: return "OPEN"
         if index and not middle and not ring and not pinky: return "POINTING"
-        if thumb and not index and not middle: return "THUMB_UP" # (Simplified)
+        if thumb and not index and not middle: return "THUMB_UP" 
         
         return "UNKNOWN"
 
@@ -99,6 +93,9 @@ class GestureControlNode(Node):
 
         # Logic
         self.classifier = GestureClassifier()
+        self.history_x = deque(maxlen=10) # For dynamic gestures (approx 0.5-1s history depending on FPS)
+        self.last_swipe_time = 0.0
+        self.swipe_cooldown = 1.0 # Seconds
         
         # Pubs
         self.pub_twist = self.create_publisher(Twist, 'cmd_vel', 10)
@@ -111,11 +108,36 @@ class GestureControlNode(Node):
         
         self.get_logger().info(f"Gesture Control Started. Mode: {self.mode}")
 
+    def detect_dynamic_gesture(self):
+        if len(self.history_x) < 5: return None
+        
+        # Simple delta check
+        # history holds normalized X (-1.0 to 1.0)
+        start = self.history_x[0]
+        end = self.history_x[-1]
+        delta = end - start
+        
+        now = time.time()
+        if now - self.last_swipe_time < self.swipe_cooldown:
+            return None
+
+        # Threshold for Swipe (e.g. moved 30% of screen width quickly)
+        threshold = 0.6 # Since range is 2.0 (-1 to 1), 0.6 is 30% of screen
+        
+        if delta > threshold:
+            self.last_swipe_time = now
+            self.history_x.clear() # Reset
+            return "SWIPE_RIGHT"
+        elif delta < -threshold:
+            self.last_swipe_time = now
+            self.history_x.clear()
+            return "SWIPE_LEFT"
+            
+        return None
+
     def img_callback(self, msg):
         try:
             # Convert ROS Image to OpenCV
-            # Manual decoding for raw RGB8/BGR8 to avoid cv_bridge dep if possible,
-            # but usually cv_bridge is standard. Let's assume BGR8.
             h, w = msg.height, msg.width
             np_img = np.frombuffer(msg.data, dtype=np.uint8).reshape((h, w, 3))
             
@@ -123,76 +145,81 @@ class GestureControlNode(Node):
             results = self.classifier.process(np_img)
             
             gesture_name = "NONE"
+            dynamic_gesture = None
+            
             cmd = Twist()
             joy = Joy()
             joy.axes = [0.0]*4
             joy.buttons = [0]*5
             
             if results.multi_hand_landmarks:
-                for hand_landmarks in results.multi_hand_landmarks:
-                    # Draw (Optional, for debug pub)
-                    # self.classifier.mp_draw.draw_landmarks(np_img, hand_landmarks, self.classifier.mp_hands.HAND_CONNECTIONS)
-                    
-                    # 1. Classify
-                    gesture_name = self.classifier.classify(hand_landmarks)
-                    
-                    # 2. Extract Center Position (Palm center roughly index MCP)
-                    # Normalize to -1.0 (Left/Bottom) to +1.0 (Right/Top)
-                    # MediaPipe x,y are 0..1 (0,0 is Top-Left)
-                    
-                    raw_x = hand_landmarks.landmark[9].x # Middle Finger MCP is central
-                    raw_y = hand_landmarks.landmark[9].y
-                    
-                    # Center (0.5, 0.5) -> (0, 0)
-                    # X: 0 (Left) -> 1 (Right). Joystick: -1 (Left) -> 1 (Right).
-                    # ROS Twist Angular Z: + (Left).
-                    
-                    norm_x = (raw_x - 0.5) * 2.0  # -1..1 (Right is positive)
-                    norm_y = (0.5 - raw_y) * 2.0  # -1..1 (Up is positive)
-                    
-                    # --- Mode Logic ---
-                    
-                    if self.mode == 'joy':
-                        # Publish Raw
-                        joy.axes[0] = norm_x
-                        joy.axes[1] = norm_y
-                        
-                        # Buttons map to gestures
-                        if gesture_name == 'FIST': joy.buttons[0] = 1
-                        elif gesture_name == 'OPEN': joy.buttons[1] = 1
-                        elif gesture_name == 'POINTING': joy.buttons[2] = 1
-                        elif gesture_name == 'THUMB_UP': joy.buttons[3] = 1
-                        
-                        self.pub_joy.publish(joy)
+                # Use PRIMARY hand (first detected) for control
+                # TODO: Logic to pick "Right" hand for control if both present?
+                # For now, index 0 is usually the most prominent/first detected.
+                hand_landmarks = results.multi_hand_landmarks[0]
+                
+                # 1. Classify Static
+                gesture_name = self.classifier.classify(hand_landmarks)
+                
+                # 2. Extract Center Position
+                raw_x = hand_landmarks.landmark[9].x 
+                raw_y = hand_landmarks.landmark[9].y
+                
+                norm_x = (raw_x - 0.5) * 2.0  # -1..1 
+                norm_y = (0.5 - raw_y) * 2.0  # -1..1
+                
+                # 3. Dynamic Analysis
+                self.history_x.append(norm_x)
+                dynamic_gesture = self.detect_dynamic_gesture()
+                if dynamic_gesture:
+                    gesture_name = dynamic_gesture # Override for display/pub
+                    self.get_logger().info(f"Dynamic Gesture: {dynamic_gesture}")
 
-                    elif self.mode == 'proportional':
-                        # Virtual Joystick
-                        # Only move if activation gesture is held
-                        if gesture_name == self.activation_gesture:
-                            cmd.linear.x = norm_y * self.scale_lin
-                            cmd.angular.z = -norm_x * self.scale_ang # Invert X for turn
-                        else:
-                            # Stop
-                            cmd.linear.x = 0.0
-                            cmd.angular.z = 0.0
-                        self.pub_twist.publish(cmd)
+                # --- Mode Logic ---
+                
+                if self.mode == 'joy':
+                    # Publish Raw
+                    joy.axes[0] = norm_x
+                    joy.axes[1] = norm_y
+                    
+                    # Buttons map to gestures
+                    if gesture_name == 'FIST': joy.buttons[0] = 1
+                    elif gesture_name == 'OPEN': joy.buttons[1] = 1
+                    elif gesture_name == 'POINTING': joy.buttons[2] = 1
+                    elif gesture_name == 'THUMB_UP': joy.buttons[3] = 1
+                    
+                    # Map swipes to buttons 
+                    if dynamic_gesture == 'SWIPE_LEFT': joy.buttons[4] = 1 
+                    elif dynamic_gesture == 'SWIPE_RIGHT': joy.buttons[5] = 1
+                    
+                    self.pub_joy.publish(joy)
 
-                    elif self.mode == 'discrete':
-                        # Commands
-                        if gesture_name == 'OPEN': # Stop
-                            pass # 0,0
-                        elif gesture_name == 'POINTING': # Forward
-                            cmd.linear.x = self.scale_lin
-                        elif gesture_name == 'FIST': # Back
-                            cmd.linear.x = -self.scale_lin
-                        elif gesture_name == 'THUMB_UP': # Turn Left? (Thumb points left usually with right hand?)
-                            # Ambiguous without checking hand side. Let's assume Turn.
-                            cmd.angular.z = self.scale_ang
-                        
-                        self.pub_twist.publish(cmd)
+                elif self.mode == 'proportional':
+                    # Virtual Joystick
+                    if gesture_name == self.activation_gesture:
+                        cmd.linear.x = norm_y * self.scale_lin
+                        cmd.angular.z = -norm_x * self.scale_ang # Invert X for turn
+                    else:
+                        cmd.linear.x = 0.0
+                        cmd.angular.z = 0.0
+                    self.pub_twist.publish(cmd)
+
+                elif self.mode == 'discrete':
+                    # Commands
+                    if gesture_name == 'OPEN': 
+                        pass 
+                    elif gesture_name == 'POINTING': 
+                        cmd.linear.x = self.scale_lin
+                    elif gesture_name == 'FIST': 
+                        cmd.linear.x = -self.scale_lin
+                    elif gesture_name == 'THUMB_UP': 
+                        cmd.angular.z = self.scale_ang
+                    
+                    self.pub_twist.publish(cmd)
 
             else:
-                # No hand -> Stop
+                # No hand -> Stop and Clear History
+                self.history_x.clear()
                 if self.mode != 'joy':
                     self.pub_twist.publish(Twist())
 
