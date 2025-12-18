@@ -52,3 +52,29 @@ In `joy` mode, the node publishes to `/gesture_ctl/joy`:
 *   **Button 3:** THUMB_UP detected
 
 You can use this with `joy_mapper_node` to map gestures to arbitrary robot actions (e.g., Thumb Up -> Turn on Lights).
+
+## 💡 Troubleshooting & Best Practices
+
+### 1. Lighting & Environment
+*   **Light:** Ensure the hand is well-lit. MediaPipe struggles in darkness or strong backlighting (silhouettes).
+*   **Background:** Avoid backgrounds that match your skin tone. A plain wall works best.
+
+### 2. Performance (Latency)
+*   If the video feed lags, reduce the camera resolution in your camera node (e.g., `v4l2_camera`).
+*   **Recommended:** 640x480 or 320x240. MediaPipe resizes images internally to ~256x256, so 1080p input just wastes CPU cycles resizing.
+
+### 3. Coordinate System (Virtual Joystick)
+Think of the camera frame as a joystick grid:
+
+```text
+       Top (+1.0) -> Fast Forward
+           ^
+           |
+Left (-1.0) --+-- Right (+1.0) -> Turn Right
+           |
+           v
+    Bottom (-1.0) -> Backward
+```
+
+*   **Deadman Switch:** The robot ONLY moves while you hold the **Activation Gesture** (Default: **FIST**).
+*   **Emergency Stop:** Open your hand (✋) to stop immediately.
