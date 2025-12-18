@@ -1,43 +1,48 @@
-# Keyboard Input (Teleoperation)
+# Keyboard as Gamepad (Input)
 
-This block provides a simple way to control a robot using keyboard commands. It leverages the existing `teleop_twist_keyboard` ROS2 package.
+This block turns your computer keyboard into a virtual gamepad/joystick for your robot. Unlike standard teleop packages, this node publishes `sensor_msgs/Joy`, allowing you to use the same `joy_mapper` configuration for both physical gamepads and the keyboard.
 
-## 📦 Bill of Materials
-*   Raspberry Pi with connected monitor and keyboard (or SSH access with a terminal).
+## 🎯 Features
+*   **WASD Navigation:** Maps `W/A/S/D` to Analog Axes (Left Stick & Right Stick).
+*   **Button Mapping:** Maps `Space`, `Enter`, `1-4` to Joystick Buttons.
+*   **Unified Logic:** Works seamlessly with `joy_mapper_node`.
 
-## 🔌 Setup
-No specific wiring is needed, as this uses your system's keyboard input.
+## 📦 Requirements
+*   `xterm` (for capturing key presses in a separate window): `sudo apt install xterm`
 
-## 🚀 Quick Start
-1.  **Install `teleop_twist_keyboard`**:
-    ```bash
-    sudo apt update
-    sudo apt install ros-humble-teleop-twist-keyboard
-    ```
-2.  **Launch the keyboard teleop driver**:
-    ```bash
-    ros2 launch xpi_inputs keyboard.launch.py
-    ```
-    *   This will open a new terminal window (using `xterm`) where you can enter commands.
-    *   **IMPORTANT:** The launched `xterm` window *must* have focus for key presses to register.
+## 🚀 Usage
 
-## 📡 Interface
-### Publishers
-*   `/keyboard_teleop/cmd_vel` (`geometry_msgs/Twist`): Publishes linear and angular velocity commands based on key presses.
+### 1. Launch
+```bash
+ros2 launch xpi_inputs keyboard.launch.py
+```
+This opens a small `xterm` window. **Click on it** to focus.
 
-### Parameters (Configurable in launch file)
-*   `speed` (float, default: `0.5`): Linear speed in meters/second.
-*   `turn` (float, default: `1.0`): Angular speed in radians/second.
+### 2. Controls
+| Key | Joystick Equivalent | Value |
+| :--- | :--- | :--- |
+| **W / S** | Axis 1 (Left Stick Y) | +1.0 / -1.0 |
+| **A / D** | Axis 3 (Right Stick X) | +1.0 / -1.0 |
+| **Space** | Button 0 (X / A) | 1 (Held) |
+| **Enter** | Button 1 (O / B) | 1 (Held) |
+| **E** | Button 2 (Triangle) | 1 (Held) |
+| **Q** | Button 3 (Square) | 1 (Held) |
+| **1, 2, 3, 4** | Buttons 4-7 | 1 (Held) |
 
-## ✅ Verification
-1.  Launch the driver as described above.
-2.  In a separate terminal, monitor the `/keyboard_teleop/cmd_vel` topic:
-    ```bash
-    ros2 topic echo /keyboard_teleop/cmd_vel
-    ```
-3.  Switch focus to the `xterm` window launched by `keyboard.launch.py` and press keys (e.g., `i` for forward, `j`/`l` for turn). You should see `Twist` messages being published.
+### 3. Drive Robot (Integration)
+Since this node mimics a gamepad (Axis 1 = Throttle, Axis 3 = Steering), you can use it with the standard PS4/Web mapper config:
 
-## ⚠️ Troubleshooting
-*   **No `xterm`?** `xterm` needs to be installed: `sudo apt install xterm`.
-*   **Key presses not registering?** Ensure the `xterm` window has keyboard focus.
-*   **"teleop_twist_keyboard not found"?** Make sure the package is installed as per step 1.
+```bash
+# Terminal 1: Keyboard Input
+ros2 launch xpi_inputs keyboard.launch.py
+
+# Terminal 2: Mapper (converts to cmd_vel)
+ros2 run xpi_inputs joy_mapper_node --ros-args --params-file src/xpi_inputs/config/mapper_web.yaml
+```
+
+## 📡 Topic
+*   `/joy` (`sensor_msgs/Joy`)
+
+## ⚠️ Notes
+*   Keys must be held down to maintain axis value (like pushing a stick).
+*   Releasing a key immediately centers the axis (0.0).
