@@ -42,6 +42,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **APDS-9960 (RGB/Gesture)** -> `xpi_sensors/apds9960_node`
 *   **AS7341 (11-Ch Spectral)** -> `xpi_sensors/as7341_node`
 *   **MAX44009 (Wide Range Lux)** -> `xpi_sensors/max44009_node`
+*   **INA219 (Power Monitor)** -> `xpi_sensors/ina219_node`
 *   **#26 TSL2561 (Light Sensor)** -> `xpi_sensors/tsl2561_node`
 *   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
 *   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`

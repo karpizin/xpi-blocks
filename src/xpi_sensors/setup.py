@@ -40,6 +40,7 @@ setup(
             'as7341_node = xpi_sensors.as7341_node:main',
             'max44009_node = xpi_sensors.max44009_node:main',
             'ccs811_node = xpi_sensors.ccs811_node:main',
+            'ina219_node = xpi_sensors.ina219_node:main',
         ],
     },
 )
