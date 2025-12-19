@@ -37,6 +37,7 @@ setup(
             'tsl2561_node = xpi_sensors.tsl2561_node:main',
             'tcs34725_node = xpi_sensors.tcs34725_node:main',
             'apds9960_node = xpi_sensors.apds9960_node:main',
+            'as7341_node = xpi_sensors.as7341_node:main',
         ],
     },
 )

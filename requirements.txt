@@ -7,3 +7,5 @@ opencv-python-headless
 numpy
 mediapipe
 apds9960
+Adafruit-Blinka
+adafruit-circuitpython-as7341
