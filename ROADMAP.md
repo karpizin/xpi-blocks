@@ -57,7 +57,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **xpi-top (CLI Monitor)** -> `xpi_tools`
 
 ## 🚧 High Priority (Next Up)
-
+*   **Modbus RTU Generic Driver** - Configurable reader for RS485 devices.
+*   **MQTT Bridge** - Bidirectional gateway to Home Assistant / IoT.
 
 ## 📋 backlog: Supported Sensors & Actuators
 
@@ -130,3 +131,4 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 39. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
 40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
+42. **EPEver MPPT Solar Controller** - RS485/Modbus monitoring.

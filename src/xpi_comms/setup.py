@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'serial_bridge = xpi_comms.serial_bridge_node:main',
+            'modbus_rtu_node = xpi_comms.modbus_rtu_node:main',
         ],
     },
 )

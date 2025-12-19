@@ -18,6 +18,7 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 📡 Communication & Interfaces
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
+*   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.
 
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.

@@ -13,3 +13,5 @@ adafruit-circuitpython-ccs811
 RPLCD
 adafruit-circuitpython-ina219
 textual
+minimalmodbus
+pyserial
