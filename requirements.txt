@@ -18,3 +18,4 @@ pyserial
 paho-mqtt
 adafruit-circuitpython-max1704x
 python-can
+Pillow

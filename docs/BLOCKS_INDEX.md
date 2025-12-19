@@ -77,3 +77,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[7-Segment (TM1637)](../blocks/actuators/led_displays/README.md)** - 4-digit numeric display.
 *   **[WS2812B Effects](../blocks/actuators/leds/ws2812_effects/README.md)** - Addressable RGB LED strips with 100+ effects.
 *   **[LED Bar (MY9221)](../blocks/actuators/leds/README.md)** - 10-segment LED bar graph.
+
+## 🎭 Human-Computer Interaction (HCI)
+*   **[Robot Face Expressions](../blocks/hci/robot_face/README.md)** - Procedural animated eyes for any display.
+

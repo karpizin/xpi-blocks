@@ -60,6 +60,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **CAN Bus (SocketCAN)** -> `xpi_comms/can_bridge_node`
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
+*   **Facial Expressions (Procedural)** -> `xpi_hci/expression_engine_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
@@ -165,5 +166,4 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Multi-cell BMS:** I2C/UART monitoring for 3S-6S battery packs.
 
 ### 🎭 Human-Computer Interaction (HCI)
-*   **Facial Expressions:** Using OLED/LCD to render animated "robot eyes" synced with LLM mood.
 *   **Status Beeps:** Standardized RTTTL melody library for system alerts.
