@@ -36,6 +36,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Camera (USB/CSI)** -> `blocks/sensors/camera` (Wrapper for `v4l2_camera`)
 *   **Direct GPIO Servo** -> `xpi_actuators/direct_servo`
 *   **#3 OPT3001 (Light Sensor)** -> `xpi_sensors/opt3001_node`
+*   **#37 CCS811 (Air Quality)** -> `xpi_sensors/ccs811_node`
 *   **#10 TCS34725 (RGB Color)** -> `xpi_sensors/tcs34725_node`
 *   **APDS-9960 (RGB/Gesture)** -> `xpi_sensors/apds9960_node`
 *   **AS7341 (11-Ch Spectral)** -> `xpi_sensors/as7341_node`
@@ -68,7 +69,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
-*   [ ] #37 CCS811 - CO2
 *   [ ] #39 HDC1080 - Temp/Humidity
 *   [ ] #40 LPS22HB - Pressure/Temp
 *   [ ] #41 SHTC3 - Temp/Humidity

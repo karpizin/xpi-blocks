@@ -9,3 +9,4 @@ mediapipe
 apds9960
 Adafruit-Blinka
 adafruit-circuitpython-as7341
+adafruit-circuitpython-ccs811

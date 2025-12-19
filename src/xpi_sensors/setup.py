@@ -39,6 +39,7 @@ setup(
             'apds9960_node = xpi_sensors.apds9960_node:main',
             'as7341_node = xpi_sensors.as7341_node:main',
             'max44009_node = xpi_sensors.max44009_node:main',
+            'ccs811_node = xpi_sensors.ccs811_node:main',
         ],
     },
 )
