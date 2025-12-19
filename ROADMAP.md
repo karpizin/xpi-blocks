@@ -63,6 +63,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Facial Expressions (Procedural)** -> `xpi_hci/expression_engine_node`
 *   **GPS/GNSS (NMEA UART)** -> `xpi_sensors/gps_node`
 *   **UWB Beacon SLAM (Indoor)** -> `xpi_navigation/beacon_slam_node`
+*   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.

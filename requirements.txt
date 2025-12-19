@@ -22,3 +22,4 @@ Pillow
 pynmea2
 scipy
 numpy
+bleak
