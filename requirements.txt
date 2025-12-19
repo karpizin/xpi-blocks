@@ -12,3 +12,4 @@ adafruit-circuitpython-as7341
 adafruit-circuitpython-ccs811
 RPLCD
 adafruit-circuitpython-ina219
+textual
