@@ -5,6 +5,14 @@ These are commonly found on DC motors (for odometry) or as user input dials.
 
 The node counts "ticks" based on the state changes of pins A and B.
 
+## 📋 Supported Devices
+This driver works with any **Incremental Quadrature Encoder**:
+*   **KY-040:** The standard "knob" module for Arduino/RPi.
+*   **Optical Shaft Encoders:** Often attached to the back of DC motors (yellow TT motors with disks, or metal gearmotors).
+*   **Generic Mechanical Encoders:** (Bourns, ALPS) commonly used for volume control.
+
+> **Note:** This block is **NOT** for absolute magnetic encoders (like AS5600) which use I2C/PWM. For those, a separate I2C driver is needed.
+
 ## ⚡ Wiring (GPIO)
 
 | Encoder Pin | Raspberry Pi Pin | Description |
