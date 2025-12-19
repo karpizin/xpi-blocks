@@ -62,6 +62,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
 *   **Facial Expressions (Procedural)** -> `xpi_hci/expression_engine_node`
 *   **GPS/GNSS (NMEA UART)** -> `xpi_sensors/gps_node`
+*   **QMC5883L Magnetometer** -> `xpi_sensors/qmc5883l_node`
 *   **ArUco Visual Markers** -> `xpi_vision/aruco_tracker_node`
 *   **UWB Beacon SLAM (Indoor)** -> `xpi_navigation/beacon_slam_node`
 *   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
@@ -152,7 +153,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Voice Assistant Project:** Combining Mic + TTS + LLM for natural interaction.
 
 ### 🗺️ Outdoor Navigation
-*   **Magnetometer:** High-precision compass modules (**QMC5883L**, **BMM150**).
 *   **RTK GPS:** Precision positioning (cm-level) for outdoor rovers.
 
 ### 🖐️ Haptics & Manipulation
