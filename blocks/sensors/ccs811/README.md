@@ -50,3 +50,15 @@ ros2 topic echo /ccs811/data
     *   Layout: `[eCO2 (ppm), TVOC (ppb)]`
 *   `~/eco2` (`std_msgs/msg/Int32`) - eCO2 only.
 *   `~/tvoc` (`std_msgs/msg/Int32`) - TVOC only.
+
+## 🚧 Future Improvements (Planned)
+
+This block currently implements the **basic driver**. For professional-grade accuracy, future updates should include:
+
+1.  **Environmental Compensation:**
+    *   The MOX sensor is sensitive to temperature and humidity.
+    *   *Plan:* Subscribe to `/bme280/data` (or similar) and write environmental data to the CCS811 `ENV_DATA` register for real-time correction.
+
+2.  **Baseline Management:**
+    *   The sensor "learns" its baseline (clean air reference) over time (24h+). This is lost on power cycle.
+    *   *Plan:* Add ROS2 Services (`save_baseline`, `restore_baseline`) to save calibration data to disk and restore it on startup to avoid the 20-minute warm-up drift.
