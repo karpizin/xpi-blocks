@@ -137,3 +137,33 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 39. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
 40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
+
+## 🚀 Future Horizons (New Categories)
+
+### 🎙️ Audio & Voice Interaction
+*   **Audio Input:** Support for **ReSpeaker** Mic Arrays (Sound source localization).
+*   **Audio Output (TTS):** Integration with **Piper** or **Espeak** for local Text-to-Speech.
+*   **Voice Assistant Project:** Combining Mic + TTS + LLM for natural interaction.
+
+### 🗺️ Outdoor Navigation
+*   **GNSS/GPS:** Support for **u-blox M8N/M9N** modules.
+*   **Magnetometer:** High-precision compass modules (**QMC5883L**, **BMM150**).
+*   **RTK GPS:** Precision positioning (cm-level) for outdoor rovers.
+
+### 🖐️ Haptics & Manipulation
+*   **Tactile Sensing:** **FSR** (Force Sensitive Resistors) for gripper feedback.
+*   **Haptic Feedback:** **DRV2605** LRA/ERM driver for tactile alerts.
+*   **Smart Gripper:** Integrated servo control with force/position feedback.
+
+### 🔐 Security & Identification
+*   **RFID/NFC:** Support for **RC522** and **PN532** readers.
+*   **Biometrics:** Fingerprint sensor integration (FPM10A).
+*   **Indoor Positioning:** **UWB** (Ultra-Wideband) modules for precise local tracking.
+
+### 🏭 Industrial & Reliability
+*   **CAN Bus:** Support for **MCP2515** (Automotive/Industrial standard).
+*   **Multi-cell BMS:** I2C/UART monitoring for 3S-6S battery packs.
+
+### 🎭 Human-Computer Interaction (HCI)
+*   **Facial Expressions:** Using OLED/LCD to render animated "robot eyes" synced with LLM mood.
+*   **Status Beeps:** Standardized RTTTL melody library for system alerts.
