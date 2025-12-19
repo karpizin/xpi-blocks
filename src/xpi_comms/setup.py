@@ -26,6 +26,7 @@ setup(
             'serial_bridge = xpi_comms.serial_bridge_node:main',
             'modbus_rtu_node = xpi_comms.modbus_rtu_node:main',
             'mqtt_bridge_node = xpi_comms.mqtt_bridge_node:main',
+            'can_bridge_node = xpi_comms.can_bridge_node:main',
         ],
     },
 )

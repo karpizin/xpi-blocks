@@ -57,6 +57,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **xpi-top (CLI Monitor)** -> `xpi_tools`
 *   **Modbus RTU Generic Driver** -> `xpi_comms/modbus_rtu_node`
 *   **MQTT Bridge** -> `xpi_comms/mqtt_bridge_node`
+*   **CAN Bus (SocketCAN)** -> `xpi_comms/can_bridge_node`
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
 
@@ -161,7 +162,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Indoor Positioning:** **UWB** (Ultra-Wideband) modules for precise local tracking.
 
 ### 🏭 Industrial & Reliability
-*   **CAN Bus:** Support for **MCP2515** (Automotive/Industrial standard).
 *   **Multi-cell BMS:** I2C/UART monitoring for 3S-6S battery packs.
 
 ### 🎭 Human-Computer Interaction (HCI)

@@ -20,6 +20,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
 *   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.
 *   **[MQTT Bridge](../blocks/comms/mqtt_bridge/README.md)** - Bidirectional gateway to Home Assistant / IoT.
+*   **[CAN Bus (MCP2515)](../blocks/comms/can_bus/README.md)** - SocketCAN bridge for automotive/industrial hardware.
 
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.
