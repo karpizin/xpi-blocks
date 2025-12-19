@@ -53,8 +53,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
 
-## 🗺️ Navigation (Outdoor)
+## 🗺️ Navigation (Outdoor & Indoor)
 *   **[GPS/GNSS NMEA](../blocks/sensors/gps_nmea/README.md)** - Standard GPS tracking via UART.
+*   **[UWB Beacon Navigation](../blocks/navigation/uwb_beacons/README.md)** - Indoor SLAM using radio beacons.
 
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).

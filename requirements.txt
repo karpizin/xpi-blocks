@@ -20,3 +20,5 @@ adafruit-circuitpython-max1704x
 python-can
 Pillow
 pynmea2
+scipy
+numpy
