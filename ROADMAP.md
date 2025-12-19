@@ -60,10 +60,9 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **TSL2591** - High Dynamic Range Light Sensor
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
-*   [ ] **AS7341** - 11-Channel Spectral Color Sensor
-*   [ ] **APDS-9960** - RGB, Gesture, Proximity
+*   [x] **AS7341** - 11-Channel Spectral Color Sensor -> `xpi_sensors/as7341_node`
+*   [x] **APDS-9960** - RGB, Gesture, Proximity -> `xpi_sensors/apds9960_node`
 *   [x] #25 **MAX44009** - Light sensor -> `xpi_sensors/max44009_node`
-*   [ ] #34 BH1745NUC - Light sensor
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
