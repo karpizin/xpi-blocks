@@ -11,6 +11,7 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 👁️ Vision & AI (CV / VLM)
 *   **[Camera (USB/CSI)](../blocks/sensors/camera/README.md)** - Standard V4L2 camera setup.
+*   **[ArUco Navigation](../blocks/vision/aruco_navigation/README.md)** - Precise visual positioning using fiducial markers.
 *   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Gemini/GPT-4o.
 *   **[Sonar Trend Analysis](../blocks/llm/sonar_trend_analysis/README.md)** - Detecting approach/retreat using LLM.
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
