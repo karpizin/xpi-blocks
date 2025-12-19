@@ -38,6 +38,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[DS18B20 Temperature](../blocks/sensors/temperature/README.md)** - Waterproof 1-Wire temperature sensor.
 *   **[KY-013 Thermistor](../blocks/sensors/ky013/README.md)** - Analog NTC thermistor module.
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
+*   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).
+*   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
+*   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
 
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
