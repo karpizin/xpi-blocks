@@ -91,7 +91,8 @@ Before using these blocks, ensure you have:
 *   **Troubleshooting:** Dedicated section for common issues in every block.
 
 ## 📈 Project Status & Roadmap
-*   **[📚 LIBRARY INDEX (Full List of Blocks)](docs/BLOCKS_INDEX.md)** - Start here to find specific devices.
+*   **[🚀 PROJECT CAPABILITIES (Full List of Features)](docs/CAPABILITIES.md)** - Start here for a high-level overview.
+*   **[📚 LIBRARY INDEX (Detailed Links)](docs/BLOCKS_INDEX.md)** - Index of all implemented blocks with direct links to docs.
 *   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
 *   See [LLM_VLM_SCENARIOS.md](docs/LLM_VLM_SCENARIOS.md) for the LLM/VLM integration plan.
 *   See [NEXT_KEY_TASKS.md](NEXT_KEY_TASKS.md) for high-priority future tasks.
