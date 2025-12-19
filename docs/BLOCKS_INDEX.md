@@ -6,6 +6,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Smart Motor Unit](../projects/smart_motor/README.md)** - Closed-loop motor control (Driver + Encoder + Current).
 *   **[Weather Station](../projects/weather_station/README.md)** - Integrated environment monitor (BME280 + CCS811 + MAX44009).
 
+## 🛠 Developer Tools
+*   **[xpi-top Monitor](../src/xpi_tools/README.md)** - TUI dashboard for viewing sensor data (SSH-friendly).
+
 ## 👁️ Vision & AI (CV / VLM)
 *   **[Camera (USB/CSI)](../blocks/sensors/camera/README.md)** - Standard V4L2 camera setup.
 *   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Gemini/GPT-4o.
