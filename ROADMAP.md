@@ -55,10 +55,13 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Telegram Bot Control** -> `xpi_inputs/telegram_bot_node`
 *   **Gesture Control (MediaPipe)** -> `xpi_inputs/gesture_control_node`
 *   **xpi-top (CLI Monitor)** -> `xpi_tools`
+*   **Modbus RTU Generic Driver** -> `xpi_comms/modbus_rtu_node`
+*   **MQTT Bridge** -> `xpi_comms/mqtt_bridge_node`
+*   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 
 ## 🚧 High Priority (Next Up)
-*   **Modbus RTU Generic Driver** - Configurable reader for RS485 devices.
-*   **MQTT Bridge** - Bidirectional gateway to Home Assistant / IoT.
+*   **Victron VE.Direct Driver** - Support for high-end solar controllers.
+*   **Renogy Rover Modbus Config** - Configuration for Renogy solar controllers.
 
 ## 📋 backlog: Supported Sensors & Actuators
 
@@ -131,4 +134,3 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 39. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
 40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
-42. **EPEver MPPT Solar Controller** - RS485/Modbus monitoring.
