@@ -16,3 +16,4 @@ textual
 minimalmodbus
 pyserial
 paho-mqtt
+adafruit-circuitpython-max1704x

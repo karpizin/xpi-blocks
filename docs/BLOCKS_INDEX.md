@@ -54,6 +54,7 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
+*   **[MAX17048 Battery Gauge](../blocks/sensors/battery_max17048/README.md)** - Accurate LiPo fuel gauge (I2C).
 *   **[ACS712 Current Sensor](../blocks/sensors/acs712/README.md)** - Analog Hall-effect current sensor (via ADS1115).
 *   **[MAX471 Voltage/Current](../blocks/sensors/max471/README.md)** - Analog V/A sensor (via ADS1115).
 *   **[EPEver Tracer MPPT](../blocks/power/epever_mppt/README.md)** - Solar charge controller monitoring (Modbus RS-485).

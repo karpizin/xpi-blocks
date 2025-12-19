@@ -58,9 +58,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Modbus RTU Generic Driver** -> `xpi_comms/modbus_rtu_node`
 *   **MQTT Bridge** -> `xpi_comms/mqtt_bridge_node`
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
+*   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
+*   **SW6106 / IP5306 Drivers** - Support for Power Bank HATs.
+*   **CW2015 Driver** - Support for UPS HATs.
 *   **Renogy Rover Modbus Config** - Configuration for Renogy solar controllers.
 
 ## 📋 backlog: Supported Sensors & Actuators
