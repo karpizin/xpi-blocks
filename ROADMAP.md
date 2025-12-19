@@ -61,6 +61,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
 *   **Facial Expressions (Procedural)** -> `xpi_hci/expression_engine_node`
+*   **GPS/GNSS (NMEA UART)** -> `xpi_sensors/gps_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
@@ -148,7 +149,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Voice Assistant Project:** Combining Mic + TTS + LLM for natural interaction.
 
 ### 🗺️ Outdoor Navigation
-*   **GNSS/GPS:** Support for **u-blox M8N/M9N** modules.
 *   **Magnetometer:** High-precision compass modules (**QMC5883L**, **BMM150**).
 *   **RTK GPS:** Precision positioning (cm-level) for outdoor rovers.
 

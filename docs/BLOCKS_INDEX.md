@@ -53,6 +53,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
 
+## 🗺️ Navigation (Outdoor)
+*   **[GPS/GNSS NMEA](../blocks/sensors/gps_nmea/README.md)** - Standard GPS tracking via UART.
+
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
 *   **[MAX17048 Battery Gauge](../blocks/sensors/battery_max17048/README.md)** - Accurate LiPo fuel gauge (I2C).

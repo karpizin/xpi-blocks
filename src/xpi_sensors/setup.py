@@ -42,6 +42,7 @@ setup(
             'ccs811_node = xpi_sensors.ccs811_node:main',
             'ina219_node = xpi_sensors.ina219_node:main',
             'max17048_node = xpi_sensors.max17048_node:main',
+            'gps_node = xpi_sensors.gps_node:main',
         ],
     },
 )
