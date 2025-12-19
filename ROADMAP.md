@@ -44,8 +44,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **MAX44009 (Wide Range Lux)** -> `xpi_sensors/max44009_node`
 *   **INA219 (Power Monitor)** -> `xpi_sensors/ina219_node`
 *   **ACS712 (Analog Current)** -> `xpi_sensors/acs712.launch.py` (via interpreter)
-*   **MAX471 (Analog Current)** -> `xpi_sensors/analog_sensor_interpreter`
-*   **KY-013 (Thermistor)** -> `xpi_sensors/analog_sensor_interpreter`
+*   **MAX471 (Analog Current)** -> `blocks/sensors/max471`
+*   **KY-013 (Thermistor)** -> `blocks/sensors/ky013`
 *   **#26 TSL2561 (Light Sensor)** -> `xpi_sensors/tsl2561_node`
 *   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
 *   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`
