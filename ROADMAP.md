@@ -43,6 +43,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **AS7341 (11-Ch Spectral)** -> `xpi_sensors/as7341_node`
 *   **MAX44009 (Wide Range Lux)** -> `xpi_sensors/max44009_node`
 *   **INA219 (Power Monitor)** -> `xpi_sensors/ina219_node`
+*   **ACS712 (Analog Current)** -> `xpi_sensors/acs712.launch.py` (via interpreter)
 *   **#26 TSL2561 (Light Sensor)** -> `xpi_sensors/tsl2561_node`
 *   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
 *   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`
@@ -117,9 +118,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 30. FPM10A - fingerprint sensor  (UART)
 31. BF350 - load cell/strain gauge
 32. HW-526 - rotation sensor
-33. MAX471 - current sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
-34. KY-013 - thermistor/analog temperature sensor (along with ads1115, I2C) - *Now covered by Analog Sensor Interpreter*
-35. TGS2600 - air quality PM10 sensor
+33. TGS2600 - air quality PM10 sensor
 36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
 37. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
 

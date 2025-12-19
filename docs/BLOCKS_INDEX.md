@@ -43,6 +43,7 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
+*   **[ACS712 Current Sensor](../blocks/sensors/acs712/README.md)** - Analog Hall-effect current sensor (via ADS1115).
 
 ## ⚙️ Actuators (Motion)
 *   **[DC Motor (TB6612)](../blocks/actuators/motors_dc/README.md)** - Dual DC motor driver control.
