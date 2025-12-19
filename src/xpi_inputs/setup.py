@@ -34,6 +34,7 @@ setup(
             'web_joystick_node = xpi_inputs.web_joystick_node:main',
             'telegram_bot_node = xpi_inputs.telegram_bot_node:main',
             'gesture_control_node = xpi_inputs.gesture_control_node:main',
+            'rotary_encoder_node = xpi_inputs.rotary_encoder_node:main',
         ],
     },
 )

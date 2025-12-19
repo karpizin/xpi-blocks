@@ -9,6 +9,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
 *   **Joystick/Gamepad** -> `xpi_inputs/joystick`
 *   **Keyboard** -> `xpi_inputs/keyboard`
+*   **Rotary Encoder (GPIO)** -> `xpi_inputs/rotary_encoder_node`
 *   **SBUS Receiver** -> `xpi_inputs/rc_sbus`
 *   **CRSF Receiver** -> `xpi_inputs/rc_crsf`
 *   **PPM Receiver** -> `xpi_inputs/rc_ppm`
@@ -119,7 +120,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
 30. FPM10A - fingerprint sensor  (UART)
 31. BF350 - load cell/strain gauge
-32. HW-526 - rotation sensor
 33. TGS2600 - air quality PM10 sensor
 36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
 37. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)

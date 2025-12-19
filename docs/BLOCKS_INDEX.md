@@ -20,6 +20,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
 *   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.
+*   **[Rotary Encoder (GPIO)](../blocks/inputs/rotary_encoder/README.md)** - Quadrature encoder for dials or motor odometry.
 *   **[RC Receiver (SBUS)](../blocks/inputs/rc_sbus/README.md)** - FrSky/Futaba radio integration.
 *   **[RC Receiver (CRSF)](../blocks/inputs/rc_crsf/README.md)** - TBS Crossfire / ELRS integration.
 *   **[RC Receiver (PPM)](../blocks/inputs/rc_ppm/README.md)** - Legacy PPM radio integration.
