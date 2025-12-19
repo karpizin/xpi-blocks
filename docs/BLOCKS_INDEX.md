@@ -2,6 +2,10 @@
 
 This index provides direct links to the documentation for every implemented block in the library.
 
+## 📦 Projects (Integrated Systems)
+*   **[Smart Motor Unit](../projects/smart_motor/README.md)** - Closed-loop motor control (Driver + Encoder + Current).
+*   **[Weather Station](../projects/weather_station/README.md)** - Integrated environment monitor (BME280 + CCS811 + MAX44009).
+
 ## 👁️ Vision & AI (CV / VLM)
 *   **[Camera (USB/CSI)](../blocks/sensors/camera/README.md)** - Standard V4L2 camera setup.
 *   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Gemini/GPT-4o.
