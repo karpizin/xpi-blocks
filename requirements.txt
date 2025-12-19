@@ -15,3 +15,4 @@ adafruit-circuitpython-ina219
 textual
 minimalmodbus
 pyserial
+paho-mqtt
