@@ -6,3 +6,4 @@ python-telegram-bot
 opencv-python-headless
 numpy
 mediapipe
+apds9960
