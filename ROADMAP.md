@@ -39,6 +39,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#10 TCS34725 (RGB Color)** -> `xpi_sensors/tcs34725_node`
 *   **APDS-9960 (RGB/Gesture)** -> `xpi_sensors/apds9960_node`
 *   **AS7341 (11-Ch Spectral)** -> `xpi_sensors/as7341_node`
+*   **MAX44009 (Wide Range Lux)** -> `xpi_sensors/max44009_node`
 *   **#26 TSL2561 (Light Sensor)** -> `xpi_sensors/tsl2561_node`
 *   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
 *   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`
@@ -59,9 +60,10 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **TSL2591** - High Dynamic Range Light Sensor
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
-*   [x] **AS7341** - 11-Channel Spectral Color Sensor -> `xpi_sensors/as7341_node`
-*   [x] **APDS-9960** - RGB, Gesture, Proximity -> `xpi_sensors/apds9960_node`
-*   [ ] #25 MAX44009 - Light sensor
+*   [ ] **AS7341** - 11-Channel Spectral Color Sensor
+*   [ ] **APDS-9960** - RGB, Gesture, Proximity
+*   [x] #25 **MAX44009** - Light sensor -> `xpi_sensors/max44009_node`
+*   [ ] #34 BH1745NUC - Light sensor
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)

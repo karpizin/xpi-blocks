@@ -27,6 +27,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## 🌡️ Sensors (Environment & Physics)
 *   **[BH1750 Light Sensor](../blocks/sensors/bh1750/README.md)** - Ambient light intensity (Lux).
 *   **[OPT3001 Light Sensor](../blocks/sensors/opt3001/README.md)** - High-precision ambient light (Lux).
+*   **[MAX44009 Light Sensor](../blocks/sensors/max44009/README.md)** - Ultra-wide dynamic range lux meter.
 *   **[TSL2561 Light Sensor](../blocks/sensors/tsl2561/README.md)** - Dual-diode wide dynamic range light sensor.
 *   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
 *   **[AS7341 Spectral Sensor](../blocks/sensors/as7341/README.md)** - 11-Channel spectral color analyzer.
