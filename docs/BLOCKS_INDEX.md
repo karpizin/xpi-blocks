@@ -53,6 +53,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## 💡 Actuators (Visual & Output)
 *   **[Relay Module](../blocks/actuators/relays/README.md)** - Switching high-voltage/current loads.
 *   **[OLED Display (SSD1306)](../blocks/actuators/oled_displays/README.md)** - Small graphical display (I2C).
+*   **[LCD 1602 Display](../blocks/actuators/lcd1602/README.md)** - Character LCD (16x2) via I2C.
 *   **[LED Matrix (MAX7219)](../blocks/actuators/led_displays/README.md)** - 8x8 dot matrix display.
 *   **[7-Segment (TM1637)](../blocks/actuators/led_displays/README.md)** - 4-digit numeric display.
 *   **[WS2812B Effects](../blocks/actuators/leds/ws2812_effects/README.md)** - Addressable RGB LED strips with 100+ effects.

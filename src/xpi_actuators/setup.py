@@ -37,6 +37,7 @@ setup(
             'a4988_driver = xpi_actuators.a4988_driver_node:main',
             'esc_driver = xpi_actuators.esc_driver_node:main',
             'direct_servo = xpi_actuators.direct_servo_node:main',
+            'lcd1602_node = xpi_actuators.lcd1602_node:main',
         ],
     },
 )
