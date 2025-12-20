@@ -62,6 +62,21 @@ This section details how Large Language Models (LLM) and Vision-Language Models 
     *   For Tool Calling, instructions on expected JSON output or tool usage should be part of the prompt (especially for Ollama which requires prompt-based tool simulation).
 *   **Output:** LLM analysis/responses are typically published as `std_msgs/String`.
 
-## 7. Dev Environment & CI
+## 8. Swarm & Mesh Architecture
+This section defines how groups of robots communicate and coordinate without external infrastructure.
+
+*   **Communication Layer (LoRa Mesh):**
+    *   Powered by **Meshtastic** hardware/firmware.
+    *   Integrated into ROS2 via `meshtastic_bridge_node` (Serial or TCP bridge).
+    *   Responsible for low-bandwidth, long-range "Shared State" propagation.
+*   **Consensus Engine:**
+    *   A decentralized voting system (`ConsensusEngine`) ensures all robots agree on mission parameters (e.g., changing from SEARCH to RESCUE mode).
+    *   Uses Gossip-based protocols to reach agreement without a central server.
+*   **Collective Sensing:**
+    *   Robots share high-level metadata about detected objects or environment maps through the Mesh.
+*   **Behavioral Emergence:**
+    *   Groups follow behavioral rules (Boids, Area Coverage) to act as a single entity.
+
+## 9. Dev Environment & CI
 *   **Docker:** A `devcontainer` setup is mandatory to ensure reproducible builds across OS (macOS/Windows/Linux).
 *   **Linting:** Strict `ament_flake8` and `ament_pep257` compliance.

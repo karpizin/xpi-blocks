@@ -69,7 +69,11 @@ xpi-blocks/
 *   **1-Wire Access:** Kernel modules (`w1_gpio`, `w1_therm`).
 *   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
 *   **Universal Input:** `joy_mapper_node` converts any Joystick, Mouse, or Keyboard into standard robot commands (`Twist`, `Bool`, `Float32`) via YAML config.
+*   **LoRa Mesh & Swarm:** Native support for `Meshtastic` LoRa devices for decentralized robot-to-robot communication and swarm intelligence (collision avoidance, collective consensus).
 *   **Containerization:** `Dockerfile` support for rapid deployment.
+...
+*   **[📡 MESH & SWARM ROADMAP](docs/MESH_ROADMAP.md)** - Decentralized communication and collective intelligence plan.
+*   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
 
 ## 📋 Prerequisites
 Before using these blocks, ensure you have:

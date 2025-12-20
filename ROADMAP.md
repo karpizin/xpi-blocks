@@ -66,6 +66,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **ArUco Visual Markers** -> `xpi_vision/aruco_tracker_node`
 *   **UWB Beacon SLAM (Indoor)** -> `xpi_navigation/beacon_slam_node`
 *   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
+*   **Meshtastic LoRa Bridge** -> `xpi_comms/meshtastic_bridge_node`
+*   **Swarm Consensus Engine** -> `blocks/swarm/consensus/engine.py`
 
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
