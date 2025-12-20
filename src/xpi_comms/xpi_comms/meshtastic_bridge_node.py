@@ -9,12 +9,14 @@ import json
 import os
 import sys
 
-# Добавляем путь к нашему драйверу
+# Добавляем путь к нашему драйверу и движку консенсуса
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../blocks/drivers/meshtastic'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../../blocks/swarm/consensus'))
 from driver import MeshtasticDriver
+from engine import ConsensusEngine # NEW
 
 from std_msgs.msg import String, Header
-from sensor_msgs.msg import NavSatFix # Для GPS телеметрии
+from sensor_msgs.msg import NavSatFix
 
 class MeshtasticBridgeNode(Node):
     def __init__(self):
@@ -29,8 +31,10 @@ class MeshtasticBridgeNode(Node):
         address = self.get_parameter('address').value
         self.robot_id = self.get_parameter('node_name').value
 
-        # 2. Инициализация драйвера
+        # 2. Инициализация драйвера и консенсуса
         self.driver = MeshtasticDriver(interface_type, address)
+        self.consensus = ConsensusEngine(self.robot_id) # NEW
+        
         self.driver.on_telemetry_received.append(self._on_mesh_telemetry)
         self.driver.on_command_received.append(self._on_mesh_command)
         
@@ -40,31 +44,46 @@ class MeshtasticBridgeNode(Node):
             self.get_logger().error(f"Failed to connect to Meshtastic: {e}")
 
         # 3. ROS2 Интерфейсы
-        # Публикация данных от соседей
         self.pub_neighbors = self.create_publisher(String, '~/neighbors', 10)
         self.pub_commands = self.create_publisher(String, '~/inbound_commands', 10)
+        self.pub_consensus = self.create_publisher(String, '~/consensus_reached', 10) # NEW
 
-        # Подписка на локальную телеметрию (например, GPS)
         self.sub_gps = self.create_subscription(NavSatFix, '/gps/fix', self._gps_callback, 10)
-        
-        # Подписка на команды, которые нужно отправить в Mesh (например, от роевого контроллера)
         self.sub_outbound = self.create_subscription(String, '~/outbound_broadcast', self._outbound_callback, 10)
+        
+        # Подписка на локальные запросы на консенсус (например, "предлагаю сменить режим")
+        self.sub_propose = self.create_subscription(String, '~/propose_decision', self._propose_callback, 10) # NEW
 
         self.get_logger().info(f"Meshtastic Bridge Node started. ID: {self.robot_id}")
 
-    def _on_mesh_telemetry(self, telemetry):
-        """Вызывается драйвером при получении данных от соседа."""
-        msg = String()
-        msg.data = json.dumps(telemetry)
-        self.pub_neighbors.publish(msg)
-        # self.get_logger().info(f"Neighbor {telemetry['node_id']} updated")
-
     def _on_mesh_command(self, sender_id, command):
-        """Вызывается при получении команды из Mesh."""
-        msg = String()
-        msg.data = json.dumps({"from": sender_id, "cmd": command})
-        self.pub_commands.publish(msg)
-        self.get_logger().info(f"Received Mesh command from {sender_id}")
+        """Обработка команд И голосований."""
+        if isinstance(command, dict) and command.get("type") == "consensus":
+            # Логика голосования
+            total_nodes = len(self.driver.neighbors) + 1 # + мы сами
+            result = self.consensus.process_incoming_vote(sender_id, command, total_nodes)
+            
+            if result:
+                # Консенсус достигнут!
+                msg = String()
+                msg.data = json.dumps({"topic": command.get("topic"), "value": result})
+                self.pub_consensus.publish(msg)
+                self.get_logger().info(f"CONSENSUS REACHED: {command.get('topic')} = {result}")
+        else:
+            # Обычная команда
+            msg = String()
+            msg.data = json.dumps({"from": sender_id, "cmd": command})
+            self.pub_commands.publish(msg)
+
+    def _propose_callback(self, msg: String):
+        """Создание нового предложения в сеть от нашего робота."""
+        try:
+            data = json.loads(msg.data) # {"topic": "mode", "value": "SEARCH"}
+            proposal = self.consensus.create_proposal(data['topic'], data['value'])
+            self.driver.broadcast_telemetry(proposal)
+            self.get_logger().info(f"Broadcasted proposal: {data['topic']}={data['value']}")
+        except Exception as e:
+            self.get_logger().error(f"Failed to create proposal: {e}")
 
     def _gps_callback(self, msg: NavSatFix):
         """Отправка локальных координат в Mesh."""
