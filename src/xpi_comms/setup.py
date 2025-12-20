@@ -27,6 +27,8 @@ setup(
             'modbus_rtu_node = xpi_comms.modbus_rtu_node:main',
             'mqtt_bridge_node = xpi_comms.mqtt_bridge_node:main',
             'can_bridge_node = xpi_comms.can_bridge_node:main',
+            'meshtastic_bridge = xpi_comms.meshtastic_bridge_node:main',
+            'swarm_controller = xpi_comms.swarm_controller_node:main',
         ],
     },
 )

@@ -25,3 +25,4 @@ numpy
 bleak
 opencv-contrib-python
 meshtastic
+pyubsub
