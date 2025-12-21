@@ -72,7 +72,7 @@ xpi-blocks/
 *   **LoRa Mesh & Swarm:** Native support for `Meshtastic` LoRa devices for decentralized robot-to-robot communication and swarm intelligence (collision avoidance, collective consensus).
 *   **Containerization:** `Dockerfile` support for rapid deployment.
 ...
-*   **[📡 MESH & SWARM ROADMAP](docs/MESH_ROADMAP.md)** - Decentralized communication and collective intelligence plan.
+*   **[📡 SWARM NET PROJECT](projects/swarm_net/README.md)** - Comprehensive example of decentralized communication and collective intelligence.
 *   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
 
 ## 📋 Prerequisites
