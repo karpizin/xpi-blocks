@@ -23,7 +23,8 @@ This document provides a technical summary of all implemented modules (blocks) w
 *   **ArUco Visual Markers:** 3D pose estimation and navigation relative to printed fiducial markers with full support for camera calibration.
 
 ## 🌡️ Sensors: Environment & Physics
-*   **PMS5003 Dust Sensor:** Laser scattering sensor for detecting Particulate Matter (PM1.0, PM2.5, PM10) to monitor air quality and smog.
+*   **PMS5003 Dust Sensor:** Laser scattering sensor for detecting Particulate Matter (PM1.0, PM2.5, PM10).
+*   **RFID/NFC (PN532):** Contactless identification of tags and cards via I2C for docking and security.
 *   **BME680 Environmental:** High-end 4-in-1 sensor measuring Gas (VOC), Temperature, Humidity, and Pressure.
 *   **TSL2591 HDR Light:** High Dynamic Range light sensor (600M:1 contrast) with separate IR and Full-Spectrum channels.
 *   **AS7341 Spectral Sensor:** 11-channel visible light spectrometer for precise color matching and light source analysis.

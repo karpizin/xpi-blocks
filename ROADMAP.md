@@ -179,7 +179,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Smart Gripper:** Integrated servo control with force/position feedback.
 
 ### 🔐 Security & Identification
-*   **RFID/NFC:** Support for **RC522** and **PN532** readers.
+*   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
+*   **RC522 RFID Reader** - Low-cost SPI alternative.
 *   **Biometrics:** Fingerprint sensor integration (FPM10A).
 *   **Indoor Positioning:** **UWB** (Ultra-Wideband) modules for precise local tracking.
 

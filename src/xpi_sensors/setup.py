@@ -33,6 +33,7 @@ setup(
             'bmp085_node = xpi_sensors.bmp085_node:main',
             'ads1115_node = xpi_sensors.ads1115_node:main',
             'anemometer_node = xpi_sensors.anemometer_node:main',
+            'nfc_reader_node = xpi_sensors.nfc_reader_node:main',
             'analog_sensor_interpreter_node = xpi_sensors.analog_sensor_interpreter_node:main',
             'lm75a_node = xpi_sensors.lm75a_node:main',
             'bh1750_node = xpi_sensors.bh1750_node:main',

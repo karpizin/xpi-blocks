@@ -46,6 +46,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
 *   **[AS7341 Spectral Sensor](../blocks/sensors/as7341/README.md)** - 11-Channel spectral color analyzer.
 *   **[APDS-9960 Gesture/Color](../blocks/sensors/apds9960/README.md)** - RGB, Proximity, and Gesture control sensor.
+*   **[RFID/NFC (PN532)](../blocks/sensors/nfc/README.md)** - Contactless tag identification via I2C.
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
 *   **[Anemometer Wind Speed](../blocks/sensors/anemometer/README.md)** - Mechanical cup anemometer (GPIO).

@@ -31,3 +31,4 @@ adafruit-circuitpython-dht
 adafruit-circuitpython-tsl2591
 bless
 scipy
+adafruit-circuitpython-pn532
