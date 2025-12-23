@@ -27,3 +27,4 @@ opencv-contrib-python
 meshtastic
 pyubsub
 adafruit-circuitpython-bme680
+adafruit-circuitpython-dht
