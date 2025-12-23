@@ -50,6 +50,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC gas sensor.
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
 *   **[DS18B20 Temperature](../blocks/sensors/temperature/README.md)** - Waterproof 1-Wire temperature sensor.
+*   **[HR202 Humidity Sensor](../blocks/sensors/hr202/README.md)** - Low-cost analog resistive humidity sensor.
 *   **[KY-013 Thermistor](../blocks/sensors/ky013/README.md)** - Analog NTC thermistor module.
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
 *   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).

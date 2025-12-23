@@ -71,6 +71,8 @@ class AnalogSensorInterpreterNode(Node):
                 self.publishers[channel] = self.create_publisher(Float32, f'~/voltage_divider_ch{channel}', 10)
             elif sensor_type == 'soil_moisture':
                 self.publishers[channel] = self.create_publisher(Float32, f'~/soil_moisture_ch{channel}', 10)
+            elif sensor_type == 'hr202':
+                self.publishers[channel] = self.create_publisher(RelativeHumidity, f'~/humidity_ch{channel}', 10)
             elif sensor_type == 'vibration' or sensor_type == 'noise_level':
                 self.publishers[channel] = self.create_publisher(Range, f'~/analog_range_ch{channel}', 10) # Using Range for generic 0-X level
             else:
@@ -181,18 +183,50 @@ class AnalogSensorInterpreterNode(Node):
                     voltage_msg.data = source_voltage
                     pub.publish(voltage_msg)
 
-                elif sensor_type == 'soil_moisture':
-                    # Capacitive soil moisture sensors output voltage inversely proportional to moisture
-                    min_v = config.get('min_voltage', 0.8) # Dryest
-                    max_v = config.get('max_voltage', 2.5) # Wettest
-                    
-                    moisture_percent = np.interp(voltage, [min_v, max_v], [0.0, 100.0])
-                    moisture_msg = Float32()
-                    moisture_msg.data = max(0.0, min(100.0, moisture_percent)) # Clamp 0-100
-                    pub.publish(moisture_msg)
+                                elif sensor_type == 'soil_moisture':
+                                    # Capacitive soil moisture sensors output voltage inversely proportional to moisture
+                                    min_v = config.get('min_voltage', 0.8) # Dryest
+                                    max_v = config.get('max_voltage', 2.5) # Wettest
+                                    
+                                    moisture_percent = np.interp(voltage, [min_v, max_v], [0.0, 100.0])
+                                    moisture_msg = Float32()
+                                    moisture_msg.data = max(0.0, min(100.0, moisture_percent)) # Clamp 0-100
+                                    pub.publish(moisture_msg)
                 
-                            elif sensor_type == 'vibration' or sensor_type == 'noise_level':
-                                # Generic analog level, use sensor_msgs/Range (min/max range can be voltage levels)
+                                elif sensor_type == 'hr202':
+                                    # HR202 Resistive Humidity Sensor
+                                    # Circuit: Vcc -> HR202 -> ADC_IN (voltage) -> R_ref -> GND
+                                    R_ref = config.get('R_ref', 10000.0) 
+                                    V_supply = config.get('V_supply', 3.3)
+                                    
+                                    if voltage >= V_supply or voltage <= 0.01:
+                                        resistance = float('inf') if voltage <= 0.01 else 0.0
+                                    else:
+                                        # voltage = V_supply * R_ref / (Rs + R_ref)
+                                        # Rs = R_ref * (V_supply - voltage) / voltage
+                                        resistance = R_ref * (V_supply - voltage) / voltage
+                                    
+                                    # HR202 Characteristic is logarithmic. 
+                                    # Approx: Log10(R) = A * Humidity + B  => Humidity = (Log10(R) - B) / A
+                                    # These values are generic approximations for HR202 at 25C
+                                    # Log10(R) at 20% RH ~= 6.5 (3M Ohm), at 90% RH ~= 3.5 (3k Ohm)
+                                    if resistance <= 0 or math.isinf(resistance):
+                                        humidity_pct = 0.0
+                                    else:
+                                        log_r = math.log10(resistance)
+                                        # Linear interpolation between common points (log scale)
+                                        # 20% -> 6.5, 40% -> 5.5, 60% -> 4.5, 80% -> 3.8, 90% -> 3.5
+                                        rh_points = [20.0, 40.0, 60.0, 80.0, 90.0]
+                                        log_r_points = [6.5, 5.5, 4.5, 3.8, 3.5]
+                                        humidity_pct = np.interp(log_r, log_r_points[::-1], rh_points[::-1])
+                                    
+                                    hum_msg = RelativeHumidity()
+                                    hum_msg.header.stamp = current_time
+                                    hum_msg.header.frame_id = f'{self.frame_id}_ch{channel}'
+                                    hum_msg.relative_humidity = float(max(0.0, min(100.0, humidity_pct))) / 100.0
+                                    pub.publish(hum_msg)
+                                
+                                elif sensor_type == 'vibration' or sensor_type == 'noise_level':                                # Generic analog level, use sensor_msgs/Range (min/max range can be voltage levels)
                                 # Or a custom message for 'level'
                                 # For now, just publish raw voltage
                                 range_msg = Range()
