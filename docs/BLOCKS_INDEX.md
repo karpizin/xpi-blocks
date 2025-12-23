@@ -65,8 +65,9 @@ This index provides direct links to the documentation for every implemented bloc
 ## 🗺️ Navigation (Outdoor & Indoor)
 *   **[GPS/GNSS NMEA](../blocks/sensors/gps_nmea/README.md)** - Standard GPS tracking via UART.
 *   **[QMC5883L Compass](../blocks/sensors/magnetometer_qmc5883l/README.md)** - 3-Axis digital magnetometer for heading.
-*   **[UWB Beacon Navigation](../blocks/navigation/uwb_beacons/README.md)** - Indoor SLAM using radio beacons.
-*   **[BLE Beacon Navigation](../blocks/navigation/ble_beacons/README.md)** - Low-cost RSSI-based indoor ranging.
+*   **[UWB Beacon SLAM (Indoor)](../blocks/navigation/uwb_beacons/README.md)** - Indoor SLAM using radio beacons.
+*   **[BLE Beacon SLAM](../blocks/navigation/ble_slam/README.md)** - Indoor localization using Bluetooth Low Energy RSSI trilateration.
+*   **[BLE Beacon Ranging (RSSI)](../blocks/navigation/ble_beacons/README.md)** - Low-cost RSSI-based indoor ranging.
 
 ## 🔋 Power & Energy
 *   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).

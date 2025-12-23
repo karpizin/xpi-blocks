@@ -1,0 +1,8 @@
+# Known BLE Beacons Configuration
+# Format: MAC_ADDRESS: [X, Y, Z] (meters)
+
+beacons:
+  "AA:BB:CC:DD:EE:01": [0.0, 0.0, 1.5]
+  "AA:BB:CC:DD:EE:02": [5.0, 0.0, 1.5]
+  "AA:BB:CC:DD:EE:03": [0.0, 5.0, 1.5]
+  "AA:BB:CC:DD:EE:04": [5.0, 5.0, 1.5]

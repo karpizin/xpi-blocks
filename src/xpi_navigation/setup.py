@@ -23,9 +23,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'uwb_ranging_node = xpi_navigation.uwb_ranging_node:main',
-            'ble_ranging_node = xpi_navigation.ble_ranging_node:main',
             'beacon_slam_node = xpi_navigation.beacon_slam_node:main',
+            'ble_ranging_node = xpi_navigation.ble_ranging_node:main',
+            'ble_slam_node = xpi_navigation.ble_slam_node:main',
+            'uwb_ranging_node = xpi_navigation.uwb_ranging_node:main',
         ],
     },
 )
