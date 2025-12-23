@@ -67,9 +67,17 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **UWB Beacon SLAM (Indoor)** -> `xpi_navigation/beacon_slam_node`
 *   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
 *   **Meshtastic LoRa Bridge** -> `xpi_comms/meshtastic_bridge_node`
+*   **Swarm Consensus Engine** -> `blocks/swarm/consensus/engine.py`
+*   **PMS5003 Dust Sensor (PM1.0/2.5/10)** -> `xpi_sensors/pms5003_node`
+*   **BME680 (Gas/Temp/Hum/Press)** -> `xpi_sensors/bme680_node`
+*   **TSL2591 (HDR Light)** -> `xpi_sensors/tsl2591_node`
+*   **DHT11 / DHT22 (Temp/Hum)** -> `xpi_sensors/dht_node`
+*   **HR-202 (Analog Humidity)** -> `blocks/sensors/hr202` (via Analog Interpreter)
+*   **MICS-6814 (Triple Gas)** -> `blocks/sensors/mics6814` (via Analog Interpreter)
+*   **Anemometer (Wind Speed)** -> `xpi_sensors/anemometer_node`
 *   **LTE / 4G Modem (SIM7600)** -> `xpi_comms/lte_modem_node`
 *   **BLE Bridge (GATT Server)** -> `xpi_comms/ble_bridge_node`
-*   **Swarm Consensus Engine** -> `blocks/swarm/consensus/engine.py`
+*   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.
@@ -105,7 +113,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors.
 
 ### Outdoor Weather (Mechanical)
-*   [ ] **Anemometer** - Wind Speed (Pulse Counter / GPIO).
+*   [ ] **Anemometer** - *Implemented*
 *   [ ] **Wind Vane** - Wind Direction (Analog / Encoder / Gray Code).
 *   [ ] **Rain Gauge** - Precipitation (Tipping Bucket / Pulse Counter).
 
@@ -131,7 +139,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 10. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
 11. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
 12. AT24Cxxx - memory chip (I2C)
-13. MICS-6814 - CO NO2 NH3 gas sensor
+13. MICS-6814 - *Implemented*
 14. DSM501A - *Replaced by PMS5003 implementation*
 15. DHT22 (DHT11) - *Implemented*
 16. W25Qxx (Flash SPI)
