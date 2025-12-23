@@ -28,8 +28,9 @@ setup(
             'mqtt_bridge_node = xpi_comms.mqtt_bridge_node:main',
             'can_bridge_node = xpi_comms.can_bridge_node:main',
             'meshtastic_bridge = xpi_comms.meshtastic_bridge_node:main',
-            'swarm_controller = xpi_comms.swarm_controller_node:main',
+            'swarm_controller_node = xpi_comms.swarm_controller_node:main',
             'ble_bridge_node = xpi_comms.ble_bridge_node:main',
+            'lte_modem_node = xpi_comms.lte_modem_node:main',
         ],
     },
 )
