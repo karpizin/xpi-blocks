@@ -74,6 +74,9 @@ class AnalogSensorInterpreterNode(Node):
                 self.publishers[channel] = self.create_publisher(Range, f'~/analog_range_ch{channel}', 10)
             elif sensor_type == 'mq_gas':
                 self.publishers[channel] = self.create_publisher(Float32, f'~/gas_ch{channel}', 10)
+            elif sensor_type in ['mics6814_co', 'mics6814_no2', 'mics6814_nh3']:
+                # Specific types for MICS-6814 channels
+                self.publishers[channel] = self.create_publisher(Float32, f'~/gas_{sensor_type.split("_")[1]}_ch{channel}', 10)
             else:
                 self.get_logger().warn(f"Unsupported sensor type '{sensor_type}' for channel {channel}. No publisher created.")
 
@@ -212,17 +215,14 @@ class AnalogSensorInterpreterNode(Node):
                     pub.publish(range_msg)
                 
                 elif sensor_type == 'mq_gas':
-                    # MQ Gas Sensors
                     V_supply = config.get('V_supply', 5.0)
                     RL = config.get('RL', 10000.0)
-                    
                     if voltage >= V_supply or voltage <= 0:
                         Rs = float('inf') if voltage <= 0 else 0.0
                     else:
                         Rs = RL * (V_supply - voltage) / voltage
                     
                     R0 = config.get('R0', 100000.0)
-                    
                     if Rs == 0 or R0 == 0:
                         ppm = float('nan')
                     else:
@@ -230,7 +230,33 @@ class AnalogSensorInterpreterNode(Node):
                         A = config.get('A_calib', 10000.0)
                         B = config.get('B_calib', -2.5)
                         ppm = A * (Rs_R0**B)
+                    pub.publish(Float32(data=float(ppm)))
+
+                elif sensor_type in ['mics6814_co', 'mics6814_no2', 'mics6814_nh3']:
+                    # MICS-6814 specific interpretation
+                    V_supply = config.get('V_supply', 5.0) # Heater/Circuit usually 5V
+                    RL = config.get('RL', 10000.0) # Load resistor on the module
                     
+                    if voltage >= V_supply or voltage <= 0.001:
+                        Rs = float('inf') if voltage <= 0.001 else 0.0
+                    else:
+                        Rs = RL * (V_supply - voltage) / voltage
+                    
+                    R0 = config.get('R0', 100000.0) # Resistance in clean air
+                    if Rs == 0 or R0 == 0:
+                        ppm = float('nan')
+                    else:
+                        Rs_R0 = Rs / R0
+                        # These are typical coefficients for MICS-6814 curves (Log-Log)
+                        # PPM = A * (Rs/R0)^B
+                        if sensor_type == 'mics6814_co': # RED channel
+                            A, B = 4.42, -1.18 
+                        elif sensor_type == 'mics6814_no2': # OX channel
+                            A, B = 0.05, 1.0  # Oxidizing gas, Rs increases with concentration
+                        elif sensor_type == 'mics6814_nh3': # NH3 channel
+                            A, B = 0.5, -1.8
+                        
+                        ppm = A * (Rs_R0**B)
                     pub.publish(Float32(data=float(ppm)))
 
             except Exception as e:
