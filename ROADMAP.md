@@ -75,10 +75,10 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **HR-202 (Analog Humidity)** -> `blocks/sensors/hr202` (via Analog Interpreter)
 
 ## 🚧 High Priority (Next Up)
-*   **SGP30 Gas Sensor** - For more reliable TVOC/eCO2 readings.
+*   **SCD40 / SCD41** - True CO2 Sensor (NDIR) for accurate indoor air quality.
+*   **SGP30 Gas Sensor** - For reliable TVOC/eCO2 readings.
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **SW6106 / IP5306 Drivers** - Support for Power Bank HATs.
-*   **Renogy Rover Modbus Config** - Configuration for Renogy solar controllers.
 
 ## 📋 backlog: Supported Sensors & Actuators
 
@@ -96,10 +96,19 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
+*   [ ] **SHT30 / SHT31 / SHT35** - Modern High-Precision Temp/Humidity (I2C).
+*   [ ] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
+*   [ ] **DPS310** - High-Precision Barometric Pressure (I2C).
 *   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
 *   [ ] #39 HDC1080 - Temp/Humidity
 *   [ ] #40 LPS22HB - Pressure/Temp
 *   [ ] #41 SHTC3 - Temp/Humidity
+*   [ ] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors.
+
+### Outdoor Weather (Mechanical)
+*   [ ] **Anemometer** - Wind Speed (Pulse Counter / GPIO).
+*   [ ] **Wind Vane** - Wind Direction (Analog / Encoder / Gray Code).
+*   [ ] **Rain Gauge** - Precipitation (Tipping Bucket / Pulse Counter).
 
 ### IO Expanders & ADC (I2C)
 *   [ ] #4 MCP23017 - 16 GPIO Expander
