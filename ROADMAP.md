@@ -67,16 +67,13 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **UWB Beacon SLAM (Indoor)** -> `xpi_navigation/beacon_slam_node`
 *   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
 *   **Meshtastic LoRa Bridge** -> `xpi_comms/meshtastic_bridge_node`
+*   **LTE / 4G Modem (SIM7600)** -> `xpi_comms/lte_modem_node`
+*   **BLE Bridge (GATT Server)** -> `xpi_comms/ble_bridge_node`
 *   **Swarm Consensus Engine** -> `blocks/swarm/consensus/engine.py`
-*   **PMS5003 Dust Sensor (PM1.0/2.5/10)** -> `xpi_sensors/pms5003_node`
-*   **BME680 (Gas/Temp/Hum/Press)** -> `xpi_sensors/bme680_node`
-*   **TSL2591 (HDR Light)** -> `xpi_sensors/tsl2591_node`
-*   **DHT11 / DHT22 (Temp/Hum)** -> `xpi_sensors/dht_node`
-*   **HR-202 (Analog Humidity)** -> `blocks/sensors/hr202` (via Analog Interpreter)
-*   **MICS-6814 (Triple Gas)** -> `blocks/sensors/mics6814` (via Analog Interpreter)
-*   **Anemometer (Wind Speed)** -> `xpi_sensors/anemometer_node`
 
 ## 🚧 High Priority (Next Up)
+*   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.
+*   **HC-12 (433MHz Serial)** - Low-cost long-range UART bridge (~1km).
 *   **SCD40 / SCD41** - True CO2 Sensor (NDIR) for accurate indoor air quality.
 *   **SGP30 Gas Sensor** - For reliable TVOC/eCO2 readings.
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
