@@ -49,6 +49,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
 *   **[DHT11/DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC gas sensor.
+*   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
 *   **[DS18B20 Temperature](../blocks/sensors/temperature/README.md)** - Waterproof 1-Wire temperature sensor.
 *   **[HR202 Humidity Sensor](../blocks/sensors/hr202/README.md)** - Low-cost analog resistive humidity sensor.

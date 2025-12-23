@@ -39,6 +39,7 @@ setup(
             'tsl2561_node = xpi_sensors.tsl2561_node:main',
             'tsl2591_node = xpi_sensors.tsl2591_node:main',
             'tcs34725_node = xpi_sensors.tcs34725_node:main',
+            'pms5003_node = xpi_sensors.pms5003_node:main',
             'apds9960_node = xpi_sensors.apds9960_node:main',
             'as7341_node = xpi_sensors.as7341_node:main',
             'max44009_node = xpi_sensors.max44009_node:main',
