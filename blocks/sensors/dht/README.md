@@ -22,6 +22,15 @@ Connect the sensor to a GPIO pin (default GPIO 4).
 
 **Pull-up Resistor:** Connect a resistor (4.7k - 10k Ohm) between **VCC** and **DATA**. Many "PCB Modules" (3 pins) already have this soldered. If you have the bare 4-pin sensor, you must add it.
 
+## 🧠 Technical Details: Timing & Reliability
+
+The DHT protocol relies on precise microsecond timing (26-28µs for "0", 70µs for "1"). Since Raspberry Pi OS (Linux) is **not a Real-Time Operating System (RTOS)**, background processes can interrupt the CPU during a read, causing timing glitches and checksum errors.
+
+This driver solves this by:
+1.  **Using `libgpiod`:** We leverage C-level GPIO access via the Adafruit library, which is much faster and more consistent than Python-based bit-banging.
+2.  **"Best Effort" Strategy:** The node is designed to catch `RuntimeError` (Checksum mismatch) and silently skip the bad frame. It is normal to lose ~10-20% of packets; the node simply waits for the next cycle.
+3.  **Strict Rate Limiting:** We enforce a maximum polling rate of 0.5Hz (DHT22) to prevent sensor overheating and signal corruption.
+
 ## 🛠 Software Setup
 
 1.  **Install System Dependencies:**
