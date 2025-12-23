@@ -58,9 +58,11 @@ class AnalogSensorInterpreterNode(Node):
             # Create publishers for interpreted data
             if sensor_type == 'thermistor':
                 self.publishers[channel] = self.create_publisher(Temperature, f'~/temperature_ch{channel}', 10)
-            elif sensor_type in ['ldr', 'temt6000', 'guva_s12', 'ml8511']:
+            elif sensor_type == 'ldr':
                 self.publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
-            elif sensor_type in ['acs712', 'max471']:
+            elif sensor_type == 'temt6000' or sensor_type == 'guva_s12' or sensor_type == 'ml8511':
+                self.publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
+            elif sensor_type == 'acs712' or sensor_type == 'max471':
                 self.publishers[channel] = self.create_publisher(Float32, f'~/current_ch{channel}', 10)
             elif sensor_type == 'voltage_divider':
                 self.publishers[channel] = self.create_publisher(Float32, f'~/voltage_divider_ch{channel}', 10)
@@ -68,7 +70,7 @@ class AnalogSensorInterpreterNode(Node):
                 self.publishers[channel] = self.create_publisher(Float32, f'~/soil_moisture_ch{channel}', 10)
             elif sensor_type == 'hr202':
                 self.publishers[channel] = self.create_publisher(RelativeHumidity, f'~/humidity_ch{channel}', 10)
-            elif sensor_type in ['vibration', 'noise_level']:
+            elif sensor_type == 'vibration' or sensor_type == 'noise_level':
                 self.publishers[channel] = self.create_publisher(Range, f'~/analog_range_ch{channel}', 10)
             elif sensor_type == 'mq_gas':
                 self.publishers[channel] = self.create_publisher(Float32, f'~/gas_ch{channel}', 10)
@@ -96,6 +98,7 @@ class AnalogSensorInterpreterNode(Node):
             
             try:
                 if sensor_type == 'thermistor':
+                    # NTC Thermistor
                     R_ref = config.get('R_ref', 10000.0)
                     B_const = config.get('B_const', 3950.0)
                     T_nominal = config.get('T_nominal', 298.15)
@@ -118,8 +121,10 @@ class AnalogSensorInterpreterNode(Node):
                     pub.publish(temp_msg)
 
                 elif sensor_type == 'ldr':
+                    # LDR Light Sensor
                     R_ref = config.get('R_ref', 10000.0)
                     V_supply = config.get('V_supply', 3.3)
+                    
                     if voltage >= V_supply or voltage <= 0:
                          resistance_ldr = float('inf') if voltage <= 0 else 0.0
                     else:
@@ -132,9 +137,11 @@ class AnalogSensorInterpreterNode(Node):
                     illum_msg.illuminance = lux
                     pub.publish(illum_msg)
 
-                elif sensor_type in ['temt6000', 'guva_s12', 'ml8511']:
+                elif sensor_type == 'temt6000' or sensor_type == 'guva_s12' or sensor_type == 'ml8511':
+                    # Linear Light/UV Sensors
                     offset_v = config.get('offset_voltage', 0.0)
                     scale_factor = config.get('scale_factor', 1.0)
+                    
                     interpreted_value = (voltage - offset_v) * scale_factor
                     
                     illum_msg = Illuminance()
@@ -143,25 +150,35 @@ class AnalogSensorInterpreterNode(Node):
                     illum_msg.illuminance = interpreted_value
                     pub.publish(illum_msg)
 
-                elif sensor_type in ['acs712', 'max471']:
+                elif sensor_type == 'acs712' or sensor_type == 'max471':
+                    # Current Sensors
                     sensitivity = config.get('sensitivity_mv_per_a', 185) / 1000.0
                     offset_v = config.get('offset_voltage', 2.5)
+                    
                     current_a = (voltage - offset_v) / sensitivity
                     pub.publish(Float32(data=current_a))
 
                 elif sensor_type == 'voltage_divider':
+                    # Simple Voltage Divider
                     ratio = config.get('ratio', 2.0)
-                    pub.publish(Float32(data=voltage * ratio))
+                    source_voltage = voltage * ratio
+                    pub.publish(Float32(data=source_voltage))
 
                 elif sensor_type == 'soil_moisture':
+                    # Capacitive Soil Moisture
                     min_v = config.get('min_voltage', 0.8)
                     max_v = config.get('max_voltage', 2.5)
+                    
                     moisture_percent = np.interp(voltage, [min_v, max_v], [0.0, 100.0])
-                    pub.publish(Float32(data=max(0.0, min(100.0, moisture_percent))))
+                    # Ensure 0-100 clamp
+                    moisture_percent = max(0.0, min(100.0, moisture_percent))
+                    pub.publish(Float32(data=moisture_percent))
 
                 elif sensor_type == 'hr202':
+                    # HR202 Humidity Sensor
                     R_ref = config.get('R_ref', 10000.0) 
                     V_supply = config.get('V_supply', 3.3)
+                    
                     if voltage >= V_supply or voltage <= 0.01:
                         resistance = float('inf') if voltage <= 0.01 else 0.0
                     else:
@@ -170,18 +187,22 @@ class AnalogSensorInterpreterNode(Node):
                     if resistance <= 0 or math.isinf(resistance):
                         humidity_pct = 0.0
                     else:
+                        # Logarithmic approximation
                         log_r = math.log10(resistance)
                         rh_points = [20.0, 40.0, 60.0, 80.0, 90.0]
                         log_r_points = [6.5, 5.5, 4.5, 3.8, 3.5]
                         humidity_pct = np.interp(log_r, log_r_points[::-1], rh_points[::-1])
                     
+                    humidity_pct = max(0.0, min(100.0, humidity_pct))
+                    
                     hum_msg = RelativeHumidity()
                     hum_msg.header.stamp = current_time
                     hum_msg.header.frame_id = f'{self.frame_id}_ch{channel}'
-                    hum_msg.relative_humidity = float(max(0.0, min(100.0, humidity_pct))) / 100.0
+                    hum_msg.relative_humidity = float(humidity_pct) / 100.0
                     pub.publish(hum_msg)
 
-                elif sensor_type in ['vibration', 'noise_level']:
+                elif sensor_type == 'vibration' or sensor_type == 'noise_level':
+                    # Generic Range Sensor
                     range_msg = Range()
                     range_msg.header.stamp = current_time
                     range_msg.header.frame_id = f'{self.frame_id}_ch{channel}'
@@ -189,16 +210,19 @@ class AnalogSensorInterpreterNode(Node):
                     range_msg.min_range = config.get('min_voltage', 0.0)
                     range_msg.max_range = config.get('max_voltage', 3.3)
                     pub.publish(range_msg)
-
+                
                 elif sensor_type == 'mq_gas':
+                    # MQ Gas Sensors
                     V_supply = config.get('V_supply', 5.0)
                     RL = config.get('RL', 10000.0)
+                    
                     if voltage >= V_supply or voltage <= 0:
                         Rs = float('inf') if voltage <= 0 else 0.0
                     else:
                         Rs = RL * (V_supply - voltage) / voltage
                     
                     R0 = config.get('R0', 100000.0)
+                    
                     if Rs == 0 or R0 == 0:
                         ppm = float('nan')
                     else:
@@ -206,6 +230,7 @@ class AnalogSensorInterpreterNode(Node):
                         A = config.get('A_calib', 10000.0)
                         B = config.get('B_calib', -2.5)
                         ppm = A * (Rs_R0**B)
+                    
                     pub.publish(Float32(data=float(ppm)))
 
             except Exception as e:
