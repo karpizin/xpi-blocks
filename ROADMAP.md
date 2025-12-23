@@ -78,6 +78,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **LTE / 4G Modem (SIM7600)** -> `xpi_comms/lte_modem_node`
 *   **BLE Bridge (GATT Server)** -> `xpi_comms/ble_bridge_node`
 *   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
+*   **AT24Cxxx EEPROM (I2C)** -> `xpi_commons/eeprom_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.

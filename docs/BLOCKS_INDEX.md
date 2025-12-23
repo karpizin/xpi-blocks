@@ -79,6 +79,9 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[MAX471 Voltage/Current](../blocks/sensors/max471/README.md)** - Analog V/A sensor (via ADS1115).
 *   **[EPEver Tracer MPPT](../blocks/power/epever_mppt/README.md)** - Solar charge controller monitoring (Modbus RS-485).
 
+## 💾 Storage & Memory
+*   **[AT24Cxxx EEPROM](../blocks/storage/eeprom/README.md)** - Non-volatile I2C memory for config and state.
+
 ## ⚙️ Actuators (Motion)
 *   **[DC Motor (TB6612)](../blocks/actuators/motors_dc/README.md)** - Dual DC motor driver control.
 *   **[DC/Stepper (L298N)](../blocks/actuators/motors_dc/README.md)** - High power motor driver.

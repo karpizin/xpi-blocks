@@ -19,6 +19,8 @@ setup(
     license='MIT',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [],
+        'console_scripts': [
+            'eeprom_node = xpi_commons.eeprom_node:main',
+        ],
     },
 )
