@@ -47,6 +47,7 @@ This document provides a technical summary of all implemented modules (blocks) w
 *   **TB6612FNG / L298N / DRV8825:** Support for various DC and Stepper motor drivers with PWM and direction control.
 *   **ESC BLDC Driver:** Standard PWM interface for Electronic Speed Controllers to drive brushless drone or car motors.
 *   **PCA9685 / Direct GPIO Servo:** Flexible servo control via dedicated I2C drivers or direct software PWM from Raspberry Pi pins.
+*   **TFT SPI Display (ST7789/ST7735):** Full-color IPS/TFT display support with standard `sensor_msgs/Image` interface and layered JSON drawing commands for telemetry.
 
 ## 📡 Communication & Interfaces
 *   **CAN Bus (SocketCAN):** High-reliability automotive/industrial communication bridge for MCP2515 SPI controllers.

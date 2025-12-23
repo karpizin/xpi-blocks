@@ -77,6 +77,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Anemometer (Wind Speed)** -> `xpi_sensors/anemometer_node`
 *   **LTE / 4G Modem (SIM7600)** -> `xpi_comms/lte_modem_node`
 *   **BLE Bridge (GATT Server)** -> `xpi_comms/ble_bridge_node`
+*   **ST7789 / ST7735 TFT (SPI)** -> `xpi_actuators/tft_display_node`
 *   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
 *   **AT24Cxxx EEPROM (I2C)** -> `xpi_commons/eeprom_node`
 
