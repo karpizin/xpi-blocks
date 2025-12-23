@@ -17,3 +17,4 @@ env/
 
 # System
 .DS_Store
+temp_ssh_key*

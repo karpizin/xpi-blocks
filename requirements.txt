@@ -26,3 +26,4 @@ bleak
 opencv-contrib-python
 meshtastic
 pyubsub
+adafruit-circuitpython-bme680
