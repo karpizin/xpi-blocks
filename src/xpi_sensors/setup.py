@@ -37,6 +37,7 @@ setup(
             'bh1750_node = xpi_sensors.bh1750_node:main',
             'opt3001_node = xpi_sensors.opt3001_node:main',
             'tsl2561_node = xpi_sensors.tsl2561_node:main',
+            'tsl2591_node = xpi_sensors.tsl2591_node:main',
             'tcs34725_node = xpi_sensors.tcs34725_node:main',
             'apds9960_node = xpi_sensors.apds9960_node:main',
             'as7341_node = xpi_sensors.as7341_node:main',
