@@ -8,6 +8,7 @@ import cv2
 from PIL import Image as PILImage
 from PIL import ImageDraw, ImageFont
 import numpy as np
+import json
 
 import board
 import busio
@@ -75,9 +76,11 @@ class TFTDisplayNode(Node):
         self.bridge = CvBridge()
         self.create_subscription(Image, '~/image_in', self._image_callback, 10)
         self.create_subscription(String, '~/text_in', self._text_callback, 10)
+        self.create_subscription(String, '~/cmd_in', self._cmd_callback, 10)
 
-        # Buffer for text rendering
+        # Buffer for drawing
         self.font = ImageFont.load_default()
+        self.canvas = PILImage.new("RGB", (self.width, self.height), (0, 0, 0))
         self.get_logger().info("TFT Display Node Ready.")
 
     def _image_callback(self, msg):
@@ -90,27 +93,55 @@ class TFTDisplayNode(Node):
                 cv_img = cv2.resize(cv_img, (self.width, self.height))
             
             # Convert to PIL and show
-            pil_img = PILImage.fromarray(cv_img)
-            self.display.image(pil_img)
+            self.canvas = PILImage.fromarray(cv_img)
+            self.display.image(self.canvas)
         except Exception as e:
             self.get_logger().warn(f"Display Error: {e}")
 
     def _text_callback(self, msg):
+        """Standard full-screen text output"""
         if not self.display: return
         try:
             # Create black image
-            img = PILImage.new("RGB", (self.width, self.height), (0, 0, 0))
-            draw = ImageDraw.Draw(img)
+            self.canvas = PILImage.new("RGB", (self.width, self.height), (0, 0, 0))
+            draw = ImageDraw.Draw(self.canvas)
             
-            # Simple multiline text wrapping
             y = 10
             for line in msg.data.split('\n'):
                 draw.text((10, y), line, font=self.font, fill=(255, 255, 255))
                 y += 20
             
-            self.display.image(img)
+            self.display.image(self.canvas)
         except Exception as e:
             self.get_logger().warn(f"Text Display Error: {e}")
+
+    def _cmd_callback(self, msg):
+        """
+        Supports JSON commands for advanced drawing:
+        - {"command": "clear"}
+        - {"command": "text", "text": "Hi", "x": 10, "y": 50, "color": [255,0,0]}
+        """
+        if not self.display: return
+        try:
+            cmd = json.loads(msg.data)
+            action = cmd.get('command')
+            
+            if action == 'clear':
+                self.canvas = PILImage.new("RGB", (self.width, self.height), (0, 0, 0))
+            
+            elif action == 'text':
+                draw = ImageDraw.Draw(self.canvas)
+                text = cmd.get('text', '')
+                x = cmd.get('x', 0)
+                y = cmd.get('y', 0)
+                color = tuple(cmd.get('color', [255, 255, 255]))
+                
+                draw.text((x, y), text, font=self.font, fill=color)
+            
+            self.display.image(self.canvas)
+            
+        except Exception as e:
+            self.get_logger().warn(f"Command Error: {e}")
 
 def main(args=None):
     rclpy.init(args=args)

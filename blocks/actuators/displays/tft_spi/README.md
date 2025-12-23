@@ -45,17 +45,31 @@ You can send any ROS2 image message to the display:
 ros2 topic next /camera/image_raw /tft_display/image_in
 ```
 
-### Displaying Text
-The node supports quick text rendering:
-```bash
-ros2 topic pub /tft_display/text_in std_msgs/msg/String "{data: 'Battery: 12.4V\nStatus: Active'}"
-```
+### Advanced Control (JSON Commands)
+The node supports layered drawing via the `~/cmd_in` topic. This allows you to place text at specific coordinates and use colors without clearing the whole screen.
+
+**Topic:** `/tft_display/cmd_in` (`std_msgs/String`)
+
+**Examples:**
+*   **Clear Screen:**
+    ```bash
+    ros2 topic pub --once /tft_display/cmd_in std_msgs/msg/String "{data: '{\"command\": \"clear\"}'}"
+    ```
+*   **Draw Red Text at (50, 100):**
+    ```bash
+    ros2 topic pub --once /tft_display/cmd_in std_msgs/msg/String "{data: '{\"command\": \"text\", \"text\": \"ALERT\", \"x\": 50, \"y\": 100, \"color\": [255, 0, 0]}'}"
+    ```
+*   **Draw Green Status in Corner:**
+    ```bash
+    ros2 topic pub --once /tft_display/cmd_in std_msgs/msg/String "{data: '{\"command\": \"text\", \"text\": \"BATT: 100%\", \"x\": 10, \"y\": 10, \"color\": [0, 255, 0]}'}"
+    ```
 
 ## 📡 Interface
 
 ### Subscribers
 *   `~/image_in` (`sensor_msgs/Image`): Full-screen graphics.
-*   `~/text_in` (`std_msgs/String`): Simple white-on-black text output.
+*   `~/text_in` (`std_msgs/String`): Simple white-on-black text output (Clears screen).
+*   `~/cmd_in` (`std_msgs/String`): Advanced JSON commands (Layered drawing).
 
 ### Parameters
 *   `display_type`: `ST7789` or `ST7735`.
