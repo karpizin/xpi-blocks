@@ -23,11 +23,16 @@ This document provides a technical summary of all implemented modules (blocks) w
 *   **ArUco Visual Markers:** 3D pose estimation and navigation relative to printed fiducial markers with full support for camera calibration.
 
 ## 🌡️ Sensors: Environment & Physics
+*   **PMS5003 Dust Sensor:** Laser scattering sensor for detecting Particulate Matter (PM1.0, PM2.5, PM10) to monitor air quality and smog.
+*   **BME680 Environmental:** High-end 4-in-1 sensor measuring Gas (VOC), Temperature, Humidity, and Pressure.
+*   **TSL2591 HDR Light:** High Dynamic Range light sensor (600M:1 contrast) with separate IR and Full-Spectrum channels.
 *   **AS7341 Spectral Sensor:** 11-channel visible light spectrometer for precise color matching and light source analysis.
 *   **CCS811 Air Quality:** Digital gas sensor for monitoring eCO2 and TVOC levels with internal warm-up management.
 *   **BME280 / BMP085:** Industry-standard sensors for high-accuracy temperature, humidity, and barometric pressure measurement.
 *   **MAX44009 / BH1750 / TSL2561:** A suite of light sensors covering ultra-wide dynamic ranges from 0.045 Lux up to 188,000 Lux.
 *   **TCS34725 RGB Color:** High-sensitivity color sensor with IR blocking filter for accurate surface color detection.
+*   **DHT11 / DHT22:** Support for popular low-cost humidity and temperature sensors via GPIO with software timing correction.
+*   **HR-202 Humidity:** Analog resistive humidity sensor support via generalized Analog Interpreter.
 *   **MPU6050 IMU:** 6-axis motion tracking (Accelerometer + Gyroscope) for robot balance and tilt sensing.
 *   **HC-SR04 / DS18B20:** Classic sensors for ultrasonic ranging and 1-Wire waterproof temperature monitoring.
 

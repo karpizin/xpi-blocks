@@ -68,11 +68,16 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **BLE Beacon Ranging (RSSI)** -> `xpi_navigation/ble_ranging_node`
 *   **Meshtastic LoRa Bridge** -> `xpi_comms/meshtastic_bridge_node`
 *   **Swarm Consensus Engine** -> `blocks/swarm/consensus/engine.py`
+*   **PMS5003 Dust Sensor (PM1.0/2.5/10)** -> `xpi_sensors/pms5003_node`
+*   **BME680 (Gas/Temp/Hum/Press)** -> `xpi_sensors/bme680_node`
+*   **TSL2591 (HDR Light)** -> `xpi_sensors/tsl2591_node`
+*   **DHT11 / DHT22 (Temp/Hum)** -> `xpi_sensors/dht_node`
+*   **HR-202 (Analog Humidity)** -> `blocks/sensors/hr202` (via Analog Interpreter)
 
 ## 🚧 High Priority (Next Up)
+*   **SGP30 Gas Sensor** - For more reliable TVOC/eCO2 readings.
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **SW6106 / IP5306 Drivers** - Support for Power Bank HATs.
-*   **CW2015 Driver** - Support for UPS HATs.
 *   **Renogy Rover Modbus Config** - Configuration for Renogy solar controllers.
 
 ## 📋 backlog: Supported Sensors & Actuators
@@ -81,7 +86,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **Camera (USB/CSI)** - *Implemented via v4l2_camera wrapper*
 
 ### Light & Color (I2C)
-*   [ ] **TSL2591** - High Dynamic Range Light Sensor
+*   [ ] **TSL2591** - *Implemented*
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
 *   [x] **AS7341** - 11-Channel Spectral Color Sensor -> `xpi_sensors/as7341_node`
@@ -119,8 +124,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 11. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
 12. AT24Cxxx - memory chip (I2C)
 13. MICS-6814 - CO NO2 NH3 gas sensor
-14. DSM501A - PM2.5 sensor
-15. DHT22 (DHT11) - humidity and temperature sensor
+14. DSM501A - *Replaced by PMS5003 implementation*
+15. DHT22 (DHT11) - *Implemented*
 16. W25Qxx (Flash SPI)
 17. HW-MS03 - radar sensor module (human sensor)
 18. NAP07 HIS07 - smoke sensor
@@ -128,10 +133,10 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 20. TCS3200 (GY-31) - color sensor
 21. MAX30102 - heartrate sensor
 22. HX711 (cell weight sensor) - digital load sensor
-23. HR-202 - humidity sensor
+23. HR-202 - *Implemented via Analog Interpreter*
 24. SGP30 - CO2 sensor
 *   **MQ-x Gas Sensors (via Analog Sensor Interpreter)** -> `xpi_sensors/analog_sensor_interpreter` - *Now covered by Analog Sensor Interpreter*
-26. BME-680 - environmental sensor
+26. BME-680 - *Implemented*
 27. ZP-16 - gas sensor
 28. VL53L1X - distance laser sensor
 29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
