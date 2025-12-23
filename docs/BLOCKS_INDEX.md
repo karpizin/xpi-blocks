@@ -47,6 +47,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[APDS-9960 Gesture/Color](../blocks/sensors/apds9960/README.md)** - RGB, Proximity, and Gesture control sensor.
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
+*   **[Anemometer Wind Speed](../blocks/sensors/anemometer/README.md)** - Mechanical cup anemometer (GPIO).
 *   **[DHT11/DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC gas sensor.
 *   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
