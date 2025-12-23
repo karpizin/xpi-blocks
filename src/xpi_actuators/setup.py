@@ -38,6 +38,7 @@ setup(
             'esc_driver = xpi_actuators.esc_driver_node:main',
             'direct_servo = xpi_actuators.direct_servo_node:main',
             'lcd1602_node = xpi_actuators.lcd1602_node:main',
+            'tft_display_node = xpi_actuators.tft_display_node:main',
         ],
     },
 )
