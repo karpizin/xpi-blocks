@@ -73,6 +73,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **TSL2591 (HDR Light)** -> `xpi_sensors/tsl2591_node`
 *   **DHT11 / DHT22 (Temp/Hum)** -> `xpi_sensors/dht_node`
 *   **HR-202 (Analog Humidity)** -> `blocks/sensors/hr202` (via Analog Interpreter)
+*   **MICS-6814 (Triple Gas)** -> `blocks/sensors/mics6814` (via Analog Interpreter)
+*   **Anemometer (Wind Speed)** -> `xpi_sensors/anemometer_node`
 
 ## 🚧 High Priority (Next Up)
 *   **SCD40 / SCD41** - True CO2 Sensor (NDIR) for accurate indoor air quality.
