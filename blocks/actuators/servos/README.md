@@ -31,6 +31,28 @@ This block controls the PCA9685 16-channel 12-bit PWM driver. It is commonly use
    ros2 launch xpi_actuators pca9685.launch.py
    ```
 
+## 🕹️ Use Cases
+
+### 1. Standard Servos (Default)
+Most servos operate at **50Hz**. 
+*   **Neutral (0°):** 0.075 duty cycle (1.5ms pulse).
+*   **Min (-90°):** 0.050 duty cycle (1.0ms pulse).
+*   **Max (+90°):** 0.100 duty cycle (2.0ms pulse).
+
+### 2. ESC & Brushless Motors (Drone/Rover)
+The PCA9685 can control Electronic Speed Controllers (ESCs) for BLDC motors.
+*   **Frequency:** Set to 50Hz (standard) or up to 400Hz (high-speed ESCs).
+*   **Arming Sequence:** Most ESCs require a "safety start" (sending 0% throttle for 2 seconds).
+*   **Throttle Range:** 
+    *   0% Throttle: 0.05 duty cycle.
+    *   100% Throttle: 0.10 duty cycle.
+
+### 3. LED Port Expander (Dimming)
+Use the PCA9685 to control the brightness of up to 16 LEDs.
+*   **Frequency:** High frequency (e.g., 200Hz - 1000Hz) is recommended to avoid flickering.
+*   **Resolution:** 12-bit (4096 steps) allows for very smooth fading.
+*   **Duty Cycle:** 0.0 (Off) to 1.0 (Full Brightness).
+
 ## 📡 Interface
 ### Subscribers
 *   `~/cmd` (`std_msgs/Float32MultiArray`):
@@ -43,8 +65,19 @@ This block controls the PCA9685 16-channel 12-bit PWM driver. It is commonly use
         *   *Note:* These values vary by servo model!
 
 ## ✅ Verification
-Move Channel 0 Servo to center position (approx):
 
+### Move Servo (Channel 0) to center:
 ```bash
 ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0.075]}"
+```
+
+### Arm ESC (Channel 1):
+```bash
+# Send 0% throttle
+ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0.0, 0.05]}"
+```
+
+### Set LED (Channel 15) to 50% brightness:
+```bash
+ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.5]}"
 ```
