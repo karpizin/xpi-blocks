@@ -50,6 +50,7 @@ setup(
             'max17048_node = xpi_sensors.max17048_node:main',
             'gps_node = xpi_sensors.gps_node:main',
             'qmc5883l_node = xpi_sensors.qmc5883l_node:main',
+            'respeaker_node = xpi_sensors.respeaker_node:main',
         ],
     },
 )

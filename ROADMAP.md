@@ -80,6 +80,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **BLE Bridge (GATT Server)** -> `xpi_comms/ble_bridge_node`
 *   **ST7789 / ST7735 TFT (SPI)** -> `xpi_actuators/tft_display_node`
 *   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
+*   **ReSpeaker Mic Array v2.0 (USB)** -> `xpi_sensors/respeaker_node`
 *   **AT24Cxxx EEPROM (I2C)** -> `xpi_commons/eeprom_node`
 
 ## 🚧 High Priority (Next Up)
