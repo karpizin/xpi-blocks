@@ -150,12 +150,16 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
 
-## 🔮 TODO List (Planned)
 1. **MPU9250 (9DOF IMU)** -> `xpi_sensors/mpu9250_node`
-2. BMX055 (9DOF IMU)
-3. LED 7-segment (single digit, GPIO)
-4. **74HC595 (HC595) Shift Register (Out)** -> `xpi_actuators/shift_register_595`
-5. **74HC165 (HC165) Shift Register (In)** -> `xpi_sensors/shift_register_165`
+2. **ICM-20948 (9DOF IMU)** - High-precision successor to MPU9250
+3. **LSM6DSOX / LSM6DS33 (6DOF IMU)** - Industrial grade with ML core
+4. **BMI270 / BMI160 (6DOF IMU)** - Ultra-low power Bosch sensors
+5. **WT901 / JY901 (9DOF IMU)** - Module with integrated Kalman Filter (UART/I2C)
+6. **BNO080 / BNO085 (9DOF IMU)** - Enhanced orientation sensor for VR/Robotics
+7. BMX055 (9DOF IMU)
+8. LED 7-segment (single digit, GPIO)
+9. **74HC595 (HC595) Shift Register (Out)** -> `xpi_actuators/shift_register_595`
+10. **74HC165 (HC165) Shift Register (In)** -> `xpi_sensors/shift_register_165`
 6. **PIR Sensors (HC-SR501, AM312)** -> `xpi_sensors/pir_node`
 7. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
 8. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*

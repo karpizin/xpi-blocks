@@ -14,24 +14,23 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Audio Level Monitor](../blocks/sensors/audio/analyzer/README.md)** - Real-time noise level (dB) and RMS monitoring.
 *   **[YAMNet Sound Classifier](../blocks/sensors/audio/yamnet/README.md)** - Local Edge AI classification of 500+ sound types (Siren, Bark, etc.).
 
-## 👁️ Vision & AI (CV / VLM)
+## 👁️ Vision & AI (CV / VLM / MCP)
+*   **[MCP Agent Node](../blocks/llm/mcp_agent/README.md)** - **The Brain.** Context-aware host for real-time sensor monitoring and tool orchestration (Gemini 3.0 Flash).
+*   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
+*   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Vision-Language Models.
 *   **[Camera (USB/CSI)](../blocks/sensors/camera/README.md)** - Standard V4L2 camera setup.
 *   **[ArUco Navigation](../blocks/vision/aruco_navigation/README.md)** - Precise visual positioning using fiducial markers.
-*   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Gemini 3.0 Flash.
 *   **[Sonar Trend Analysis](../blocks/llm/sonar_trend_analysis/README.md)** - Intelligent obstacle distance analysis.
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
-*   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
-*   **[MCP Agent Node](../blocks/llm/mcp_agent/README.md)** - Context-aware host for real-time sensor monitoring and tool orchestration.
 
 ## 📡 Communication & Interfaces
+*   **[Smart MQTT Gateway](../blocks/comms/mqtt_bridge/README.md)** - Advanced IoT bridge with JSON packaging and multi-topic support.
 *   **[Raw LoRa (SX1276/SX1278)](../blocks/comms/lora_raw/README.md)** - Low-level long-range SPI radio communication.
 *   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
 *   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.
-*   **[MQTT Bridge](../blocks/comms/mqtt_bridge/README.md)** - Bidirectional gateway to Home Assistant / IoT.
 *   **[LTE / 4G Modem](../blocks/comms/lte_4g/README.md)** - Cellular communication, SMS and GPS (SIM7600).
 *   **[Real-Time Clock (RTC)](../blocks/comms/rtc/README.md)** - Accurate timekeeping without internet (DS3231/DS1307).
-*   **[BLE Bridge](../blocks/comms/ble_bridge/README.md)** - Smartphone control via Bluetooth Low Energy (GATT).
 *   **[CAN Bus (MCP2515)](../blocks/comms/can_bus/README.md)** - SocketCAN bridge for automotive/industrial hardware.
 
 ## 🎮 Inputs (Human & RC)
@@ -40,7 +39,6 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Telegram Bot Control](../blocks/inputs/telegram_bot/README.md)** - Remote control via chat interface.
 *   **[Gesture Control (MediaPipe)](../blocks/inputs/gesture_control/README.md)** - Hand tracking for robot control.
 *   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
-*   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.
 *   **[Rotary Encoder (GPIO)](../blocks/inputs/rotary_encoder/README.md)** - Quadrature encoder for dials or motor odometry.
 *   **[RC Receiver (SBUS)](../blocks/inputs/rc_sbus/README.md)** - FrSky/Futaba radio integration.
@@ -48,6 +46,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[RC Receiver (PPM)](../blocks/inputs/rc_ppm/README.md)** - Legacy PPM radio integration.
 
 ## 🌡️ Sensors (Environment & Weather)
+*   **[SCD40 / SCD41 CO2 Sensor](../blocks/sensors/environment/scd4x/README.md)** - True NDIR CO2, Temperature, and Humidity (I2C).
 *   **[AHT10 / AHT20](../blocks/sensors/environment/aht20/README.md)** - High-precision temperature and humidity (I2C).
 *   **[SHT30 / SHT31 / SHT35](../blocks/sensors/environment/sht3x/README.md)** - High-precision temperature and humidity (Sensirion I2C).
 *   **[DHT11 / DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
@@ -68,7 +67,6 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Wind Vane (Digital)](../blocks/sensors/environment/wind_vane_digital/README.md)** - High-precision wind direction (AS5600 I2C).
 *   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total (GPIO).
 *   **[PIR Motion Sensor](../blocks/sensors/movement/pir/README.md)** - Basic infrared motion detection (GPIO).
-*   **[SCD40 / SCD41 CO2 Sensor](../blocks/sensors/environment/scd4x/README.md)** - True NDIR CO2, Temperature, and Humidity (I2C).
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC sensor.
 *   **[MICS-6814 Triple Gas](../blocks/sensors/mics6814/README.md)** - CO, NO2, and NH3 analog gas sensor.
 *   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
@@ -102,8 +100,11 @@ This index provides direct links to the documentation for every implemented bloc
 ## 💾 Storage & Memory
 *   **[AT24Cxxx EEPROM](../blocks/storage/eeprom/README.md)** - Non-volatile I2C memory for config and state.
 
-## ⚙️ Actuators (Motion)
+## ⚙️ Actuators (Motion & Expansion)
 *   **[GPIO Expander (MCP23017)](../blocks/actuators/gpio_expander/mcp23017/README.md)** - 16 additional digital I/O pins via I2C.
+*   **[Analog Mux (CD74HC4067)](../blocks/sensors/analog_input/cd74hc4067/README.md)** - 16-channel analog input expander.
+*   **[Output Shift Register (74HC595)](../blocks/actuators/shift_registers/74hc595/README.md)** - 8-bit serial-to-parallel expander (GPIO).
+*   **[Input Shift Register (74HC165)](../blocks/sensors/digital_input/74hc165/README.md)** - 8-bit parallel-to-serial expander (GPIO).
 *   **[DC Motor (TB6612)](../blocks/actuators/motors_dc/README.md)** - Dual DC motor driver control.
 *   **[DC/Stepper (L298N)](../blocks/actuators/motors_dc/README.md)** - High power motor driver.
 *   **[ESC BLDC Motor](../blocks/actuators/motors_esc/README.md)** - Brushless motor control (Drone/Car).
