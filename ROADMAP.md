@@ -112,7 +112,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
-*   [ ] **SHT30 / SHT31 / SHT35** - Modern High-Precision Temp/Humidity (I2C).
+*   [x] **SHT30 / SHT31 / SHT35** - High-Precision Temp/Humidity (I2C) -> `xpi_sensors/sht3x_node`
 *   [x] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
 *   [ ] **DPS310** - High-Precision Barometric Pressure (I2C).
 *   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
