@@ -63,6 +63,7 @@ setup(
             'vl53l1x_node = xpi_sensors.vl53l1x_node:main',
             'bno055_node = xpi_sensors.bno055_node:main',
             'tcs3200_node = xpi_sensors.tcs3200_node:main',
+            'pir_node = xpi_sensors.pir_node:main',
         ],
     },
 )

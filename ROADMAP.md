@@ -153,7 +153,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 3. LED 7-segment (single digit, GPIO)
 4. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
 5. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
-6. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
+6. **PIR Sensors (HC-SR501, AM312)** -> `xpi_sensors/pir_node`
 7. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
 8. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
 9. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*

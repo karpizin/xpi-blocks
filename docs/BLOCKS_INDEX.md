@@ -63,8 +63,8 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Anemometer Wind Speed](../blocks/sensors/anemometer/README.md)** - Mechanical cup anemometer (GPIO).
 *   **[Wind Vane](../blocks/sensors/environment/wind_vane/README.md)** - Wind direction (16 points).
 *   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total.
-*   **[DHT11/DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
-*   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC gas sensor.
+*   **[PIR Motion Sensor](../blocks/sensors/movement/pir/README.md)** - Basic infrared motion detection (GPIO).
+*   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - CO2 and TVOC sensor.
 *   **[MICS-6814 Triple Gas](../blocks/sensors/mics6814/README.md)** - CO, NO2, and NH3 analog gas sensor.
 *   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
