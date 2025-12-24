@@ -27,6 +27,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **ESC Motor Driver** -> `xpi_actuators/esc_driver`
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
+*   **AHT10 / AHT20 (I2C)** -> `xpi_sensors/aht20`
 *   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
 *   **WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
 *   **LED Bar** -> `xpi_actuators/led_bar`

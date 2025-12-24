@@ -53,6 +53,7 @@ setup(
             'respeaker_node = xpi_sensors.respeaker_node:main',
             'audio_level_node = xpi_sensors.audio_level_node:main',
             'yamnet_node = xpi_sensors.yamnet_node:main',
+            'aht20_node = xpi_sensors.aht20_node:main',
         ],
     },
 )
