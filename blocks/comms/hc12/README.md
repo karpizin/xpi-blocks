@@ -37,8 +37,9 @@ The HC-12 is a long-range (up to 1km) wireless serial communication module opera
     ros2 topic echo /hc12/rx
     ```
 
-## ⚙️ AT Commands (via Service)
-To configure the module, use the `~/set_config` service:
+## ⚙️ AT Commands (via Topic)
+To configure the module, send a command to the `~/cmd_at` topic. See [COMMANDS.md](COMMANDS.md) for a full list of commands and mode descriptions.
+
 *   `AT+B9600`: Set baud rate to 9600.
 *   `AT+C001`: Set channel to 001.
 *   `AT+FU3`: Set long-range mode.
