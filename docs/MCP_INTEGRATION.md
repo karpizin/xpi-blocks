@@ -29,3 +29,8 @@ The `mcp_agent_node` acts as the "Host" in MCP terminology. It:
 *   **Model Agnostic:** Works with Gemini, GPT, or Claude without changing the robot code.
 *   **Self-Documenting:** The robot tells the model what it can do and what it sees.
 *   **Real-time Context:** The model always makes decisions based on the latest sensor telemetry.
+
+---
+
+## 📈 Future
+See the [**MCP Development Roadmap**](MCP_ROADMAP.md) for the full integration plan.
