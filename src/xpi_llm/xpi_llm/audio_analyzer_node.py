@@ -15,7 +15,7 @@ class AudioPatternAnalyzer(Node):
         
         # Parameters
         self.declare_parameter('llm_provider', 'gemini')
-        self.declare_parameter('llm_model', 'gemini-2.0-flash') # Updated to latest
+        self.declare_parameter('llm_model', 'gemini-3.0-flash') # Updated to latest v3
         self.declare_parameter('api_key', '')
         self.declare_parameter('db_threshold', -30.0) 
         self.declare_parameter('record_duration', 4.0) # Increased for better context

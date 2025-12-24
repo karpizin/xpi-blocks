@@ -8,6 +8,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
 *   **HC-12 (433MHz Wireless Serial)** -> `xpi_comms/hc12_node`
+*   **Audio Level Monitor** -> `xpi_sensors/audio_level_node`
+*   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
 *   **Joystick/Gamepad** -> `xpi_inputs/joystick`
 *   **Keyboard** -> `xpi_inputs/keyboard`
 *   **Rotary Encoder (GPIO)** -> `xpi_inputs/rotary_encoder_node`
