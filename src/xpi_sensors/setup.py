@@ -51,6 +51,7 @@ setup(
             'gps_node = xpi_sensors.gps_node:main',
             'qmc5883l_node = xpi_sensors.qmc5883l_node:main',
             'respeaker_node = xpi_sensors.respeaker_node:main',
+            'audio_level_node = xpi_sensors.audio_level_node:main',
         ],
     },
 )

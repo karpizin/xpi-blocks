@@ -17,14 +17,15 @@ if not logger.handlers:
 class LLMClient(ABC):
     """Abstract base class for LLM clients."""
     @abstractmethod
-    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, **kwargs) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", **kwargs) -> tuple[str, dict]:
         """
         Sends a prompt to the LLM and returns the generated text and/or a tool_call.
         
         Args:
             prompt: The text prompt.
             tools: Optional list of tool definitions.
-            image_data: Optional raw bytes of an image (e.g. JPEG encoded) for VLM tasks.
+            media_data: Optional raw bytes of an image or audio file.
+            mime_type: MIME type of the media data (e.g. "audio/wav", "image/jpeg").
             
         Returns: (text_response, tool_call_dict)
         """
@@ -45,7 +46,7 @@ class OpenRouterClient(LLMClient):
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         logger.info(f"OpenRouterClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "HTTP-Referer": "https://xpi-blocks.ai", 
@@ -54,20 +55,21 @@ class OpenRouterClient(LLMClient):
         }
         
         # Build message content
-        if image_data:
+        if media_data:
             import base64
-            base64_image = base64.b64encode(image_data).decode('utf-8')
+            base64_data = base64.b64encode(media_data).decode('utf-8')
             content = [
                 {"type": "text", "text": prompt},
                 {
-                    "type": "image_url",
+                    "type": "image_url", # OpenRouter mostly supports images via image_url
                     "image_url": {
-                        "url": f"data:image/jpeg;base64,{base64_image}"
+                        "url": f"data:{mime_type};base64,{base64_data}"
                     }
                 }
             ]
         else:
             content = prompt
+# ... (rest of the class)
 
         messages = [{"role": "user", "content": content}]
         
@@ -130,7 +132,7 @@ class GeminiClient(LLMClient):
         self.model = model
         logger.info(f"GeminiClient initialized with model: {self.model}")
 
-    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         model = self.genai.GenerativeModel(self.model)
         
         generation_config = self.genai.types.GenerationConfig(
@@ -146,13 +148,13 @@ class GeminiClient(LLMClient):
         }
 
         content = [prompt]
-        if image_data:
+        if media_data:
             # Gemini expects 'data' and 'mime_type' for blobs
-            image_blob = {
-                "mime_type": "image/jpeg",
-                "data": image_data
+            media_blob = {
+                "mime_type": mime_type,
+                "data": media_data
             }
-            content.append(image_blob)
+            content.append(media_blob)
 
         try:
             if tools:
@@ -200,7 +202,7 @@ class OllamaClient(LLMClient):
         self.api_url = f"{self.host}/api/generate"
         logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}.")
 
-    def generate(self, prompt: str, tools: list = None, image_data: bytes = None, temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
+    def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         full_prompt = prompt
         
         data = {
@@ -213,13 +215,13 @@ class OllamaClient(LLMClient):
             "stream": False
         }
 
-        if image_data:
+        if media_data:
             import base64
-            # Ollama expects images as base64 string array
-            base64_image = base64.b64encode(image_data).decode('utf-8')
-            data["images"] = [base64_image]
+            # Ollama expects media as base64 string array
+            base64_data = base64.b64encode(media_data).decode('utf-8')
+            data["images"] = [base64_data] # Ollama uses 'images' field for multimodal data
 
-        if tools and not image_data: # Tool calling with vision models is tricky in Ollama, skipping logic for simplicity if image present
+        if tools and not media_data: 
             # For Ollama, we inject the tool definitions into the prompt and instruct the model to use them.
             tool_definitions = json.dumps([t['function'] for t in tools], indent=2)
             full_prompt = (

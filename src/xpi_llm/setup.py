@@ -27,6 +27,7 @@ setup(
             'tool_calling_node = xpi_llm.tool_calling_node:main',
             'sonar_pattern_analyzer_node = xpi_llm.sonar_pattern_analyzer_node:main',
             'vlm_observer_node = xpi_llm.vlm_observer_node:main',
+            'audio_analyzer_node = xpi_llm.audio_analyzer_node:main',
         ],
     },
 )
