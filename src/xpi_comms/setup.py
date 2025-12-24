@@ -32,6 +32,7 @@ setup(
             'ble_bridge_node = xpi_comms.ble_bridge_node:main',
             'lte_modem_node = xpi_comms.lte_modem_node:main',
             'rtc_monitor_node = xpi_comms.rtc_monitor_node:main',
+            'hc12_node = xpi_comms.hc12_node:main',
         ],
     },
 )
