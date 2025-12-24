@@ -31,4 +31,6 @@ The TF02-Pro and TF03-100 are high-performance LiDAR rangefinders designed for i
 ## 📊 Published Topics
 *   `~/range` ([sensor_msgs/Range](http://docs.ros.org/en/api/sensor_msgs/html/msg/Range.html)): Distance in meters.
 *   `~/strength` ([std_msgs/Int32](http://docs.ros.org/en/api/std_msgs/html/msg/Int32.html)): Signal strength indicator.
-*   `~/temp` ([std_msgs/Float32](http://docs.ros.org/en/api/std_msgs/html/msg/Float32.html)): Internal sensor temperature (if supported).
+*   `~/temp` ([std_msgs/Float32](http://docs.ros.org/en/api/std_msgs/html/msg/Float32.html)): Internal sensor temperature.
+
+See [**PROTOCOL.md**](PROTOCOL.md) for a detailed breakdown of the binary packet format and tips on LiDAR data processing in ROS2.
