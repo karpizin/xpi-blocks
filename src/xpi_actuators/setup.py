@@ -40,6 +40,7 @@ setup(
             'lcd1602_node = xpi_actuators.lcd1602_node:main',
             'tft_display_node = xpi_actuators.tft_display_node:main',
             'buzzer_node = xpi_actuators.buzzer_node:main',
+            'shift_register_595 = xpi_actuators.shift_register_595_node:main',
         ],
     },
 )
