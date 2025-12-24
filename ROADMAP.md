@@ -9,6 +9,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#27 Relay Module (GPIO)** -> `xpi_actuators/relay_node`
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
+*   **Joystick/Gamepad** -> `xpi_inputs/joystick`
 *   **HC-12 (433MHz Wireless Serial)** -> `xpi_comms/hc12_node`
 *   **Audio Level Monitor** -> `xpi_sensors/audio_level_node`
 *   **YAMNet Audio Classifier (Edge AI)** -> `xpi_sensors/yamnet_node`
