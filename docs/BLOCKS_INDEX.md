@@ -24,13 +24,14 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
 
 ## 📡 Communication & Interfaces
-*   **[Smart MQTT Gateway](../blocks/comms/mqtt_bridge/README.md)** - Advanced IoT bridge with JSON packaging and multi-topic support.
+*   **[MQTT Bridge](../blocks/comms/mqtt_bridge/README.md)** - Bidirectional gateway to Home Assistant / IoT (Smart Gateway with JSON support).
 *   **[Raw LoRa (SX1276/SX1278)](../blocks/comms/lora_raw/README.md)** - Low-level long-range SPI radio communication.
 *   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
 *   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.
 *   **[LTE / 4G Modem](../blocks/comms/lte_4g/README.md)** - Cellular communication, SMS and GPS (SIM7600).
 *   **[Real-Time Clock (RTC)](../blocks/comms/rtc/README.md)** - Accurate timekeeping without internet (DS3231/DS1307).
+*   **[BLE Bridge](../blocks/comms/ble_bridge/README.md)** - Smartphone control via Bluetooth Low Energy (GATT).
 *   **[CAN Bus (MCP2515)](../blocks/comms/can_bus/README.md)** - SocketCAN bridge for automotive/industrial hardware.
 
 ## 🎮 Inputs (Human & RC)
@@ -39,6 +40,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Telegram Bot Control](../blocks/inputs/telegram_bot/README.md)** - Remote control via chat interface.
 *   **[Gesture Control (MediaPipe)](../blocks/inputs/gesture_control/README.md)** - Hand tracking for robot control.
 *   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
+*   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
 *   **[Keyboard Teleop](../blocks/inputs/keyboard/README.md)** - Control robot with keyboard arrows.
 *   **[Rotary Encoder (GPIO)](../blocks/inputs/rotary_encoder/README.md)** - Quadrature encoder for dials or motor odometry.
 *   **[RC Receiver (SBUS)](../blocks/inputs/rc_sbus/README.md)** - FrSky/Futaba radio integration.
