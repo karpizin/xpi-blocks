@@ -35,27 +35,24 @@ xpi-blocks/
 └── scripts/            # Setup utilities (Docker, udev rules)
 ```
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Docker - Recommended)
 
-1.  **Clone the repository:**
+The easiest way to run XPI-Blocks is using Docker. The images are pre-compiled and ready to use.
+
+1.  **Run with Docker Compose:**
     ```bash
-    git clone git@github.com:karpizin/xpi-blocks.git
-    cd xpi-blocks
+    wget https://raw.githubusercontent.com/karpizin/xpi-blocks/main/docker-compose.yml
+    docker compose up -d
     ```
-2.  **Install ROS2 dependencies:**
+2.  **Verify hardware access:**
     ```bash
-    rosdep update
-    rosdep install --from-paths src --ignore-src -r -y
+    docker exec -it xpi-blocks-container i2cdetect -y 1
     ```
-3.  **Build the workspace:**
-    ```bash
-    colcon build --symlink-install
-    ```
-4.  **Source the workspace:**
-    ```bash
-    . install/setup.bash
-    ```
-    Now you can run the example nodes and launch files!
+
+See the [**Detailed Docker Deployment Guide**](docs/DEPLOYMENT_DOCKER.md) for more info.
+
+## 🛠 Manual Installation (Advanced)
+If you prefer not to use Docker, follow the [**Manual Setup Guide**](docs/MANUAL_INSTALLATION.md).
 
 ## 🛠 Tech Stack & Standards
 *   **Primary OS:** Ubuntu Server 22.04 LTS (64-bit) for Raspberry Pi.

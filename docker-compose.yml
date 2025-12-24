@@ -1,0 +1,13 @@
+services:
+  xpi-blocks:
+    image: ghcr.io/karpizin/xpi-blocks:latest
+    container_name: xpi-blocks-container
+    privileged: true # Required for GPIO and I2C access on RPi
+    network_mode: host # Allows easy communication between nodes and external tools
+    volumes:
+      - /dev:/dev # Access to hardware devices
+    environment:
+      - ROS_DOMAIN_ID=0
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
