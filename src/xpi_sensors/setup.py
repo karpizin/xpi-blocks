@@ -54,8 +54,9 @@ setup(
             'audio_level_node = xpi_sensors.audio_level_node:main',
             'yamnet_node = xpi_sensors.yamnet_node:main',
             'aht20_node = xpi_sensors.aht20_node:main',
-            'wind_vane_node = xpi_sensors.wind_vane_node:main',
             'rain_gauge_node = xpi_sensors.rain_gauge_node:main',
+            'wind_vane_node = xpi_sensors.wind_vane_node:main',
+            'wind_vane_digital_node = xpi_sensors.wind_vane_digital_node:main',
         ],
     },
 )
