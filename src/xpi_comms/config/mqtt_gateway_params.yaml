@@ -1,0 +1,11 @@
+mqtt_gateway:
+  ros__parameters:
+    broker_address: "localhost"
+    broker_port: 1883
+    client_id: "xpi_robot_main"
+    mqtt_prefix: "robot/telemetry/"
+    topics_to_mqtt:
+      - "/scd4x/co2"
+      - "/audio_level/db"
+      - "/aht20/temperature"
+      - "/battery/voltage"

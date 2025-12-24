@@ -62,7 +62,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Gesture Control (MediaPipe)** -> `xpi_inputs/gesture_control_node`
 *   **xpi-top (CLI Monitor)** -> `xpi_tools`
 *   **Modbus RTU Generic Driver** -> `xpi_comms/modbus_rtu_node`
-*   **MQTT Bridge** -> `xpi_comms/mqtt_bridge_node`
+*   **Smart MQTT Gateway (JSON & Multi-topic)** -> `xpi_comms/mqtt_gateway_node`
 *   **CAN Bus (SocketCAN)** -> `xpi_comms/can_bridge_node`
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
