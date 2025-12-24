@@ -179,9 +179,15 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 26. **Hall Effect Speed Sensors** - Internal wheel odometry
 27. **Whiskers (Bumper Switches)** - Physical contact detection
 28. **TF-Luna / TFmini Plus** -> `xpi_sensors/tfmini_plus_node`
-29. **TF02-Pro / TF03-100 (Long Range LiDAR)** - Up to 100m+ range
-30. **Garmin Lidar-Lite v3/v4** - High-precision 40m rangefinder
-31. TCS3200 (GY-31) - color sensor
+29. **Luxonis OAK-D (Spatial AI Camera)** - Stereo depth and AI acceleration
+30. **Intel RealSense L515 (MEMS LiDAR)** - High-resolution point clouds
+31. **LDROBOT LD19 / D300** - Affordable 360° 2D LiDAR
+32. **Livox Mid-360** - Industrial high-range 3D LiDAR
+33. **CE30-A Solid-State LiDAR** - Wide FoV obstacle avoidance
+34. **Garmin Lidar-Lite v3/v4** - High-precision 40m rangefinder
+35. TCS3200 (GY-31) - color sensor
+
+> See [**LIDAR_STRATEGY.md**](docs/LIDAR_STRATEGY.md) for more technical details.
 
 24. MAX30102 - heartrate sensor
 25. **HX711 (cell weight sensor)** -> `xpi_sensors/hx711_node`

@@ -15,6 +15,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[YAMNet Sound Classifier](../blocks/sensors/audio/yamnet/README.md)** - Local Edge AI classification of 500+ sound types (Siren, Bark, etc.).
 
 ## 👁️ Vision & AI (CV / VLM / MCP)
+*   **[LiDAR Strategy](../docs/LIDAR_STRATEGY.md)** - Technical guide on choosing between 1D, 2D, and 3D distance sensors.
 *   **[MCP Agent Node](../blocks/llm/mcp_agent/README.md)** - **The Brain.** Context-aware host for real-time sensor monitoring and tool orchestration (Gemini 3.0 Flash).
 *   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
 *   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Vision-Language Models.
