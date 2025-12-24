@@ -62,6 +62,7 @@ setup(
             'scd4x_node = xpi_sensors.scd4x_node:main',
             'vl53l1x_node = xpi_sensors.vl53l1x_node:main',
             'bno055_node = xpi_sensors.bno055_node:main',
+            'tcs3200_node = xpi_sensors.tcs3200_node:main',
         ],
     },
 )

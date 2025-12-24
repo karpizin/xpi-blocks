@@ -171,7 +171,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 26. **Hall Effect Speed Sensors** - Internal wheel odometry
 27. **Whiskers (Bumper Switches)** - Physical contact detection
 28. **TF-Luna / TFmini Plus** - High-frequency 1D LiDAR rangefinder
-29. TCS3200 (GY-31) - color sensor
+29. **TCS3200 (GY-31) Color Sensor** -> `xpi_sensors/tcs3200_node`
 
 19. MAX30102 - heartrate sensor
 20. HX711 (cell weight sensor) - digital load sensor

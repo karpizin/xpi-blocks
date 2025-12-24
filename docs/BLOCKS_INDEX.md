@@ -54,6 +54,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[TSL2561 Light Sensor](../blocks/sensors/tsl2561/README.md)** - Dual-diode wide dynamic range light sensor.
 *   **[TSL2591 Light Sensor](../blocks/sensors/tsl2591/README.md)** - High Dynamic Range Light Sensor (I2C).
 *   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
+*   **[TCS3200 Color Sensor](../blocks/sensors/color/tcs3200/README.md)** - Fast color-to-frequency converter (GPIO).
 *   **[AS7341 Spectral Sensor](../blocks/sensors/as7341/README.md)** - 11-Channel spectral color analyzer.
 *   **[APDS-9960 Gesture/Color](../blocks/sensors/apds9960/README.md)** - RGB, Proximity, and Gesture control sensor.
 *   **[RFID/NFC (PN532)](../blocks/sensors/nfc/README.md)** - Contactless tag identification via I2C.
