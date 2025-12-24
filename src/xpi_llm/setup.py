@@ -28,6 +28,7 @@ setup(
             'sonar_pattern_analyzer_node = xpi_llm.sonar_pattern_analyzer_node:main',
             'vlm_observer_node = xpi_llm.vlm_observer_node:main',
             'audio_analyzer_node = xpi_llm.audio_analyzer_node:main',
+            'mcp_agent_node = xpi_llm.mcp_agent_node:main',
         ],
     },
 )

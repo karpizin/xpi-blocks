@@ -21,6 +21,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Sonar Trend Analysis](../blocks/llm/sonar_trend_analysis/README.md)** - Intelligent obstacle distance analysis.
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
 *   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - High-level robot control via natural language.
+*   **[MCP Agent Node](../docs/MCP_INTEGRATION.md)** - Model Context Protocol host for real-time sensor context and tool orchestration.
 
 ## 📡 Communication & Interfaces
 *   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
