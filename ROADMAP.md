@@ -86,11 +86,20 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
 *   **ReSpeaker Mic Array v2.0 (USB)** -> `xpi_sensors/respeaker_node`
 *   **AT24Cxxx EEPROM (I2C)** -> `xpi_commons/eeprom_node`
+*   **Audio Level Monitor** -> `xpi_sensors/audio_level_node`
+*   **YAMNet Audio Classifier (Edge AI)** -> `xpi_sensors/yamnet_node`
+*   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
+*   **AHT10 / AHT20 (I2C)** -> `xpi_sensors/aht20`
+*   **Wind Vane (Analog)** -> `xpi_sensors/wind_vane_node`
+*   **Wind Vane (Digital - AS5600)** -> `xpi_sensors/wind_vane_digital_node`
+*   **Rain Gauge (Pulse)** -> `xpi_sensors/rain_gauge_node`
+*   **VEML6070 (UV Light)** -> `xpi_sensors/veml6070_node`
+*   **SHT30 / SHT31 / SHT35 (Precision Temp/Hum)** -> `xpi_sensors/sht3x_node`
+*   **SCD40 / SCD41 (True CO2 NDIR)** -> `xpi_sensors/scd4x_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.
 *   **HC-12 (433MHz Serial)** - Low-cost long-range UART bridge (~1km).
-*   **SCD40 / SCD41** - True CO2 Sensor (NDIR) for accurate indoor air quality.
 *   **SGP30 Gas Sensor** - For reliable TVOC/eCO2 readings.
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **SW6106 / IP5306 Drivers** - Support for Power Bank HATs.
@@ -104,7 +113,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **TSL2591** - *Implemented*
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
-*   [x] **VEML6070** - UV Light Sensor -> `xpi_sensors/veml6070_node`
 *   [x] **AS7341** - 11-Channel Spectral Color Sensor -> `xpi_sensors/as7341_node`
 *   [x] **APDS-9960** - RGB, Gesture, Proximity -> `xpi_sensors/apds9960_node`
 *   [x] #25 **MAX44009** - Light sensor -> `xpi_sensors/max44009_node`
@@ -143,41 +151,42 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 3. LED 7-segment (single digit, GPIO)
 4. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
 5. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
-7. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
-8. VEML6070 - UV sensor
-9. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
-10. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
-11. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
-12. AT24Cxxx - memory chip (I2C)
-13. MICS-6814 - *Implemented*
-14. DSM501A - *Replaced by PMS5003 implementation*
-15. DHT22 (DHT11) - *Implemented*
-16. W25Qxx (Flash SPI)
-17. HW-MS03 - radar sensor module (human sensor)
-18. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
-19. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
-20. **Vibration Sensor (SW-420)** - Impact and tilt detection
-21. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
-22. NAP07 HIS07 - smoke sensor
-23. JSN-SR04T - ultrasonic sensor (distance)
-23. HR-202 - *Implemented via Analog Interpreter*
-24. SGP30 - CO2 sensor
-*   **MQ-x Gas Sensors (via Analog Sensor Interpreter)** -> `xpi_sensors/analog_sensor_interpreter` - *Now covered by Analog Sensor Interpreter*
-26. BME-680 - *Implemented*
-27. ZP-16 - gas sensor
-28. VL53L1X - distance laser sensor
-29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
-30. FPM10A - fingerprint sensor  (UART)
-31. BF350 - load cell/strain gauge
+6. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
+7. VEML6070 - *Implemented*
+8. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+9. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+10. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
+11. AT24Cxxx - *Implemented*
+12. MICS-6814 - *Implemented*
+13. DSM501A - *Replaced by PMS5003 implementation*
+14. DHT22 (DHT11) - *Implemented*
+15. W25Qxx (Flash SPI)
+16. HW-MS03 - radar sensor module (human sensor)
+17. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
+18. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
+19. **Vibration Sensor (SW-420)** - Impact and tilt detection
+20. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
+21. NAP07 HIS07 - smoke sensor
+22. JSN-SR04T - ultrasonic sensor (distance)
+23. TCS3200 (GY-31) - color sensor
+24. MAX30102 - heartrate sensor
+25. HX711 (cell weight sensor) - digital load sensor
+26. SGP30 - CO2 sensor
+27. BME-680 - *Implemented*
+28. ZP-16 - gas sensor
+29. VL53L1X - distance laser sensor
+30. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
+31. FPM10A - fingerprint sensor  (UART)
+32. BF350 - load cell/strain gauge
 33. TGS2600 - air quality PM10 sensor
-36. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
-37. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
+34. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
+35. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
 
 ### 🆕 Proposed Actuators
-38. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
-39. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
-40. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
-41. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
+36. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
+37. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
+38. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
+39. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
 
 ## 🚀 Future Horizons (New Categories)
 
