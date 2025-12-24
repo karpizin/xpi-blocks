@@ -9,7 +9,7 @@ The ReSpeaker Mic Array v2.0 is a hardware-based solution for sound source local
 *   **Interface:** USB (Plug & Play).
 
 ## 🔌 Connection
-Simply connect the ReSpeaker Mic Array v2.0 to one of the USB ports on the Raspberry Pi.
+Simply connect the ReSpeaker Mic Array v2.0 to one of the USB ports on the Raspberry Pi. For more options, see the [Audio Hardware Guide](../../../../docs/AUDIO_HARDWARE_GUIDE.md).
 
 ## 🚀 Quick Start
 

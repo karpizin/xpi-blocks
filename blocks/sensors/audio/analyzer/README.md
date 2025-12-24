@@ -8,10 +8,7 @@ This block provides tools for monitoring environmental audio, calculating noise 
 *   **Threshold Triggering:** Automatically starts analysis when noise exceeds a certain level.
 
 ## 🔌 Hardware
-Works with any ALSA-compatible microphone, including:
-*   USB Microphones.
-*   ReSpeaker Mic Arrays.
-*   I2S Microphones (e.g., INMP441).
+Works with any ALSA-compatible microphone. See the [Audio Hardware Guide](../../../../docs/AUDIO_HARDWARE_GUIDE.md) for recommended models including I2S and USB matrices.
 
 ## 🚀 Quick Start
 
