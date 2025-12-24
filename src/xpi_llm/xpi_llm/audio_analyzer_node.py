@@ -15,11 +15,11 @@ class AudioPatternAnalyzer(Node):
         
         # Parameters
         self.declare_parameter('llm_provider', 'gemini')
-        self.declare_parameter('llm_model', 'gemini-1.5-flash')
+        self.declare_parameter('llm_model', 'gemini-2.0-flash') # Updated to latest
         self.declare_parameter('api_key', '')
-        self.declare_parameter('db_threshold', -30.0) # dB level to trigger analysis
-        self.declare_parameter('record_duration', 3.0) # seconds
-        self.declare_parameter('cooldown', 10.0) # seconds between analysis
+        self.declare_parameter('db_threshold', -30.0) 
+        self.declare_parameter('record_duration', 4.0) # Increased for better context
+        self.declare_parameter('cooldown', 5.0) 
         self.declare_parameter('sample_rate', 16000)
 
         provider = self.get_parameter('llm_provider').value
@@ -75,9 +75,13 @@ class AudioPatternAnalyzer(Node):
             self.get_logger().info("Recording finished. Sending to LLM for analysis...")
 
             prompt = (
-                "Identify the main sound in this audio clip. Categorize it (e.g., Speech, Music, Dog, Alarm, Background Noise). "
-                "Provide a very short category name followed by a brief description. "
-                "Respond in format: Category: [Name] | Description: [Text]"
+                "You are an expert audio analysis system for a mobile robot. "
+                "Analyze this audio clip and provide: "
+                "1. Main Category (Speech, Music, Animal, Emergency, Industrial, Domestic, etc.) "
+                "2. Specific Sound (e.g., 'A golden retriever barking', 'A person speaking Russian with a calm tone') "
+                "3. Urgency Level (Low, Medium, High) "
+                "4. Action Suggestion for the robot. "
+                "Respond in a structured format: Category: [Name] | Detail: [Text] | Urgency: [Level] | Action: [Text]"
             )
 
             # Use LLM to analyze (MIME type for WAV is audio/wav)
