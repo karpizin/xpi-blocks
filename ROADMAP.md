@@ -96,6 +96,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **VEML6070 (UV Light)** -> `xpi_sensors/veml6070_node`
 *   **SHT30 / SHT31 / SHT35 (Precision Temp/Hum)** -> `xpi_sensors/sht3x_node`
 *   **SCD40 / SCD41 (True CO2 NDIR)** -> `xpi_sensors/scd4x_node`
+*   **VL53L1X Time-of-Flight** -> `xpi_sensors/vl53l1x_node`
 
 ## 🚧 High Priority (Next Up)
 *   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.
@@ -152,41 +153,32 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 4. 74HC595 (HC595) - Shift register (serial to parallel) (GPIO)
 5. 74HC165 (HC165) - Shift register (parallel to serial)  (GPIO)
 6. PIR Sensors (HC-SR501, MH-SR602, AM312) - PIR sensor (GPIO)
-7. VEML6070 - *Implemented*
-8. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
-9. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
-10. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
-11. AT24Cxxx - *Implemented*
-12. MICS-6814 - *Implemented*
-13. DSM501A - *Replaced by PMS5003 implementation*
-14. DHT22 (DHT11) - *Implemented*
-15. W25Qxx (Flash SPI)
-16. HW-MS03 - radar sensor module (human sensor)
-17. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
-18. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
-19. **Vibration Sensor (SW-420)** - Impact and tilt detection
-20. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
-21. NAP07 HIS07 - smoke sensor
-22. JSN-SR04T - ultrasonic sensor (distance)
-23. TCS3200 (GY-31) - color sensor
-24. MAX30102 - heartrate sensor
-25. HX711 (cell weight sensor) - digital load sensor
-26. SGP30 - CO2 sensor
-27. BME-680 - *Implemented*
-28. **VL53L1X Time-of-Flight** -> `xpi_sensors/vl53l1x_node`
-29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
-30. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
-31. FPM10A - fingerprint sensor  (UART)
-32. BF350 - load cell/strain gauge
-33. TGS2600 - air quality PM10 sensor
-34. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
-35. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
+7. Soil moisture sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+8. Vibration sensor (along with ADS1115) - *Now covered by Analog Sensor Interpreter*
+9. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
+10. W25Qxx (Flash SPI)
+11. HW-MS03 - radar sensor module (human sensor)
+12. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
+13. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
+14. **Vibration Sensor (SW-420)** - Impact and tilt detection
+15. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
+16. NAP07 HIS07 - smoke sensor
+17. JSN-SR04T - ultrasonic sensor (distance)
+18. TCS3200 (GY-31) - color sensor
+19. MAX30102 - heartrate sensor
+20. HX711 (cell weight sensor) - digital load sensor
+21. SGP30 - CO2 sensor
+22. ZP-16 - gas sensor
+23. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
+24. FPM10A - fingerprint sensor  (UART)
+25. BF350 - load cell/strain gauge
+26. TGS2600 - air quality PM10 sensor
+27. L298D/L298P - powerful motor driver (2 motors) with integrated circuit sensor. - *Already Implemented*
+28. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
 
 ### 🆕 Proposed Actuators
-36. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
-37. [Implemented] **Direct GPIO Servo** - Single servo control via software PWM (gpiozero) without external driver.
-38. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
-39. [Implemented] **ESC (Electronic Speed Controller)** - BLDC motor control via PWM (Standard servo protocol).
+29. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
+30. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 
 ## 🚀 Future Horizons (New Categories)
 
