@@ -178,8 +178,10 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 25. **VL53L5CX Multi-zone ToF** - 8x8 distance grid (Micro-LiDAR)
 26. **Hall Effect Speed Sensors** - Internal wheel odometry
 27. **Whiskers (Bumper Switches)** - Physical contact detection
-28. **TF-Luna / TFmini Plus** - High-frequency 1D LiDAR rangefinder
-29. **TCS3200 (GY-31) Color Sensor** -> `xpi_sensors/tcs3200_node`
+28. **TF-Luna / TFmini Plus** -> `xpi_sensors/tfmini_plus_node`
+29. **TF02-Pro / TF03-100 (Long Range LiDAR)** - Up to 100m+ range
+30. **Garmin Lidar-Lite v3/v4** - High-precision 40m rangefinder
+31. TCS3200 (GY-31) - color sensor
 
 24. MAX30102 - heartrate sensor
 25. **HX711 (cell weight sensor)** -> `xpi_sensors/hx711_node`

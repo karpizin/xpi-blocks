@@ -61,6 +61,7 @@ setup(
             'sonar_node = xpi_sensors.sonar_node:main',
             'tcs3200_node = xpi_sensors.tcs3200_node:main',
             'tcs34725_node = xpi_sensors.tcs34725_node:main',
+            'tfmini_plus_node = xpi_sensors.tfmini_plus_node:main',
             'tsl2561_node = xpi_sensors.tsl2561_node:main',
             'tsl2591_node = xpi_sensors.tsl2591_node:main',
             'veml6070_node = xpi_sensors.veml6070_node:main',

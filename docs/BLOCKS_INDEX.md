@@ -78,6 +78,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[KY-013 Thermistor](../blocks/sensors/ky013/README.md)** - Analog NTC thermistor module.
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
 *   **[VL53L1X ToF Sensor](../blocks/sensors/range/vl53l1x/README.md)** - Precision laser distance measurement (I2C).
+*   **[TFmini Plus LiDAR](../blocks/sensors/range/tfmini_plus/README.md)** - Outdoor long-range distance measurement up to 12m (UART).
 *   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).
 *   **[MPU9250 IMU](../blocks/sensors/imu/mpu9250/README.md)** - 9-DOF sensor (Accel, Gyro, Mag) via I2C.
 *   **[BNO055 IMU](../blocks/sensors/imu/bno055/README.md)** - Intelligent 9-DOF orientation with sensor fusion (I2C).
