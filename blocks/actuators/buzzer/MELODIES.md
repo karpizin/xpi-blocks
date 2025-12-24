@@ -39,6 +39,26 @@ Use these commands to play specific sounds via `ros2 topic pub`.
     ```bash
     ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'Imperial:d=4,o=5,b=100:e,e,e,8c,16g,e,8c,16g,2e'"
     ```
+*   **Terminator 2 Theme:**
+    ```bash
+    ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'T2:d=4,o=4,b=80:8f,8f,8f,2f,8f,8f,8f,2f,8f,8f,8f,2f#,8f,8f,8f,2f#'"
+    ```
+*   **X-Files Theme:**
+    ```bash
+    ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'XFiles:d=4,o=5,b=125:e,g,a,g,d6,2e6,p,e,g,a,g,e6,2d6'"
+    ```
+*   **Tron (Main Theme snippet):**
+    ```bash
+    ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'Tron:d=4,o=5,b=120:8c,8e,8g,8c6,8g,8e,8c,8p,8d,8f,8a,8d6,8a,8f,8d'"
+    ```
+*   **James Bond 007:**
+    ```bash
+    ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'Bond:d=4,o=5,b=80:8e6,16f#6,16f#6,8f#6,8e6,8e6,8e6,8g6,16g6,16g6,8g6,8f#6,8f#6,8f#6'"
+    ```
+*   **Mission Impossible:**
+    ```bash
+    ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'Mission:d=4,o=5,b=150:16d6,16d6,16f6,16g6,8d6,8d6,16c6,16c#6,8d6,8d6,16f6,16g6,8d6,8d6,16c6,16c#6'"
+    ```
 *   **Super Mario Theme:**
     ```bash
     ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'Mario:d=4,o=5,b=125:8e6,8e6,8p,8e6,8p,8c6,8e6,8p,8g6,8p,8g5'"
