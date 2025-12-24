@@ -119,7 +119,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #39 HDC1080 - Temp/Humidity
 *   [ ] #40 LPS22HB - Pressure/Temp
 *   [ ] #41 SHTC3 - Temp/Humidity
-*   [ ] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors.
+*   [x] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors -> `xpi_sensors/scd4x_node`
 
 ### Outdoor Weather (Mechanical)
 *   [ ] **Anemometer** - *Implemented*

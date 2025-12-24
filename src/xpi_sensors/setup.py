@@ -59,6 +59,7 @@ setup(
             'wind_vane_digital_node = xpi_sensors.wind_vane_digital_node:main',
             'veml6070_node = xpi_sensors.veml6070_node:main',
             'sht3x_node = xpi_sensors.sht3x_node:main',
+            'scd4x_node = xpi_sensors.scd4x_node:main',
         ],
     },
 )
