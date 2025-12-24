@@ -173,8 +173,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 25. HX711 (cell weight sensor) - digital load sensor
 26. SGP30 - CO2 sensor
 27. BME-680 - *Implemented*
-28. ZP-16 - gas sensor
-29. VL53L1X - distance laser sensor
+28. **VL53L1X Time-of-Flight** -> `xpi_sensors/vl53l1x_node`
+29. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
 30. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
 31. FPM10A - fingerprint sensor  (UART)
 32. BF350 - load cell/strain gauge

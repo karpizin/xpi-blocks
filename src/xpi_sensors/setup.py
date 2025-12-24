@@ -60,6 +60,7 @@ setup(
             'veml6070_node = xpi_sensors.veml6070_node:main',
             'sht3x_node = xpi_sensors.sht3x_node:main',
             'scd4x_node = xpi_sensors.scd4x_node:main',
+            'vl53l1x_node = xpi_sensors.vl53l1x_node:main',
         ],
     },
 )

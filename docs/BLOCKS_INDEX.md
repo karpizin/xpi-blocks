@@ -71,6 +71,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[HR202 Humidity Sensor](../blocks/sensors/hr202/README.md)** - Low-cost analog resistive humidity sensor.
 *   **[KY-013 Thermistor](../blocks/sensors/ky013/README.md)** - Analog NTC thermistor module.
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
+*   **[VL53L1X ToF Sensor](../blocks/sensors/range/vl53l1x/README.md)** - Precision laser distance measurement (I2C).
 *   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).
 *   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
