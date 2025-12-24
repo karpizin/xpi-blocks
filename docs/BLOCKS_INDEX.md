@@ -101,6 +101,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[AT24Cxxx EEPROM](../blocks/storage/eeprom/README.md)** - Non-volatile I2C memory for config and state.
 
 ## ⚙️ Actuators (Motion)
+*   **[GPIO Expander (MCP23017)](../blocks/actuators/gpio_expander/mcp23017/README.md)** - 16 additional digital I/O pins via I2C.
 *   **[DC Motor (TB6612)](../blocks/actuators/motors_dc/README.md)** - Dual DC motor driver control.
 *   **[DC/Stepper (L298N)](../blocks/actuators/motors_dc/README.md)** - High power motor driver.
 *   **[ESC BLDC Motor](../blocks/actuators/motors_esc/README.md)** - Brushless motor control (Drone/Car).

@@ -138,7 +138,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [x] **Rain Gauge** - Precipitation (Pulse Counter) -> `xpi_sensors/rain_gauge_node`
 
 ### IO Expanders & ADC (I2C)
-*   [ ] #4 MCP23017 - 16 GPIO Expander
+*   [x] **MCP23017 16-Channel GPIO Expander** -> `xpi_actuators/mcp23017_node`
 *   [x] **CD74HC4067 16-Channel Analog Mux** -> `xpi_sensors/analog_mux_4067`
 *   [ ] #5 ADS1115 - 4-CH ADC (Vital for analog sensors) - *Already Implemented*
 *   [ ] #12 PCF8574 - 8 GPIO Expander

@@ -41,6 +41,7 @@ setup(
             'tft_display_node = xpi_actuators.tft_display_node:main',
             'buzzer_node = xpi_actuators.buzzer_node:main',
             'shift_register_595 = xpi_actuators.shift_register_595_node:main',
+            'mcp23017 = xpi_actuators.mcp23017_node:main',
         ],
     },
 )
