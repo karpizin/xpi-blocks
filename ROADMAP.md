@@ -151,7 +151,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
 
 ## 🔮 TODO List (Planned)
-1. MPU9250 (9DOF IMU)
+1. **MPU9250 (9DOF IMU)** -> `xpi_sensors/mpu9250_node`
 2. BMX055 (9DOF IMU)
 3. LED 7-segment (single digit, GPIO)
 4. **74HC595 (HC595) Shift Register (Out)** -> `xpi_actuators/shift_register_595`

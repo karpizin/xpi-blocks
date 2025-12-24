@@ -79,6 +79,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
 *   **[VL53L1X ToF Sensor](../blocks/sensors/range/vl53l1x/README.md)** - Precision laser distance measurement (I2C).
 *   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).
+*   **[MPU9250 IMU](../blocks/sensors/imu/mpu9250/README.md)** - 9-DOF sensor (Accel, Gyro, Mag) via I2C.
 *   **[BNO055 IMU](../blocks/sensors/imu/bno055/README.md)** - Intelligent 9-DOF orientation with sensor fusion (I2C).
 *   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
