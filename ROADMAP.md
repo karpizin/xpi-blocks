@@ -181,9 +181,9 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 28. **TF-Luna / TFmini Plus** - High-frequency 1D LiDAR rangefinder
 29. **TCS3200 (GY-31) Color Sensor** -> `xpi_sensors/tcs3200_node`
 
-19. MAX30102 - heartrate sensor
-20. HX711 (cell weight sensor) - digital load sensor
-21. SGP30 - CO2 sensor
+24. MAX30102 - heartrate sensor
+25. **HX711 (cell weight sensor)** -> `xpi_sensors/hx711_node`
+26. SGP30 - CO2 sensor
 22. ZP-16 - gas sensor
 23. TOF10120(TOF05140) - distance laser sensor (UART/I2C)
 24. FPM10A - fingerprint sensor  (UART)

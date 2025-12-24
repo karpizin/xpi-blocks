@@ -41,6 +41,7 @@ setup(
             'ds18b20_node = xpi_sensors.ds18b20_node:main',
             'gpio_digital_input_node = xpi_sensors.gpio_digital_input_node:main',
             'gps_node = xpi_sensors.gps_node:main',
+            'hx711_node = xpi_sensors.hx711_node:main',
             'ina219_node = xpi_sensors.ina219_node:main',
             'lm75a_node = xpi_sensors.lm75a_node:main',
             'max17048_node = xpi_sensors.max17048_node:main',
