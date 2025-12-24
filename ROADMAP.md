@@ -4,6 +4,8 @@ Total devices targeted: 80+
 Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ## ✅ Implemented
+*   **HC-12 (433MHz Wireless Serial)** -> `xpi_comms/hc12_node`
+*   **Raw LoRa (SX1276/SX1278)** -> `xpi_comms/lora_raw_node`
 *   **#27 Relay Module (GPIO)** -> `xpi_actuators/relay_node`
 *   **#7 PCA9685 (I2C)** -> `xpi_actuators/pca9685_node`
 *   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`

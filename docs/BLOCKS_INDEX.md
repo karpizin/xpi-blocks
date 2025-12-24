@@ -24,6 +24,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[MCP Agent Node](../blocks/llm/mcp_agent/README.md)** - Context-aware host for real-time sensor monitoring and tool orchestration.
 
 ## 📡 Communication & Interfaces
+*   **[Raw LoRa (SX1276/SX1278)](../blocks/comms/lora_raw/README.md)** - Low-level long-range SPI radio communication.
 *   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
 *   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.

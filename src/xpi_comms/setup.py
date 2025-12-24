@@ -19,12 +19,7 @@ setup(
             'mqtt_bridge_node = xpi_comms.mqtt_bridge_node:main',
             'mqtt_gateway_node = xpi_comms.mqtt_gateway_node:main',
             'can_bridge_node = xpi_comms.can_bridge_node:main',
-            'meshtastic_bridge = xpi_comms.meshtastic_bridge_node:main',
-            'swarm_controller_node = xpi_comms.swarm_controller_node:main',
-            'ble_bridge_node = xpi_comms.ble_bridge_node:main',
-            'lte_modem_node = xpi_comms.lte_modem_node:main',
-            'rtc_monitor_node = xpi_comms.rtc_monitor_node:main',
-            'hc12_node = xpi_comms.hc12_node:main',
+            'lora_raw_node = xpi_comms.lora_raw_node:main',
         ],
     },
 )
