@@ -163,8 +163,15 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 14. **Vibration Sensor (SW-420)** - Impact and tilt detection
 20. **Optical Flow (PMW3901)** -> `xpi_navigation/optical_flow_node`
 21. NAP07 HIS07 - smoke sensor
-17. JSN-SR04T - ultrasonic sensor (distance)
-18. TCS3200 (GY-31) - color sensor
+22. JSN-SR04T - ultrasonic sensor (distance)
+23. **BNO055 Intelligent IMU** - 9-DOF orientation with onboard sensor fusion
+24. **AMG8833 Thermal Camera** - 8x8 IR pixel matrix for heat detection
+25. **VL53L5CX Multi-zone ToF** - 8x8 distance grid (Micro-LiDAR)
+26. **Hall Effect Speed Sensors** - Internal wheel odometry
+27. **Whiskers (Bumper Switches)** - Physical contact detection
+28. **TF-Luna / TFmini Plus** - High-frequency 1D LiDAR rangefinder
+29. TCS3200 (GY-31) - color sensor
+
 19. MAX30102 - heartrate sensor
 20. HX711 (cell weight sensor) - digital load sensor
 21. SGP30 - CO2 sensor
