@@ -34,6 +34,7 @@ Passive buzzers require a PWM signal to produce different frequencies.
     ros2 topic pub --once /buzzer/beep std_msgs/Bool "data: true"
     ```
 3.  **Play a Melody (RTTTL):**
+    See the [**Melody Library (MELODIES.md)**](MELODIES.md) for a list of 20+ ready-to-use sounds like Star Wars, Mario, and system alerts.
     ```bash
     ros2 topic pub --once /buzzer/melody std_msgs/String "data: 'StarWars:d=4,o=5,b=45:32p,32f#,32f#,32f#,8b.,8f#.6,32e6,32d#6,32c#6,8b.6,4f#.6,32e6,32d#6,32c#6,8b.6,4f#.6,32e6,32d#6,32e6,8c#.6'"
     ```
