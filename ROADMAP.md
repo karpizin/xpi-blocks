@@ -24,6 +24,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **DS18B20 (1-Wire Temp Sensor)** -> `xpi_sensors/ds18b20`
 *   **GPIO Digital Input** -> `xpi_sensors/gpio_digital_input`
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
+*   **BNO055 Intelligent IMU** -> `xpi_sensors/bno055_node`
 *   **ESC Motor Driver** -> `xpi_actuators/esc_driver`
 *   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
