@@ -65,6 +65,7 @@ setup(
             'tcs3200_node = xpi_sensors.tcs3200_node:main',
             'pir_node = xpi_sensors.pir_node:main',
             'shift_register_165 = xpi_sensors.shift_register_165_node:main',
+            'analog_mux_4067 = xpi_sensors.analog_mux_4067_node:main',
         ],
     },
 )
