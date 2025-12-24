@@ -104,6 +104,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **TSL2591** - *Implemented*
 *   [ ] **LTR-390** - UV Light Sensor
 *   [ ] **VEML7700** - High Accuracy Ambient Light Sensor
+*   [x] **VEML6070** - UV Light Sensor -> `xpi_sensors/veml6070_node`
 *   [x] **AS7341** - 11-Channel Spectral Color Sensor -> `xpi_sensors/as7341_node`
 *   [x] **APDS-9960** - RGB, Gesture, Proximity -> `xpi_sensors/apds9960_node`
 *   [x] #25 **MAX44009** - Light sensor -> `xpi_sensors/max44009_node`
