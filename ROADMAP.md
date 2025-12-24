@@ -161,8 +161,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 12. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
 13. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
 14. **Vibration Sensor (SW-420)** - Impact and tilt detection
-15. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
-16. NAP07 HIS07 - smoke sensor
+20. **Optical Flow (PMW3901)** -> `xpi_navigation/optical_flow_node`
+21. NAP07 HIS07 - smoke sensor
 17. JSN-SR04T - ultrasonic sensor (distance)
 18. TCS3200 (GY-31) - color sensor
 19. MAX30102 - heartrate sensor

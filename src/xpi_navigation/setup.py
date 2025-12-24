@@ -27,6 +27,7 @@ setup(
             'ble_ranging_node = xpi_navigation.ble_ranging_node:main',
             'ble_slam_node = xpi_navigation.ble_slam_node:main',
             'uwb_ranging_node = xpi_navigation.uwb_ranging_node:main',
+            'optical_flow_node = xpi_navigation.optical_flow_node:main',
         ],
     },
 )

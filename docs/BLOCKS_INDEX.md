@@ -77,6 +77,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
 
 ## 🗺️ Navigation & Localization
+*   **[Optical Flow (PMW3901)](../blocks/navigation/optical_flow/README.md)** - 2D ground tracking for precise indoor velocity and displacement (SPI).
 *   **[GPS/GNSS NMEA](../blocks/sensors/gps_nmea/README.md)** - Standard GPS tracking via UART.
 *   **[QMC5883L Compass](../blocks/sensors/magnetometer_qmc5883l/README.md)** - 3-Axis digital magnetometer for heading.
 *   **[UWB Beacon SLAM (Indoor)](../blocks/navigation/uwb_beacons/README.md)** - Indoor SLAM using radio beacons.
