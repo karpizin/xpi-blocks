@@ -55,6 +55,7 @@ setup(
             'yamnet_node = xpi_sensors.yamnet_node:main',
             'aht20_node = xpi_sensors.aht20_node:main',
             'wind_vane_node = xpi_sensors.wind_vane_node:main',
+            'rain_gauge_node = xpi_sensors.rain_gauge_node:main',
         ],
     },
 )

@@ -123,7 +123,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ### Outdoor Weather (Mechanical)
 *   [ ] **Anemometer** - *Implemented*
 *   [x] **Wind Vane** - Wind Direction (Analog) -> `xpi_sensors/wind_vane_node`
-*   [ ] **Rain Gauge** - Precipitation (Tipping Bucket / Pulse Counter).
+*   [x] **Rain Gauge** - Precipitation (Pulse Counter) -> `xpi_sensors/rain_gauge_node`
 
 ### IO Expanders & ADC (I2C)
 *   [ ] #4 MCP23017 - 16 GPIO Expander
