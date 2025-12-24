@@ -185,7 +185,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 28. **WS2812B Effects Library** -> `xpi_actuators/ws2812_driver` (Updated with 100+ effects)
 
 ### 🆕 Proposed Actuators
-29. **Buzzer / Speaker** - Passive/Active piezo (GPIO/PWM) for status beeps and RTTTL melodies.
+29. **Buzzer / Speaker** -> `xpi_actuators/buzzer_node`
 30. **PWM Breathing LED** - Single channel LED with smooth fading/pulsing effects.
 
 ## 🚀 Future Horizons (New Categories)

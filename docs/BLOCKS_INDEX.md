@@ -105,6 +105,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Stepper (A4988/DRV8825)](../blocks/actuators/steppers/README.md)** - Precision bipolar stepper driver.
 
 ## 💡 Actuators (Visual & Output)
+*   **[Buzzer & Melodies](../blocks/actuators/buzzer/README.md)** - Status beeps and RTTTL music (GPIO/PWM).
 *   **[Relay Module](../blocks/actuators/relays/README.md)** - Switching high-voltage/current loads.
 *   **[OLED Display (SSD1306)](../blocks/actuators/oled_displays/README.md)** - Small graphical display (I2C).
 *   **[TFT SPI Display (ST7789)](../blocks/actuators/displays/tft_spi/README.md)** - Color IPS/TFT display supporting ROS2 Images and layered JSON drawing.
