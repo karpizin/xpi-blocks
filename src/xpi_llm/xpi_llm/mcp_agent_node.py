@@ -45,6 +45,7 @@ class MCPAgentNode(Node):
         # 5. Publishers for Tools
         self.relay_pub = self.create_publisher(Bool, '/relay_node/cmd', 10)
         self.display_pub = self.create_publisher(String, '/tft_display/draw_commands', 10)
+        self.led_pub = self.create_publisher(Int32, '/ws2812/effect', 10)
 
         # 6. User Interaction
         self.cmd_sub = self.create_subscription(String, self.get_parameter('command_topic').value, self.command_callback, 10)
@@ -86,6 +87,47 @@ class MCPAgentNode(Node):
                         "required": ["text"]
                     }
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "display_alert",
+                    "description": "Show a high-priority warning on the screen with a red background.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "message": {"type": "string", "description": "The alert message"}
+                        },
+                        "required": ["message"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "set_led_effect",
+                    "description": "Set a visual effect on the RGB LED strip. Examples: 1=Rainbow, 2=Breath, 3=Strobe, 0=Off.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "effect_id": {"type": "integer", "description": "ID of the effect from 0 to 100"}
+                        },
+                        "required": ["effect_id"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "clear_display",
+                    "description": "Wipe the screen and set it to a solid color.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "color": {"type": "string", "description": "Background color (default: black)"}
+                        }
+                    }
+                }
             }
         ]
 
@@ -115,23 +157,49 @@ class MCPAgentNode(Node):
         name = tool_call["name"]
         args = tool_call["arguments"]
         
+        self.get_logger().info(f"Executing Tool: {name} with {args}")
+
         if name == "control_relay":
             msg = Bool()
             msg.data = args["state"]
-            # Simplified for demo: publishing to a shared topic
             self.relay_pub.publish(msg)
             return f"Relay {args.get('relay_id')} set to {args['state']}"
         
         if name == "display_text":
-            # Formulate a JSON drawing command for our TFT node
             cmd = {
                 "commands": [
                     {"type": "clear", "color": "black"},
-                    {"type": "text", "content": args["text"], "x": 10, "y": 50, "size": 20, "color": args.get("color", "white")}
+                    {"type": "text", "content": args["text"], "x": 10, "y": 80, "size": 24, "color": args.get("color", "white")}
                 ]
             }
             self.display_pub.publish(String(data=json.dumps(cmd)))
-            return f"Displayed: {args['text']}"
+            return f"Displayed text: {args['text']}"
+
+        if name == "display_alert":
+            cmd = {
+                "commands": [
+                    {"type": "clear", "color": "red"},
+                    {"type": "text", "content": "!!! ALERT !!!", "x": 10, "y": 40, "size": 30, "color": "white"},
+                    {"type": "text", "content": args["message"], "x": 10, "y": 120, "size": 20, "color": "yellow"}
+                ]
+            }
+            self.display_pub.publish(String(data=json.dumps(cmd)))
+            return f"Alert displayed: {args['message']}"
+
+        if name == "set_led_effect":
+            msg = Int32()
+            msg.data = args["effect_id"]
+            self.led_pub.publish(msg)
+            return f"LED Effect set to {args['effect_id']}"
+
+        if name == "clear_display":
+            cmd = {
+                "commands": [
+                    {"type": "clear", "color": args.get("color", "black")}
+                ]
+            }
+            self.display_pub.publish(String(data=json.dumps(cmd)))
+            return "Display cleared"
         
         return "Unknown tool"
 

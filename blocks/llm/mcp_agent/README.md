@@ -33,8 +33,19 @@ Turns a physical relay ON or OFF.
 
 ### 2. `display_text`
 Writes a message to the robot's color TFT display.
-*   **Use case:** Status updates, warnings, or "facial" expressions.
 *   **Arguments:** `text` (string), `color` (string).
+
+### 3. `display_alert`
+Shows a high-priority warning on the screen with a red background.
+*   **Arguments:** `message` (string).
+
+### 4. `set_led_effect`
+Changes the visual effect of the WS2812B RGB LED strip.
+*   **Arguments:** `effect_id` (integer, 0-100).
+
+### 5. `clear_display`
+Wipes the screen to a solid color.
+*   **Arguments:** `color` (string, optional).
 
 ---
 
