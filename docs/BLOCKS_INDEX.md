@@ -36,7 +36,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## 🎮 Inputs (Human & RC)
 *   **[Joystick / Gamepad](../blocks/inputs/joystick/README.md)** - Bluetooth/USB gamepad (Xbox/PS4) teleop.
 *   **[Web Virtual Joystick](../blocks/inputs/web_joystick/README.md)** - Smartphone control via browser.
-*   **[Telegram Bot Control](../blocks/inputs/telegram_bot/README.md)** - Remote control via chat buttons and photos.
+*   **[Telegram Bot Control](../blocks/inputs/telegram_bot/README.md)** - Remote control via chat interface.
 *   **[Gesture Control (MediaPipe)](../blocks/inputs/gesture_control/README.md)** - Hand tracking for robot control.
 *   **[Joy Mapper (Universal)](../blocks/inputs/joy_mapper/README.md)** - Map Joystick/RC to robot commands (Twist/Bool).
 *   **[Mouse & Touchpad](../blocks/inputs/mouse/README.md)** - Use mouse as a joystick (Velocity/Position control).
@@ -48,23 +48,27 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 🌡️ Sensors (Environment & Weather)
 *   **[AHT10 / AHT20](../blocks/sensors/environment/aht20/README.md)** - High-precision temperature and humidity (I2C).
+*   **[SHT30 / SHT31 / SHT35](../blocks/sensors/environment/sht3x/README.md)** - High-precision temperature and humidity (Sensirion I2C).
+*   **[DHT11 / DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
+*   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
+*   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
 *   **[BH1750 Light Sensor](../blocks/sensors/bh1750/README.md)** - Ambient light intensity (Lux).
 *   **[OPT3001 Light Sensor](../blocks/sensors/opt3001/README.md)** - High-precision ambient light (Lux).
 *   **[MAX44009 Light Sensor](../blocks/sensors/max44009/README.md)** - Ultra-wide dynamic range lux meter.
 *   **[TSL2561 Light Sensor](../blocks/sensors/tsl2561/README.md)** - Dual-diode wide dynamic range light sensor.
 *   **[TSL2591 Light Sensor](../blocks/sensors/tsl2591/README.md)** - High Dynamic Range Light Sensor (I2C).
+*   **[VEML6070 UV Sensor](../blocks/sensors/environment/uv_veml6070/README.md)** - Ultraviolet light intensity (I2C).
 *   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
 *   **[TCS3200 Color Sensor](../blocks/sensors/color/tcs3200/README.md)** - Fast color-to-frequency converter (GPIO).
 *   **[AS7341 Spectral Sensor](../blocks/sensors/as7341/README.md)** - 11-Channel spectral color analyzer.
-*   **[APDS-9960 Gesture/Color](../blocks/sensors/apds9960/README.md)** - RGB, Proximity, and Gesture control sensor.
 *   **[RFID/NFC (PN532)](../blocks/sensors/nfc/README.md)** - Contactless tag identification via I2C.
-*   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
-*   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
 *   **[Anemometer Wind Speed](../blocks/sensors/anemometer/README.md)** - Mechanical cup anemometer (GPIO).
-*   **[Wind Vane](../blocks/sensors/environment/wind_vane/README.md)** - Wind direction (16 points).
-*   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total.
+*   **[Wind Vane (Analog)](../blocks/sensors/environment/wind_vane/README.md)** - Wind direction (16 points, Analog).
+*   **[Wind Vane (Digital)](../blocks/sensors/environment/wind_vane_digital/README.md)** - High-precision wind direction (AS5600 I2C).
+*   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total (GPIO).
 *   **[PIR Motion Sensor](../blocks/sensors/movement/pir/README.md)** - Basic infrared motion detection (GPIO).
-*   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - CO2 and TVOC sensor.
+*   **[SCD40 / SCD41 CO2 Sensor](../blocks/sensors/environment/scd4x/README.md)** - True NDIR CO2, Temperature, and Humidity (I2C).
+*   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC sensor.
 *   **[MICS-6814 Triple Gas](../blocks/sensors/mics6814/README.md)** - CO, NO2, and NH3 analog gas sensor.
 *   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
@@ -74,6 +78,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
 *   **[VL53L1X ToF Sensor](../blocks/sensors/range/vl53l1x/README.md)** - Precision laser distance measurement (I2C).
 *   **[MPU6050 IMU](../blocks/sensors/imu/README.md)** - Accelerometer and Gyroscope (6-DOF).
+*   **[BNO055 IMU](../blocks/sensors/imu/bno055/README.md)** - Intelligent 9-DOF orientation with sensor fusion (I2C).
 *   **[Analog Input (ADS1115)](../blocks/sensors/analog_input/README.md)** - Reading analog sensors (Soil, Gas, Light, etc.).
 *   **[Digital Input](../blocks/sensors/digital_input/README.md)** - Buttons, switches, IR obstacles.
 
