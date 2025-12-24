@@ -68,6 +68,7 @@ xpi-blocks/
 *   **UART Access:** `pyserial` for RC receivers.
 *   **1-Wire Access:** Kernel modules (`w1_gpio`, `w1_therm`).
 *   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
+*   **Audio Intelligence:** Real-time sound source localization (DOA), noise level monitoring, and local AI-based sound classification (YAMNet).
 *   **Universal Input:** `joy_mapper_node` converts any Joystick, Mouse, or Keyboard into standard robot commands (`Twist`, `Bool`, `Float32`) via YAML config.
 *   **LoRa Mesh & Swarm:** Native support for `Meshtastic` LoRa devices for decentralized robot-to-robot communication and swarm intelligence (collision avoidance, collective consensus).
 *   **Containerization:** `Dockerfile` support for rapid deployment.

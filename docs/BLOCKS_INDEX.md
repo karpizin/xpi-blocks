@@ -17,7 +17,13 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
 *   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
 
+## 🎙️ Audio & Sound Intelligence
+*   **[ReSpeaker Mic Array v2.0](../blocks/sensors/audio/respeaker/README.md)** - 4-mic array with Direction of Arrival (DOA).
+*   **[Audio Level Monitor](../blocks/sensors/audio/analyzer/README.md)** - Real-time noise level (dB) and RMS monitoring.
+*   **[YAMNet Sound Classifier](../blocks/sensors/audio/yamnet/README.md)** - Local AI classification of 500+ sound types (Edge AI).
+
 ## 📡 Communication & Interfaces
+*   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
 *   **[Universal Serial Bridge](../blocks/comms/serial_bridge/README.md)** - Bidirectional UART communication (Arduino/ESP32).
 *   **[Modbus RTU Master](../blocks/comms/modbus_rtu/README.md)** - Generic RS-485 reader for industrial sensors.
 *   **[MQTT Bridge](../blocks/comms/mqtt_bridge/README.md)** - Bidirectional gateway to Home Assistant / IoT.
@@ -48,6 +54,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[TCS34725 Color Sensor](../blocks/sensors/tcs34725/README.md)** - RGB color and light sensor with IR filter.
 *   **[AS7341 Spectral Sensor](../blocks/sensors/as7341/README.md)** - 11-Channel spectral color analyzer.
 *   **[APDS-9960 Gesture/Color](../blocks/sensors/apds9960/README.md)** - RGB, Proximity, and Gesture control sensor.
+*   **[AHT10 / AHT20 Environment](../blocks/sensors/environment/aht20/README.md)** - High-precision temperature and humidity (I2C).
 *   **[RFID/NFC (PN532)](../blocks/sensors/nfc/README.md)** - Contactless tag identification via I2C.
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).

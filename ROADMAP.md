@@ -112,7 +112,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
 *   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   [ ] **SHT30 / SHT31 / SHT35** - Modern High-Precision Temp/Humidity (I2C).
-*   [ ] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
+*   [x] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
 *   [ ] **DPS310** - High-Precision Barometric Pressure (I2C).
 *   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
 *   [ ] #39 HDC1080 - Temp/Humidity
@@ -179,7 +179,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 ## 🚀 Future Horizons (New Categories)
 
 ### 🎙️ Audio & Voice Interaction
-*   **Audio Input:** Support for **ReSpeaker** Mic Arrays (Sound source localization).
+*   [x] **Audio Input:** Support for **ReSpeaker** Mic Arrays (Sound source localization).
 *   **Audio Output (TTS):** Integration with **Piper** or **Espeak** for local Text-to-Speech.
 *   **Voice Assistant Project:** Combining Mic + TTS + LLM for natural interaction.
 
