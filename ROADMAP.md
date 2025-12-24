@@ -154,11 +154,12 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 15. DHT22 (DHT11) - *Implemented*
 16. W25Qxx (Flash SPI)
 17. HW-MS03 - radar sensor module (human sensor)
-18. NAP07 HIS07 - smoke sensor
-19. JSN-SR04T - ultrasonic sensor (distance)
-20. TCS3200 (GY-31) - color sensor
-21. MAX30102 - heartrate sensor
-22. HX711 (cell weight sensor) - digital load sensor
+18. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
+19. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
+20. **Vibration Sensor (SW-420)** - Impact and tilt detection
+21. **Optical Flow (PMW3901)** - Precision indoor positioning without GPS
+22. NAP07 HIS07 - smoke sensor
+23. JSN-SR04T - ultrasonic sensor (distance)
 23. HR-202 - *Implemented via Analog Interpreter*
 24. SGP30 - CO2 sensor
 *   **MQ-x Gas Sensors (via Analog Sensor Interpreter)** -> `xpi_sensors/analog_sensor_interpreter` - *Now covered by Analog Sensor Interpreter*
