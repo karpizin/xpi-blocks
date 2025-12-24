@@ -20,8 +20,8 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[VLM Observer](../blocks/llm/vlm_observer/README.md)** - Scene description using Gemini 3.0 Flash.
 *   **[Sonar Trend Analysis](../blocks/llm/sonar_trend_analysis/README.md)** - Intelligent obstacle distance analysis.
 *   **[Sonar Pattern Analysis](../blocks/llm/sonar_pattern_analysis/README.md)** - Identifying movement patterns.
-*   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - High-level robot control via natural language.
-*   **[MCP Agent Node](../docs/MCP_INTEGRATION.md)** - Model Context Protocol host for real-time sensor context and tool orchestration.
+*   **[LLM Tool Calling](../blocks/llm/tool_calling/README.md)** - Enabling LLMs to control actuators via ROS2 services.
+*   **[MCP Agent Node](../blocks/llm/mcp_agent/README.md)** - Context-aware host for real-time sensor monitoring and tool orchestration.
 
 ## 📡 Communication & Interfaces
 *   **[HC-12 Wireless Serial](../blocks/comms/hc12/README.md)** - Long-range 433MHz wireless UART bridge.
