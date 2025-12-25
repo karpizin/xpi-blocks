@@ -47,6 +47,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[RC Receiver (SBUS)](../blocks/inputs/rc_sbus/README.md)** - FrSky/Futaba radio integration.
 *   **[RC Receiver (CRSF)](../blocks/inputs/rc_crsf/README.md)** - TBS Crossfire / ELRS integration.
 *   **[RC Receiver (PPM)](../blocks/inputs/rc_ppm/README.md)** - Legacy PPM radio integration.
+*   [**RC Interpreter**](../blocks/inputs/rc_interpreter/README.md) - Map RC channels to Twist/Commands with Expo and Deadzone.
 
 ## 🌡️ Sensors (Environment & Weather)
 *   **[SCD40 / SCD41 CO2 Sensor](../blocks/sensors/environment/scd4x/README.md)** - True NDIR CO2, Temperature, and Humidity (I2C).

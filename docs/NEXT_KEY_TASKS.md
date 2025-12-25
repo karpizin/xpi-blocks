@@ -2,27 +2,25 @@
 
 This document outlines important tasks that require further attention or clarification before implementation.
 
-## 1. VLM Integration for Scene Understanding (HIGH PRIORITY)
+## 1. VLM Integration for Scene Understanding (COMPLETED)
 
 **Task:** Develop examples demonstrating how to use Vision-Language Models (VLM) for scene understanding and intelligent actuator control.
 
 **Details:**
 *   **Scene Analysis:**
-    *   Use VLM for scene understanding from camera feeds (e.g., "identify objects," "detect obstacles").
-    *   Integrate VLM output with control logic.
+    *   Implemented `VLMObserverNode` with trigger support.
+    *   Integrated VLM context into `MCPAgentNode`.
 *   **Actuator Control:**
-    *   Implement "tool calling" mechanism where LLM can invoke ROS2 services/actions to control actuators (e.g., "move forward", "turn left", "open gripper").
-    *   Model-Controller-Perception (MCP) loops: LLM as the high-level planner/reasoner.
-*   **Possible Tools:** OpenAI GPT-4o, Google Gemini 3.0 Flash, local LLMs (e.g., with Ollama).
+    *   Implemented "tool calling" mechanism where LLM can invoke ROS2 services/actions to control actuators.
+    *   Added `get_visual_update` tool to `MCPAgentNode`.
 
-## 2. RC Mapper / Interpreter Node (HIGH PRIORITY)
+## 2. RC Mapper / Interpreter Node (COMPLETED)
 
 **Task:** Create a ROS2 node that maps raw `sensor_msgs/Joy` input from RC receivers (SBUS, CRSF, PPM) into more semantic or device-specific commands.
 
 **Details:**
-*   Subscribes to `sensor_msgs/Joy` messages (e.g., from `/sbus_receiver/joy`).
-*   Uses ROS2 parameters for channel mapping and calibration (min/max/center).
-*   Publishes: `geometry_msgs/Twist` for teleoperation, or custom messages/topics for specific actuator control.
+*   Implemented `RCInterpreterNode` in `xpi_inputs`.
+*   Supports channel mapping, expo, deadzone, and switch bindings.
 
 ## 3. Motion Control & Kinematics Library
 

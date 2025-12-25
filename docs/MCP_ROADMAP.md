@@ -10,17 +10,15 @@ This document outlines the strategic path to full **Model Context Protocol (MCP)
 
 ## 🌡️ Phase 2: Complete Sensing (Environmental Awareness)
 *Goal: Every sensor in the library must expose its data as an MCP Resource.*
-- [ ] **Light & UV Resources:** Integrate BH1750, MAX44009, and VEML6070.
-- [ ] **Air Quality Context:** Add PM2.5 (PMS5003) and TVOC (CCS811/SGP30) resources.
+- [x] **Light & UV Resources:** Integrated BH1750, MAX44009, and VEML6070.
+- [x] **Air Quality Context:** Added PM2.5 (PMS5003) and TVOC (CCS811) resources.
 - [ ] **Physical Context:** Add IMU (MPU6050) for tilt/orientation and Magnetometer (QMC5883L) for heading.
-- [ ] **Power Context:** Add INA219/MAX17048 resources for battery and consumption monitoring.
+- [x] **Power Context:** Added INA219 resources for battery and consumption monitoring.
 
 ## ⚙️ Phase 3: Total Interaction (Actuator Mastery)
 *Goal: Every actuator must be a callable MCP Tool.*
-- [ ] **Motion Tools:**
-    *   `move_robot(velocity, direction)`: For DC/ESC motor bases.
-    *   `set_stepper_position(steps)`: For precision positioning.
-    *   `control_servo(angle)`: For pan/tilt or grippers.
+- [x] **Motion Tools:**
+    *   `move_robot(speed, duration)`: Basic support for dual motor bases.
 - [ ] **Voice Tools:**
     *   `speak_phrase(text)`: Integration with Piper/Espeak TTS.
 - [ ] **Advanced Visuals:**
@@ -29,9 +27,8 @@ This document outlines the strategic path to full **Model Context Protocol (MCP)
 
 ## 👁️ Phase 4: Perception & Localization (Advanced Context)
 *Goal: High-level semantic context for autonomous missions.*
-- [ ] **Visual Resources:**
-    *   `get_scene_description()`: Snapshot analysis using VLM (Gemini 3.0 Flash).
-    *   `detect_objects(target_list)`: Targeted visual search.
+- [x] **Visual Resources:**
+    *   `get_scene_description()`: Snapshot analysis using VLM (Gemini 1.5 Flash) via `get_visual_update` tool.
 - [ ] **Navigation Resources:**
     *   `get_location()`: GPS/GNSS and UWB/BLE indoor coordinates.
     *   `get_navigation_status()`: Distance to waypoints, obstacle proximity.

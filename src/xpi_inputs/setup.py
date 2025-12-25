@@ -35,6 +35,7 @@ setup(
             'telegram_bot_node = xpi_inputs.telegram_bot_node:main',
             'gesture_control_node = xpi_inputs.gesture_control_node:main',
             'rotary_encoder_node = xpi_inputs.rotary_encoder_node:main',
+            'rc_interpreter_node = xpi_inputs.rc_interpreter_node:main',
         ],
     },
 )

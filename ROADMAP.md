@@ -60,6 +60,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Joy Mapper (Universal Translator)** -> `xpi_inputs/joy_mapper_node`
 *   **Mouse/Touchpad Input** -> `xpi_inputs/mouse_node`
 *   **Keyboard-as-Gamepad** -> `xpi_inputs/keyboard_to_joy_node`
+*   **RC Interpreter** -> `xpi_inputs/rc_interpreter_node`
 *   **Web Virtual Joystick** -> `xpi_inputs/web_joystick_node`
 *   **Telegram Bot Control** -> `xpi_inputs/telegram_bot_node`
 *   **Gesture Control (MediaPipe)** -> `xpi_inputs/gesture_control_node`
