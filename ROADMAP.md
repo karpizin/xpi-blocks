@@ -29,7 +29,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#24 MPU6050 (I2C)** -> `xpi_sensors/mpu6050`
 *   **BNO055 Intelligent IMU** -> `xpi_sensors/bno055_node`
 *   **ESC Motor Driver** -> `xpi_actuators/esc_driver`
-*   **#15 TB6612FNG (GPIO)** -> `xpi_actuators/tb6612_driver`
+*   **#15 TB6612FNG / DRV8833 (GPIO)** -> `xpi_actuators/tb6612_driver`
+*   **PCA9685 I2C Motor Driver** -> `xpi_actuators/pca9685_motor_node`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
 *   **AHT10 / AHT20 (I2C)** -> `xpi_sensors/aht20`
 *   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
@@ -171,8 +172,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] **Water Quality (pH/EC)** - Sensors for hydro-robotics.
 
 ### Motors & Drivers
-*   [ ] #7a PCA9685_TB6612 - I2C Motor Driver
-*   [ ] #16 DRV8833 - Dual DC Motor (GPIO)
 *   [ ] #17 VNH2SP30 - High Power Motor (GPIO)
 
 1. **MPU9250 (9DOF IMU)** -> `xpi_sensors/mpu9250_node`

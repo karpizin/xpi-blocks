@@ -27,6 +27,7 @@ setup(
             'led_bar = xpi_actuators.led_bar_node:main',
             'led_matrix = xpi_actuators.led_matrix_node:main',
             'pca9685_node = xpi_actuators.pca9685_node:main',
+            'pca9685_motor_node = xpi_actuators.pca9685_motor_node:main',
             'relay_node = xpi_actuators.relay_node:main',
             'ssd1306_node = xpi_actuators.ssd1306_node:main',
             'tm1637 = xpi_actuators.tm1637_node:main',
