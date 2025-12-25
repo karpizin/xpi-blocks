@@ -111,6 +111,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[W25Qxx SPI Flash](../blocks/storage/w25qxx/README.md)** - High-speed SPI Flash memory (2MB - 16MB).
 
 ## ⚙️ Actuators (Motion & Expansion)
+*   [**MCP4725 DAC**](../blocks/actuators/mcp4725/README.md) - Generate true analog voltage (0-VCC) via I2C.
 *   [**I2C Multiplexer (TCA9548A)**](../blocks/actuators/i2c_mux/README.md) - Switch between 8 I2C buses to resolve address conflicts.
 *   [**GPIO Expander (MCP23017)**](../blocks/actuators/gpio_expander/mcp23017/README.md) - 16 additional digital I/O pins via I2C.
 *   **[Analog Mux (CD74HC4067)](../blocks/sensors/analog_input/cd74hc4067/README.md)** - 16-channel analog input expander.

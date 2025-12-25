@@ -26,6 +26,8 @@ setup(
         'console_scripts': [
             'led_bar = xpi_actuators.led_bar_node:main',
             'led_matrix = xpi_actuators.led_matrix_node:main',
+            'mcp23017_node = xpi_actuators.mcp23017_node:main',
+            'mcp4725_node = xpi_actuators.mcp4725_node:main',
             'pca9685_node = xpi_actuators.pca9685_node:main',
             'pca9685_motor_node = xpi_actuators.pca9685_motor_node:main',
             'relay_node = xpi_actuators.relay_node:main',

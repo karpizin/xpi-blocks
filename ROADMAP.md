@@ -146,8 +146,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [x] **MCP23017 16-Channel GPIO Expander** -> `xpi_actuators/mcp23017_node`
 *   [x] **CD74HC4067 16-Channel Analog Mux** -> `xpi_sensors/analog_mux_4067`
 *   [x] **TCA9548A 8-Channel I2C Multiplexer** -> `xpi_commons/i2c_mux_node`
+*   [x] **MCP4725 DAC** -> `xpi_actuators/mcp4725_node`
 *   [ ] **ISO1540 I2C Isolator** - Galvanic isolation for noisy environments.
-*   [ ] **MCP4725 DAC** - 12-bit Digital-to-Analog converter.
 *   [ ] #5 ADS1115 - 4-CH ADC (Vital for analog sensors) - *Already Implemented*
 *   [ ] #12 PCF8574 - 8 GPIO Expander
 

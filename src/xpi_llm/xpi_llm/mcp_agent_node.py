@@ -62,6 +62,7 @@ class MCPAgentNode(Node):
         self.led_pub = self.create_publisher(Int32, '/ws2812/effect', 10)
         self.motor_a_pub = self.create_publisher(Float32, '/tb6612/motor_a/cmd_vel', 10)
         self.motor_b_pub = self.create_publisher(Float32, '/tb6612/motor_b/cmd_vel', 10)
+        self.dac_pub = self.create_publisher(Float32, '/mcp4725/cmd_voltage', 10)
         
         # VLM Trigger Tool
         self.vlm_trigger_pub = self.create_publisher(String, '/vlm_observer_node/trigger', 10)
@@ -142,6 +143,20 @@ class MCPAgentNode(Node):
                         "required": ["effect_id"]
                     }
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "set_analog_voltage",
+                    "description": "Output a specific analog voltage level using the DAC. Useful for audio level control or analog industrial equipment.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "voltage": {"type": "number", "description": "Target voltage (0.0 to 3.3V)"}
+                        },
+                        "required": ["voltage"]
+                    }
+                }
             }
         ]
 
@@ -202,6 +217,11 @@ class MCPAgentNode(Node):
         if name == "set_led_effect":
             self.led_pub.publish(Int32(data=int(args["effect_id"])))
             return f"LED Effect -> {args['effect_id']}"
+        
+        if name == "set_analog_voltage":
+            voltage = float(args["voltage"])
+            self.dac_pub.publish(Float32(data=voltage))
+            return f"DAC output set to {voltage}V"
         
         return "Unknown tool"
 
