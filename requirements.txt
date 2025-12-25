@@ -10,6 +10,7 @@ apds9960
 Adafruit-Blinka
 adafruit-circuitpython-as7341
 adafruit-circuitpython-ccs811
+adafruit-circuitpython-htu21d
 RPLCD
 adafruit-circuitpython-ina219
 textual

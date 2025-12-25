@@ -53,6 +53,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[SCD40 / SCD41 CO2 Sensor](../blocks/sensors/environment/scd4x/README.md)** - True NDIR CO2, Temperature, and Humidity (I2C).
 *   **[AHT10 / AHT20](../blocks/sensors/environment/aht20/README.md)** - High-precision temperature and humidity (I2C).
 *   **[SHT30 / SHT31 / SHT35](../blocks/sensors/environment/sht3x/README.md)** - High-precision temperature and humidity (Sensirion I2C).
+*   **[HTU21D / SHT20](../blocks/sensors/environment/htu21d/README.md)** - Reliable temperature and humidity (I2C).
 *   **[DHT11 / DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).

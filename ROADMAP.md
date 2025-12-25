@@ -33,6 +33,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **#17 VNH2SP30 High Power Driver** -> `xpi_actuators/vnh2sp30_node`
 *   **PCA9685 I2C Motor Driver** -> `xpi_actuators/pca9685_motor_node`
 *   **#9 BME280 (I2C)** -> `xpi_sensors/bme280`
+*   **HTU21D / SHT20 (I2C)** -> `xpi_sensors/htu21d_node`
 *   **AHT10 / AHT20 (I2C)** -> `xpi_sensors/aht20`
 *   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
 *   **WS2812 (Addressable RGB LED)** -> `xpi_actuators/ws2812_driver`
@@ -126,7 +127,6 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [ ] #34 BH1745NUC - Light sensor
 
 ### Environment (Temp, Press, Hum, Gas) (I2C/SPI)
-*   [ ] #6 SHT20/HTU21D - Temp/Humidity
 *   [x] **SHT30 / SHT31 / SHT35** - High-Precision Temp/Humidity (I2C) -> `xpi_sensors/sht3x_node`
 *   [x] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
 *   [ ] **DPS310** - High-Precision Barometric Pressure (I2C).

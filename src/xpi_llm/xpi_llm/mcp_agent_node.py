@@ -49,6 +49,10 @@ class MCPAgentNode(Node):
         self.create_subscription(Int32, '/sgp30/eco2', lambda m: self._update_resource('eco2_sgp30_ppm', m.data), 10)
         self.create_subscription(Int32, '/sgp30/tvoc', lambda m: self._update_resource('tvoc_sgp30_ppb', m.data), 10)
         
+        # HTU21D / SHT20 Resources
+        self.create_subscription(Temperature, '/htu21d/temperature', lambda m: self._update_resource('temp_c_precise', m.temperature), 10)
+        self.create_subscription(RelativeHumidity, '/htu21d/humidity', lambda m: self._update_resource('hum_pct_precise', m.relative_humidity * 100.0), 10)
+        
         # Perception subscription
         self.create_subscription(String, '/vlm/scene_description', lambda m: self._update_perception('scene', m.data), 10)
 
