@@ -110,7 +110,8 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[W25Qxx SPI Flash](../blocks/storage/w25qxx/README.md)** - High-speed SPI Flash memory (2MB - 16MB).
 
 ## ⚙️ Actuators (Motion & Expansion)
-*   **[GPIO Expander (MCP23017)](../blocks/actuators/gpio_expander/mcp23017/README.md)** - 16 additional digital I/O pins via I2C.
+*   [**I2C Multiplexer (TCA9548A)**](../blocks/actuators/i2c_mux/README.md) - Switch between 8 I2C buses to resolve address conflicts.
+*   [**GPIO Expander (MCP23017)**](../blocks/actuators/gpio_expander/mcp23017/README.md) - 16 additional digital I/O pins via I2C.
 *   **[Analog Mux (CD74HC4067)](../blocks/sensors/analog_input/cd74hc4067/README.md)** - 16-channel analog input expander.
 *   **[Output Shift Register (74HC595)](../blocks/actuators/shift_registers/74hc595/README.md)** - 8-bit serial-to-parallel expander (GPIO).
 *   **[Input Shift Register (74HC165)](../blocks/sensors/digital_input/74hc165/README.md)** - 8-bit parallel-to-serial expander (GPIO).
