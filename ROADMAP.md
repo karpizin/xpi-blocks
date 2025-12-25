@@ -102,12 +102,10 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **VEML6070 (UV Light)** -> `xpi_sensors/veml6070_node`
 *   **SHT30 / SHT31 / SHT35 (Precision Temp/Hum)** -> `xpi_sensors/sht3x_node`
 *   **SCD40 / SCD41 (True CO2 NDIR)** -> `xpi_sensors/scd4x_node`
+*   **SGP30 Gas Sensor (TVOC/eCO2)** -> `xpi_sensors/sgp30_node`
 *   **VL53L1X Time-of-Flight** -> `xpi_sensors/vl53l1x_node`
 
 ## 🚧 High Priority (Next Up)
-*   **Raw LoRa (SX1276/SX1278)** - SPI-based long-range radio for custom protocols and low latency.
-*   **HC-12 (433MHz Serial)** - Low-cost long-range UART bridge (~1km).
-*   **SGP30 Gas Sensor** - For reliable TVOC/eCO2 readings.
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **SW6106 / IP5306 Drivers** - Support for Power Bank HATs.
 

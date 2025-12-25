@@ -45,6 +45,10 @@ class MCPAgentNode(Node):
         self.create_subscription(String, '/veml6070/uv_index_level', lambda m: self._update_resource('uv_risk', m.data), 10)
         self.create_subscription(BatteryState, '/ina219/battery_state', self._battery_callback, 10)
         
+        # SGP30 Resources
+        self.create_subscription(Int32, '/sgp30/eco2', lambda m: self._update_resource('eco2_sgp30_ppm', m.data), 10)
+        self.create_subscription(Int32, '/sgp30/tvoc', lambda m: self._update_resource('tvoc_sgp30_ppb', m.data), 10)
+        
         # Perception subscription
         self.create_subscription(String, '/vlm/scene_description', lambda m: self._update_perception('scene', m.data), 10)
 

@@ -29,6 +29,7 @@ pyubsub
 adafruit-circuitpython-bme680
 adafruit-circuitpython-dht
 adafruit-circuitpython-tsl2591
+adafruit-circuitpython-sgp30
 bless
 scipy
 adafruit-circuitpython-pn532

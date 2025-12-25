@@ -56,6 +56,7 @@ setup(
             'rain_gauge_node = xpi_sensors.rain_gauge_node:main',
             'respeaker_node = xpi_sensors.respeaker_node:main',
             'scd4x_node = xpi_sensors.scd4x_node:main',
+            'sgp30_node = xpi_sensors.sgp30_node:main',
             'shift_register_165_node = xpi_sensors.shift_register_165_node:main',
             'sht3x_node = xpi_sensors.sht3x_node:main',
             'sonar_node = xpi_sensors.sonar_node:main',

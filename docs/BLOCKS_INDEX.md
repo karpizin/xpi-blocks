@@ -72,6 +72,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total (GPIO).
 *   **[PIR Motion Sensor](../blocks/sensors/movement/pir/README.md)** - Basic infrared motion detection (GPIO).
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC sensor.
+*   **[SGP30 Air Quality](../blocks/sensors/environment/sgp30/README.md)** - High-performance TVOC and eCO2 sensor.
 *   **[MICS-6814 Triple Gas](../blocks/sensors/mics6814/README.md)** - CO, NO2, and NH3 analog gas sensor.
 *   **[PMS5003 Particulate Matter](../blocks/sensors/pms5003/README.md)** - PM1.0, PM2.5, PM10 laser dust sensor.
 *   **[BMP085/180 Pressure](../blocks/sensors/environment/README.md)** - Barometric pressure and altitude (I2C).
