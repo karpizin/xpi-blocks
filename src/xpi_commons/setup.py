@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'eeprom_node = xpi_commons.eeprom_node:main',
+            'w25qxx_node = xpi_commons.w25qxx_node:main',
         ],
     },
 )

@@ -91,6 +91,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **RFID/NFC (PN532)** -> `xpi_sensors/nfc_reader_node`
 *   **ReSpeaker Mic Array v2.0 (USB)** -> `xpi_sensors/respeaker_node`
 *   **AT24Cxxx EEPROM (I2C)** -> `xpi_commons/eeprom_node`
+*   **W25Qxx (Flash SPI)** -> `xpi_commons/w25qxx_node`
 *   **Audio Level Monitor** -> `xpi_sensors/audio_level_node`
 *   **YAMNet Audio Classifier (Edge AI)** -> `xpi_sensors/yamnet_node`
 *   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
@@ -136,7 +137,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [x] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors -> `xpi_sensors/scd4x_node`
 
 ### Outdoor Weather (Mechanical)
-*   [ ] **Anemometer** - *Implemented*
+*   [x] **Anemometer** - *Implemented*
 *   [x] **Wind Vane** - Wind Direction (Analog) -> `xpi_sensors/wind_vane_node`
 *   [x] **Wind Vane (Digital)** - Wind Direction (AS5600 I2C) -> `xpi_sensors/wind_vane_digital_node`
 *   [x] **Rain Gauge** - Precipitation (Pulse Counter) -> `xpi_sensors/rain_gauge_node`

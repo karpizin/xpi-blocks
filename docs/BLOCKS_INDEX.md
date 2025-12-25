@@ -106,6 +106,7 @@ This index provides direct links to the documentation for every implemented bloc
 
 ## 💾 Storage & Memory
 *   **[AT24Cxxx EEPROM](../blocks/storage/eeprom/README.md)** - Non-volatile I2C memory for config and state.
+*   **[W25Qxx SPI Flash](../blocks/storage/w25qxx/README.md)** - High-speed SPI Flash memory (2MB - 16MB).
 
 ## ⚙️ Actuators (Motion & Expansion)
 *   **[GPIO Expander (MCP23017)](../blocks/actuators/gpio_expander/mcp23017/README.md)** - 16 additional digital I/O pins via I2C.
