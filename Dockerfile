@@ -30,11 +30,7 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /xpi_ws/install/setup.bash" >> ~/.bashrc
 
 # Create a workspace entrypoint script
-RUN echo '#!/bin/bash
-set -e
-source "/opt/ros/humble/setup.bash"
-source "/xpi_ws/install/setup.bash"
-exec "$@"' > /entrypoint.sh && \
+RUN printf '#!/bin/bash\nset -e\nsource "/opt/ros/humble/setup.bash"\nsource "/xpi_ws/install/setup.bash"\nexec "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
