@@ -140,11 +140,35 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [x] **Wind Vane (Digital)** - Wind Direction (AS5600 I2C) -> `xpi_sensors/wind_vane_digital_node`
 *   [x] **Rain Gauge** - Precipitation (Pulse Counter) -> `xpi_sensors/rain_gauge_node`
 
-### IO Expanders & ADC (I2C)
+### IO Expanders, ADC & Bus Management (I2C)
 *   [x] **MCP23017 16-Channel GPIO Expander** -> `xpi_actuators/mcp23017_node`
 *   [x] **CD74HC4067 16-Channel Analog Mux** -> `xpi_sensors/analog_mux_4067`
+*   [ ] **TCA9548A 8-Channel I2C Multiplexer** - Essential for multiple sensors with same address.
+*   [ ] **ISO1540 I2C Isolator** - Galvanic isolation for noisy environments.
+*   [ ] **MCP4725 DAC** - 12-bit Digital-to-Analog converter.
 *   [ ] #5 ADS1115 - 4-CH ADC (Vital for analog sensors) - *Already Implemented*
 *   [ ] #12 PCF8574 - 8 GPIO Expander
+
+### Advanced Perception & Thermal
+*   [ ] **MLX90640 Thermal Camera** - 32x24 pixel IR array for human detection.
+*   [x] **AMG8833 Thermal Camera** - 8x8 IR pixel matrix for heat detection.
+*   [ ] **VL53L5CX Multi-zone ToF** - 8x8 distance grid (Micro-LiDAR).
+*   [ ] **OpenMV / Pixy2 Bridge** - Integration for smart vision modules.
+
+### Precision Motion & Haptics
+*   [ ] **AS5600 Magnetic Encoder** - 12-bit absolute orientation for joints.
+*   [ ] **TMC2208/2209 Silent Stepper** - UART-based quiet drivers with stall detection.
+*   [ ] **DRV2605L Haptic Driver** - Tactile feedback with 100+ vibration effects.
+
+### Human-Computer Interaction (HMI) & Audio
+*   [ ] **Matrix Keypad (4x4)** - Classic 16-button input.
+*   [ ] **MAX98357A I2S Amplifier** - Digital audio output for RPi.
+*   [ ] **DS3231 High Precision RTC** - For offline data logging.
+*   [ ] **Hardware Watchdog (WDT)** - External system recovery module.
+
+### Pro-Level Environment
+*   [ ] **Sensirion SPS30** - Industrial-grade particulate matter sensor.
+*   [ ] **Water Quality (pH/EC)** - Sensors for hydro-robotics.
 
 ### Motors & Drivers
 *   [ ] #7a PCA9685_TB6612 - I2C Motor Driver
