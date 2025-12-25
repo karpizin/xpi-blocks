@@ -116,6 +116,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Output Shift Register (74HC595)](../blocks/actuators/shift_registers/74hc595/README.md)** - 8-bit serial-to-parallel expander (GPIO).
 *   **[Input Shift Register (74HC165)](../blocks/sensors/digital_input/74hc165/README.md)** - 8-bit parallel-to-serial expander (GPIO).
 *   [**DC Motor (TB6612 / DRV8833)**](../blocks/actuators/motors_dc/README.md) - Dual DC motor driver control via GPIO.
+*   [**High-Power DC Motor (VNH2SP30)**](../blocks/actuators/motors_dc/vnh2sp30.md) - Heavy-duty motor control (30A).
 *   [**I2C DC Motor Driver (PCA9685)**](../blocks/actuators/motors_i2c/README.md) - Control DC motors via I2C PWM expander.
 *   [**DC/Stepper (L298N)**](../blocks/actuators/motors_dc/README.md) - High power motor driver.
 *   **[ESC BLDC Motor](../blocks/actuators/motors_esc/README.md)** - Brushless motor control (Drone/Car).
