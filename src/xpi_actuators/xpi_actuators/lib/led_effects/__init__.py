@@ -5,8 +5,9 @@ from .rainbows import RainbowEffectsMixin
 from .chases import ChaseEffectsMixin
 from .sparkles import SparkleEffectsMixin
 from .physics import PhysicsEffectsMixin
+from .meditative import MeditativeEffectsMixin
 
-class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin, SparkleEffectsMixin, PhysicsEffectsMixin):
+class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin, SparkleEffectsMixin, PhysicsEffectsMixin, MeditativeEffectsMixin):
     def __init__(self, num_pixels):
         super().__init__(num_pixels)
 

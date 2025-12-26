@@ -41,19 +41,19 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | :--- | :--- | :--- | :--- | :--- |
 | `color_wipe` | Lights up pixels one by one until full, then clears/repeats. | Fill speed (pixels/sec or multiplier). | Fill color. | ✅ |
 | `reverse_wipe` | `color_wipe` but from end to start. | Fill speed. | Fill color. | ✅ |
-| `wipe_random` | `color_wipe` but with a random color each cycle. | Fill speed. | Ignored. | ❌ |
+| `wipe_random` | `color_wipe` but with a random color each cycle. | Fill speed. | Ignored. | ✅ |
 | `theater_chase` | "Marching ants" effect. Every 3rd pixel is on, pattern moves. | Movement speed. | Pattern color. | ✅ |
 | `theater_chase_rainbow` | `theater_chase` but the pixels cycle rainbow colors. | Movement speed. | Ignored. | ❌ |
 | `larson_scanner` | "KITT" / "Cylon" effect. A packet of light bounces back and forth with a fading trail. | Movement speed. | Scanner color (usually Red). | ✅ |
 | `kitt_scanner` | Similar to Larson, but specifically mimics the Knight Rider car pattern. | Movement speed. | Scanner color. | ❌ |
-| `comet` | A single dot with a long fading tail moving in one direction. | Speed. | Comet color. | ❌ |
+| `comet` | A single dot with a long fading tail moving in one direction. | Speed. | Comet color. | ✅ |
 | `bounce` | A simple dot bouncing off the edges (no tail). | Speed. | Dot color. | ✅ |
-| `dual_scan` | Two Larson Scanners starting from ends and crossing in the middle. | Speed. | Scanner color. | ❌ |
-| `train` | A solid block of pixels moving around the strip. | Speed. | Train color. | ❌ |
+| `dual_scan` | Two Larson Scanners starting from ends and crossing in the middle. | Speed. | Scanner color. | ✅ |
+| `train` | A solid block of pixels moving around the strip. | Speed. | Train color. | ✅ |
 | `snake` | A snake that grows, moves, and shrinks (like the game). | Speed. | Snake color. | ❌ |
 | `pac_man` | A yellow dot chased by a ghost dot. | Speed. | Ignored. | ❌ |
 | `conveyor_belt` | Pattern shifts continuously. | Speed. | Pattern. | ❌ |
-| `marquee` | Theater style border lights effect. | Speed. | Color. | ❌ |
+| `marquee` | Theater style border lights effect. | Speed. | Color. | ✅ |
 
 ## ✨ Group 4: Sparkles & Weather
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
@@ -144,3 +144,12 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `fairy_dust` | Sparkles that leave a faint trail. | Speed. | Dust color. | ❌ |
 | `heartbeat` | A blip that travels and pulses like an ECG. | Pulse rate (BPM). | Line color. | ❌ |
 | `off` | Turns all pixels OFF (Black). | Ignored. | Ignored. | ❌ |
+
+## 🧘 Group 10: Meditative & Ambient
+| Effect ID | Visual Description | Speed Param | Color Param | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `starry_night` | Deep blue with twinkling white/blue stars. | Twinkle frequency. | Ignored. | ✅ |
+| `firefly_field` | Dark green with slow rising yellow flies. | Spawn density. | Ignored. | ✅ |
+| `fireplace` | Pulsating red and orange embers. | Flicker intensity. | Ignored. | ✅ |
+| `calm_ocean` | Slow morphing of blue and seafoam colors. | Morph speed. | Ignored. | ✅ |
+| `sunny_forest` | Green foliage with golden sunbeam glints. | Beam movement. | Ignored. | ✅ |
