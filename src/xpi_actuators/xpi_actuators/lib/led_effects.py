@@ -88,7 +88,39 @@ class LedEffects:
         else:
             self.fill((0, 0, 0))
 
+    def effect_fade_in(self, color=(255, 0, 0), speed=1.0):
+        # speed: duration in seconds
+        if self.step == 0: self.last_update = time.time()
+        elapsed = time.time() - self.last_update
+        scale = min(1.0, elapsed / max(0.1, speed))
+        r, g, b = color
+        self.fill((int(r*scale), int(g*scale), int(b*scale)))
+        self.step = 1 # Mark as started
+
+    def effect_fade_out(self, color=(255, 0, 0), speed=1.0):
+        # speed: duration in seconds
+        if self.step == 0: self.last_update = time.time()
+        elapsed = time.time() - self.last_update
+        scale = max(0.0, 1.0 - (elapsed / max(0.1, speed)))
+        r, g, b = color
+        self.fill((int(r*scale), int(g*scale), int(b*scale)))
+        self.step = 1
+
+    def effect_alternating(self, color=(255, 0, 0), speed=1.0):
+        # speed: swap frequency (Hz)
+        phase = int(time.time() * speed) % 2
+        for i in range(self.num_pixels):
+            if (i % 2) == phase:
+                self.set_pixel(i, color)
+            else:
+                self.set_pixel(i, (0, 0, 0))
+
     # --- Group 2: Rainbows ---
+
+    def effect_static_rainbow(self):
+        for i in range(self.num_pixels):
+            idx = int(i * 256 / self.num_pixels) & 255
+            self.set_pixel(i, wheel(idx))
 
     def effect_rainbow_cycle(self, speed=10.0):
         # speed: shift rate
@@ -108,10 +140,15 @@ class LedEffects:
         offset = int(self.step) % self.num_pixels
         self.clear()
         for i in range(self.num_pixels):
-             # Simple rainbow coloring for the chaser
              idx = int((i + self.step) * 5) & 255
              if (i + offset) % 3 == 0:
                  self.set_pixel(i, wheel(idx))
+
+    def effect_glitter_rainbow(self, speed=10.0):
+        self.effect_rainbow_cycle(speed)
+        if random.random() < 0.1:
+            idx = random.randint(0, self.num_pixels - 1)
+            self.set_pixel(idx, (255, 255, 255))
                  
     # --- Group 3: Chases ---
 
@@ -212,23 +249,29 @@ class LedEffects:
         color: tuple (r,g,b)
         speed: float (generic parameter, meaning depends on effect)
         """
+        import inspect
+        
         method_name = f"effect_{effect_name}"
         if hasattr(self, method_name):
             method = getattr(self, method_name)
-            # Inspect arguments to see if color/speed are needed
-            # For simplicity, we just pass them if the default args exist, or handle widely
-            try:
-                method(color=color, speed=speed)
-            except TypeError:
-                try:
-                    method(speed=speed)
-                except TypeError:
-                     try:
-                        method()
-                     except TypeError:
-                        pass # Should not happen if normalized
+            sig = inspect.signature(method)
+            params = sig.parameters
+            
+            kwargs = {}
+            if 'color' in params:
+                kwargs['color'] = color
+            if 'speed' in params:
+                kwargs['speed'] = speed
+                
+            method(**kwargs)
         else:
             # Fallback
             self.effect_solid(color)
             
         return self.pixels
+
+    def reset_state(self):
+        """Call this when changing effects to clear internal counters."""
+        self.step = 0
+        self.last_update = time.time()
+        self.clear()

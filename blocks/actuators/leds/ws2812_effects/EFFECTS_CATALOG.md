@@ -16,21 +16,21 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `breathe` | Smoothly fades brightness up and down (Sinusoidal). | Frequency (Hz) of full cycle. | Sets the base color. | ✅ |
 | `strobe` | Fast, sharp flashes (10% duty cycle). | Frequency (Hz). Example: `10.0` | Sets the flash color. | ✅ |
 | `hyper_strobe` | Extremely fast, aggressive strobe (Epilepsy Warning!). | Frequency (Hz). | Sets the flash color. | ❌ |
-| `fade_in` | Smoothly transitions from Black to Color once. | Duration (s). | Target color. | ❌ |
-| `fade_out` | Smoothly transitions from Color to Black once. | Duration (s). | Starting color. | ❌ |
-| `alternating` | Odd pixels are Color 1, Even are Black (or Color 2). Swaps positions. | Swap frequency (Hz). | Color 1. | ❌ |
+| `fade_in` | Smoothly transitions from Black to Color once. | Duration (s). | Target color. | ✅ |
+| `fade_out` | Smoothly transitions from Color to Black once. | Duration (s). | Starting color. | ✅ |
+| `alternating` | Odd pixels are Color 1, Even are Black. Swaps positions. | Swap frequency (Hz). | Color 1. | ✅ |
 | `multi_blink` | Blinks Red, then Green, then Blue (or random sequence). | Frequency (Hz). | Ignored. | ❌ |
 | `flash` | Single flash then fade to black. Triggered once. | Fade speed. | Flash color. | ❌ |
 
 ## 🌈 Group 2: Rainbows
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `static_rainbow` | Displays a rainbow gradient across the whole strip. | Ignored. | Ignored. | ❌ |
+| `static_rainbow` | Displays a rainbow gradient across the whole strip. | Ignored. | Ignored. | ✅ |
 | `rainbow_cycle` | The rainbow gradient slowly moves/rotates along the strip. | Shift speed (Pixel steps per update or Hz). | Ignored. | ✅ |
 | `rainbow_breathe`| The entire strip shows one color, which cycles through the rainbow. | Cycle speed (Hz). | Ignored. | ✅ |
 | `rainbow_strobe` | Strobe effect, but each flash is a different rainbow color. | Frequency (Hz). | Ignored. | ❌ |
 | `rainbow_chase` | Segments of rainbow colors "run" along the strip. | Movement speed. | Ignored. | ✅ |
-| `glitter_rainbow`| `rainbow_cycle` with random white pixels flashing (glitter). | Speed of rainbow movement. | Ignored. | ❌ |
+| `glitter_rainbow`| `rainbow_cycle` with random white pixels flashing (glitter). | Speed of rainbow movement. | Ignored. | ✅ |
 | `pastel_rainbow` | Softer, less saturated rainbow gradient. | Movement speed. | Ignored. | ❌ |
 | `neon_rainbow` | High contrast, limited palette rainbow (Pink, Cyan, Lime). | Movement speed. | Ignored. | ❌ |
 | `vertical_rainbow`| For matrices: Rainbow gradient flows vertically. | Movement speed. | Ignored. | ❌ |
