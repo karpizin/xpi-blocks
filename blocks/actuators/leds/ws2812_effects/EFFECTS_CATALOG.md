@@ -184,3 +184,14 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `bpm_snake` | Snake travels its length every beat. | BPM. | Color. | ✅ |
 | `vu_meter_beat` | Simulated VU level jump on every beat. | BPM. | Color. | ✅ |
 | `rhythmic_bounce` | Parabolic bounce hitting "floor" on beat. | BPM. | Color. | ✅ |
+
+## 🎤 Group 12: Reactive (Audio Triggered)
+*Note: These effects require an active **Beat Detector Node** publishing to `/audio/beat`.*
+
+| Effect ID | Visual Description | Speed Param | Color Param | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `reactive_flash` | Full strip flash on beat, fading out. | Decay speed. | Flash color. | ✅ |
+| `reactive_random_color` | Flash with random color on every beat. | Decay speed. | Ignored. | ✅ |
+| `reactive_burst` | Light expands from center on every beat. | Expansion speed. | Color. | ✅ |
+| `reactive_sparkle` | Explosion of random sparks on beat. | Decay speed. | Sparkle color. | ✅ |
+| `reactive_vu` | Level bar jumping based on beat intensity. | Decay speed. | Bar color. | ✅ |

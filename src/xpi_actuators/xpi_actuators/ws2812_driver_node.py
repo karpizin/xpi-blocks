@@ -98,9 +98,18 @@ class WS2812DriverNode(Node):
         self.create_subscription(Float32, '~/set_speed', self.cb_set_speed, 10)
         self.create_subscription(ColorRGBA, '~/set_color', self.cb_set_color, 10)
         
+        # Audio Sync
+        self.create_subscription(Float32, '/audio/beat', self.cb_beat, 10)
+        
         # Timer
         self.timer = self.create_timer(1.0 / self.update_rate, self.update_loop)
         self.get_logger().info(f'WS2812: Ready. Effect: {self.current_effect}, Speed: {self.effect_speed}')
+
+    def cb_beat(self, msg):
+        """External trigger from audio analyzer."""
+        # msg.data is the confidence or intensity
+        if hasattr(self.effects_lib, 'trigger_beat'):
+            self.effects_lib.trigger_beat(intensity=msg.data)
 
     def cb_set_effect(self, msg):
         self.current_effect = msg.data

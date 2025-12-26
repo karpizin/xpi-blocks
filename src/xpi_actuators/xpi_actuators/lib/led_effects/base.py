@@ -42,6 +42,10 @@ class EffectBase:
         self.color_idx = 0
         self.fade_val = 0
         self.balls = [] 
+        
+        # Audio / Beat state
+        self.beat_triggered = False
+        self.beat_intensity = 0.0
 
     def clear(self):
         self.pixels = [(0, 0, 0)] * self.num_pixels
@@ -67,3 +71,8 @@ class EffectBase:
         self.step = 0
         self.last_update = time.time()
         self.clear()
+
+    def trigger_beat(self, intensity=1.0):
+        """Called by the ROS2 node when an audio beat is detected."""
+        self.beat_triggered = True
+        self.beat_intensity = intensity
