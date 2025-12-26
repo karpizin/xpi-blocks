@@ -62,10 +62,10 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `snow_sparkle` | Strip is Background Color. Random pixels flash White. | Probability/Frequency. | Background color (e.g., Gray). | ✅ |
 | `rain` | Blue pixels "fall" from one end to the other, dimming out. | Rain speed. | Rain color (usually Blue). | ❌ |
 | `meteor_rain` | Bright head, decaying trail, falling effect. | Speed. | Meteor color. | ❌ |
-| `fireflies` | Pixels slowly fade in and out at random locations (soft sparkle). | Fade speed. | Firefly color (Yellow/Green). | ❌ |
-| `twinkle` | Pixels flicker at different rates. | Flicker speed. | Base color. | ❌ |
+| `fireflies` | Pixels slowly fade in and out at random locations (soft sparkle). | Fade speed. | Firefly color (Yellow/Green). | ✅ |
+| `twinkle` | Pixels flicker at different rates. | Flicker speed. | Base color. | ✅ |
 | `twinkle_random` | `twinkle` with random colors. | Flicker speed. | Ignored. | ❌ |
-| `lightning` | Entire strip or large sections flash randomly like lightning storms. | Storm intensity. | Flash color (White/Purple). | ❌ |
+| `lightning` | Entire strip or large sections flash randomly like lightning storms. | Storm intensity. | Flash color (White/Purple). | ✅ |
 | `storm` | Dark pulsating background with occasional lightning flashes. | Pulse speed. | Background color. | ❌ |
 | `snowfall` | Pixels fall and "stack up" at the bottom of the strip. | Fall speed. | Snow color (White). | ❌ |
 | `drizzle` | Fast, short, dim droplets falling. | Speed. | Color. | ❌ |
@@ -78,13 +78,13 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | `fire` | Realistic fire simulation (Heat map algorithm). Hot at bottom, cooling up. | Cooling rate / Sparking chance. | Ignored (Always Red/Orange/Yellow). | ✅ |
-| `blue_fire` | `fire` algorithm mapped to Blue/Cyan/White palette. | Cooling rate. | Ignored. | ❌ |
-| `ice_fire` | `fire` algorithm mapped to White/Blue palette. | Cooling rate. | Ignored. | ❌ |
+| `blue_fire` | `fire` algorithm mapped to Blue/Cyan/White palette. | Cooling rate. | Ignored. | ✅ |
+| `ice_fire` | `fire` algorithm mapped to White/Blue palette. | Cooling rate. | Ignored. | ✅ |
 | `lava` | Slowly morphing red/black blobs. | Flow speed. | Ignored. | ❌ |
-| `water` | Flowing waves of blue/aqua. | Flow speed. | Ignored. | ❌ |
+| `water` | Flowing waves of blue/aqua. | Flow speed. | Ignored. | ✅ |
 | `ripple` | A wave (pulse) originates from center/random and spreads out. | Wave speed. | Water color. | ❌ |
-| `plasma` | Psychedelic interference pattern of sine waves. | Animation speed. | Ignored. | ❌ |
-| `bubble` | Individual pixels "bubble" up from bottom to top. | Rise speed. | Bubble color. | ❌ |
+| `plasma` | Psychedelic interference pattern of sine waves. | Animation speed. | Ignored. | ✅ |
+| `bubble` | Individual pixels "bubble" up from bottom to top. | Rise speed. | Bubble color. | ✅ |
 | `bouncing_balls` | Multiple dots falling and bouncing with gravity. | Gravity/Simulation speed. | Ball color. | ❌ |
 | `multi_ball` | `bouncing_balls` but each ball is a different color. | Simulation speed. | Ignored. | ❌ |
 

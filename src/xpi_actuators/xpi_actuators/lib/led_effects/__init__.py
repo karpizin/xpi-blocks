@@ -3,8 +3,10 @@ from .base import EffectBase
 from .basic import BasicEffectsMixin
 from .rainbows import RainbowEffectsMixin
 from .chases import ChaseEffectsMixin
+from .sparkles import SparkleEffectsMixin
+from .physics import PhysicsEffectsMixin
 
-class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin):
+class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin, SparkleEffectsMixin, PhysicsEffectsMixin):
     def __init__(self, num_pixels):
         super().__init__(num_pixels)
 
