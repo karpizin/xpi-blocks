@@ -68,20 +68,20 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Blink** - On/Off blinking.
 *   [x] **Breathe** - Smooth fading in/out.
 *   [x] **Strobe** - Fast flashing.
-*   [ ] **Hyper Strobe** - Aggressive strobe.
-*   [ ] **Fade In**
-*   [ ] **Fade Out**
-*   [ ] **Alternating** - Even/Odd pixels.
+*   [x] **Hyper Strobe** - Aggressive strobe.
+*   [x] **Fade In**
+*   [x] **Fade Out**
+*   [x] **Alternating** - Even/Odd pixels.
 *   [ ] **Multi-Blink**
-*   [ ] **Flash**
+*   [x] **Flash** - One-shot bright flash.
 
 ### 🌈 Group 2: Rainbows
-*   [ ] **Static Rainbow**
+*   [x] **Static Rainbow**
 *   [x] **Rainbow Cycle** - Smooth flowing rainbow.
 *   [x] **Rainbow Breathe** - Whole strip changes color.
-*   [ ] **Rainbow Strobe**
+*   [x] **Rainbow Strobe** - Fast rainbow flashes.
 *   [x] **Rainbow Chase** - Running rainbow segments.
-*   [ ] **Glitter Rainbow**
+*   [x] **Glitter Rainbow** - Sparkling rainbow.
 *   [ ] **Pastel Rainbow**
 *   [ ] **Neon Rainbow**
 *   [ ] **Vertical Rainbow**
@@ -89,30 +89,30 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 
 ### 🏃 Group 3: Chases & Scanners
 *   [x] **Color Wipe** - Sequential filling.
-*   [ ] **Reverse Wipe**
-*   [ ] **Wipe Random**
+*   [x] **Reverse Wipe** - Filling from end to start.
+*   [x] **Wipe Random** - Filling with random colors.
 *   [x] **Theater Chase** - Marching ants.
 *   [ ] **Theater Chase Rainbow**
-*   [x] **Larson Scanner** - Cylon/KITT eye (red bouncing dot).
+*   [x] **Larson Scanner** - Cylon/KITT eye.
 *   [ ] **KITT Scanner**
-*   [ ] **Comet**
-*   [ ] **Bounce**
-*   [ ] **Dual Scan**
-*   [ ] **Train**
+*   [x] **Comet** - Single dot with fading trail.
+*   [x] **Bounce** - Bouncing dot.
+*   [x] **Dual Scan** - Two crossing scanners.
+*   [x] **Train** - Block of pixels moving.
 *   [ ] **Snake**
 *   [ ] **Pac-Man**
 *   [ ] **Conveyor Belt**
-*   [ ] **Marquee**
+*   [x] **Marquee** - Theater border effect.
 
 ### ✨ Group 4: Sparkles & Weather
 *   [x] **Sparkle** - Random white flashes.
 *   [x] **Snow Sparkle** - Random flashes on background.
 *   [ ] **Rain**
 *   [ ] **Meteor Rain**
-*   [ ] **Fireflies**
-*   [ ] **Twinkle**
+*   [x] **Fireflies** - Glowing and fading spots.
+*   [x] **Twinkle** - Random pixel flickering.
 *   [ ] **Twinkle Random**
-*   [ ] **Lightning**
+*   [x] **Lightning** - Random storm flashes.
 *   [ ] **Storm**
 *   [ ] **Snowfall**
 *   [ ] **Drizzle**
@@ -123,15 +123,33 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 
 ### 🔥 Group 5: Physics & Fluids
 *   [x] **Fire** - Burning fire simulation.
-*   [ ] **Blue Fire**
-*   [ ] **Ice Fire**
+*   [x] **Blue Fire** - Blue flame.
+*   [x] **Ice Fire** - White/Cyan flame.
 *   [ ] **Lava**
-*   [ ] **Water**
+*   [x] **Water** - Flowing sine waves.
 *   [ ] **Ripple**
-*   [ ] **Plasma**
-*   [ ] **Bubble**
+*   [x] **Plasma** - Morphing color blobs.
+*   [x] **Bubble** - Rising bubbles.
 *   [ ] **Bouncing Balls**
 *   [ ] **Multi-Ball**
+
+### 🧘 Group 10: Meditative & Ambient (NEW)
+*   [x] **Starry Night** - Twinkling stars on deep blue.
+*   [x] **Firefly Field** - Moving yellow spots on green.
+*   [x] **Fireplace** - Glowing embers.
+*   [x] **Calm Ocean** - Slow morphing blues.
+*   [x] **Sunny Forest** - Foliage with sunbeams.
+*   [x] **Aurora Borealis** - Dancing polar lights.
+*   [x] **Zen Pulse** - Ultra-slow breathing.
+*   [x] **Morning Mist** - Drifting fog.
+*   [x] **Autumn Leaves** - Golden drift on red.
+*   [x] **Deep Space** - Glowing nebulas.
+
+### 🥁 Group 11: Rhythmic & Music (BPM Sync)
+*   [x] **20 BPM-based effects** (Beat Pulse, Bass Kick, Disco, etc.)
+
+### 🎤 Group 12: Reactive (Audio Triggered)
+*   [x] **Real-time Audio Reactive** (Flash, Burst, VU Level, etc.)
 
 ### 📊 Group 6: Utility
 *   [x] **Progress Bar** - Linear fill based on `speed` (0-100).

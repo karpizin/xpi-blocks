@@ -10,6 +10,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[xpi-top Monitor](../src/xpi_tools/README.md)** - TUI dashboard for viewing sensor data (SSH-friendly).
 
 ## 🎙️ Audio & Sound Intelligence
+*   **[Audio Beat Detector](../blocks/audio/beat_detector/README.md)** - Real-time musical beat tracking and rhythm analysis.
 *   **[ReSpeaker Mic Array v2.0](../blocks/sensors/audio/respeaker/README.md)** - 4-mic array with Direction of Arrival (DOA) and voice detection.
 *   **[Audio Level Monitor](../blocks/sensors/audio/analyzer/README.md)** - Real-time noise level (dB) and RMS monitoring.
 *   **[YAMNet Sound Classifier](../blocks/sensors/audio/yamnet/README.md)** - Local Edge AI classification of 500+ sound types (Siren, Bark, etc.).

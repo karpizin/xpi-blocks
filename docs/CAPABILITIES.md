@@ -8,9 +8,15 @@ This document lists the high-level functional capabilities of the library.
 *   **Water Monitoring:** Temperature measurement using waterproof 1-Wire sensors (DS18B20).
 
 ## 🎙️ Audio Intelligence
+*   **Real-time Beat Detection:** On-device analysis of live audio to detect musical beats and rhythm intensity using `aubio`.
 *   **Acoustic Perception:** Determining the direction of sound sources (DOA) using 4-microphone USB arrays (ReSpeaker).
 *   **Pattern Recognition:** Real-time local classification of 500+ sounds using YAMNet Edge AI.
 *   **Scene Analysis:** Deep contextual understanding of audio clips and speech using Gemini 3.0 Flash.
+
+## 💡 Advanced Lighting
+*   **Reactive Visuals:** WS2812/NeoPixel effects that flash and morph in sync with live audio beats.
+*   **Modular Library:** 60+ customizable effects including Physics simulations (Fire, Water), Ambient environments (Starry Night, Forest), and Rhythmic patterns (BPM-sync).
+*   **Visual Feedback:** High-density status indicators, progress bars, and battery levels using LED strips and rings.
 
 ## 👁️ Visual Perception
 *   **Marker Navigation:** ArUco-based precise indoor localization and marker tracking.
