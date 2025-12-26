@@ -8,8 +8,10 @@ from .physics import PhysicsEffectsMixin
 from .meditative import MeditativeEffectsMixin
 from .rhythmic import RhythmicEffectsMixin
 from .reactive import ReactiveEffectsMixin
+from .utility import UtilityEffectsMixin
+from .palettes import PaletteEffectsMixin
 
-class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin, SparkleEffectsMixin, PhysicsEffectsMixin, MeditativeEffectsMixin, RhythmicEffectsMixin, ReactiveEffectsMixin):
+class LedEffects(EffectBase, BasicEffectsMixin, RainbowEffectsMixin, ChaseEffectsMixin, SparkleEffectsMixin, PhysicsEffectsMixin, MeditativeEffectsMixin, RhythmicEffectsMixin, ReactiveEffectsMixin, UtilityEffectsMixin, PaletteEffectsMixin):
     def __init__(self, num_pixels):
         super().__init__(num_pixels)
 

@@ -236,7 +236,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **Voice Assistant Project:** Combining Mic + TTS + LLM for natural interaction.
 
 ### 🗺️ Outdoor Navigation
-*   **RTK GPS:** Precision positioning (cm-level) for outdoor rovers.
+*   **RTK GPS** -> `xpi_sensors/gps_rtk_node`
 
 ### 🖐️ Haptics & Manipulation
 *   **Tactile Sensing:** **FSR** (Force Sensitive Resistors) for gripper feedback.

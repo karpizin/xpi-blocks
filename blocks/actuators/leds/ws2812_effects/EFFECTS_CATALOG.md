@@ -92,30 +92,30 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | `progress_bar` | Lights up a percentage of the strip (0 to 100%). | **Acts as Percentage!** (0.0 to 100.0). | Bar color. | ✅ |
-| `battery_charge` | `progress_bar` but changes color (Red < 20%, Yellow < 50%, Green > 50%). | **Acts as Percentage!** | Ignored. | ❌ |
-| `loading_spinner` | A segment spins around (useful for Rings). | Spin speed. | Spinner color. | ❌ |
+| `battery_charge` | `progress_bar` but changes color (Red < 20%, Yellow < 50%, Green > 50%). | **Acts as Percentage!** | Ignored. | ✅ |
+| `loading_spinner` | A segment spins around (useful for Rings). | Spin speed. | Spinner color. | ✅ |
 | `pulse_indicator` | A specific pixel (e.g., #0) pulses to show "alive" status. | Pulse speed. | Indicator color. | ❌ |
-| `traffic_light` | Sets pixels to Red, Yellow, Green blocks. | Change speed (if animating). | Ignored. | ❌ |
+| `traffic_light` | Sets pixels to Red, Yellow, Green blocks. | Change speed (if animating). | Ignored. | ✅ |
 | `police` | Alternates Red and Blue halves (or segments) of the strip. | Strobe speed. | Ignored. | ✅ |
-| `ambulance` | Alternates Red and White. | Strobe speed. | Ignored. | ❌ |
-| `construction` | Rotating or flashing Orange beacons. | Rotation speed. | Ignored. | ❌ |
-| `error_alert` | Aggressive Red flashing/pulsing. | Flash speed. | Ignored (Red). | ❌ |
-| `success` | A Green wipe or flash indicating success. Triggered once. | Animation speed. | Ignored (Green). | ❌ |
+| `ambulance` | Alternates Red and White. | Strobe speed. | Ignored. | ✅ |
+| `construction` | Rotating or flashing Orange beacons. | Rotation speed. | Ignored. | ✅ |
+| `error_alert` | Aggressive Red flashing/pulsing. | Flash speed. | Ignored (Red). | ✅ |
+| `success` | A Green wipe or flash indicating success. Triggered once. | Animation speed. | Ignored (Green). | ✅ |
 
 ## 🎨 Group 7: Palettes & Themes
 *(These apply static or slowly moving palettes to the strip)*
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `cyberpunk` | Pink and Cyan gradient. | Shift speed. | Ignored. | ❌ |
-| `halloween` | Orange and Purple gradient. | Shift speed. | Ignored. | ❌ |
-| `christmas` | Red and Green alternating pattern. | Shift speed. | Ignored. | ❌ |
+| `cyberpunk` | Pink and Cyan gradient. | Shift speed. | Ignored. | ✅ |
+| `halloween` | Orange and Purple gradient. | Shift speed. | Ignored. | ✅ |
+| `christmas` | Red and Green alternating pattern. | Shift speed. | Ignored. | ✅ |
 | `usa_flag` | Red, White, Blue pattern. | Shift speed. | Ignored. | ❌ |
 | `jungle` | Greens, Browns, Yellows. | Shift speed. | Ignored. | ❌ |
-| `ocean` | Deep Blues, Cyans, Seafoam. | Shift speed. | Ignored. | ❌ |
-| `heatmap` | Blue -> Green -> Yellow -> Red (Temperature map). | Shift speed. | Ignored. | ❌ |
-| `sunset` | Purple -> Red -> Orange -> Yellow. | Shift speed. | Ignored. | ❌ |
+| `ocean` | Deep Blues, Cyans, Seafoam. | Shift speed. | Ignored. | ✅ |
+| `heatmap` | Blue -> Green -> Yellow -> Red (Temperature map). | Shift speed. | Ignored. | ✅ |
+| `sunset` | Purple -> Red -> Orange -> Yellow. | Shift speed. | Ignored. | ✅ |
 | `zebra` | Black and White stripes. | Shift speed. | Ignored. | ❌ |
-| `party` | Random assortment of vibrant colors. | Shift speed. | Ignored. | ❌ |
+| `party` | Random assortment of vibrant colors. | Shift speed. | Ignored. | ✅ |
 
 ## 📐 Group 8: Math & Audio
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
