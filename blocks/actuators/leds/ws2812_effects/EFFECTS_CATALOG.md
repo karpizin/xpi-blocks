@@ -158,3 +158,29 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `morning_mist` | Drifting grey-blue and white misty clouds. | Drift speed. | Ignored. | ✅ |
 | `autumn_leaves` | Dark red carpet with occasional falling gold leaves. | Leaf frequency. | Ignored. | ✅ |
 | `deep_space` | Black void with occasional glowing nebulas. | Nebula evolution. | Ignored. | ✅ |
+
+## 🥁 Group 11: Rhythmic & Music (BPM Sync)
+*Note: In this group, the **Speed** parameter acts as **BPM**.*
+
+| Effect ID | Visual Description | Speed Param (BPM) | Color Param | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `beat_pulse` | Smooth breathing in sync with beat. | BPM. | Base color. | ✅ |
+| `beat_blink` | Hard on/off toggle on every beat. | BPM. | Base color. | ✅ |
+| `beat_strobe` | Very sharp flash on the beat. | BPM. | Flash color. | ✅ |
+| `rhythmic_chase` | Pattern shifts by 1 pixel every beat. | BPM. | Pattern color. | ✅ |
+| `bass_kick` | Red flash on beat 1, blue on others. | BPM. | Ignored. | ✅ |
+| `metronome` | Single pixel bounces left-to-right over 4 beats. | BPM. | Pixel color. | ✅ |
+| `center_out_beat` | Light expands from center on every beat. | BPM. | Color. | ✅ |
+| `rhythmic_rainbow` | Rainbow shifts in steps every beat. | BPM. | Ignored. | ✅ |
+| `side_to_side` | Block travels end-to-end every beat. | BPM. | Color. | ✅ |
+| `rhythmic_alternating` | Swaps odd/even pixels every beat. | BPM. | Color. | ✅ |
+| `disco_strobe` | Random color flash on every beat. | BPM. | Ignored. | ✅ |
+| `heartbeat_bpm` | Realistic ECG double-pulse. | BPM. | Line color. | ✅ |
+| `bpm_scanner` | Scanner hits the edge exactly on the beat. | BPM. | Scanner color. | ✅ |
+| `rhythmic_fade` | Lights up on beat and fades out until next. | BPM. | Color. | ✅ |
+| `energy_bar` | Fills up over a 4-beat measure. | BPM. | Color. | ✅ |
+| `rhythmic_glitter` | Burst of sparkles on every beat. | BPM. | Ignored. | ✅ |
+| `color_switch` | Changes whole strip to random color on beat. | BPM. | Ignored. | ✅ |
+| `bpm_snake` | Snake travels its length every beat. | BPM. | Color. | ✅ |
+| `vu_meter_beat` | Simulated VU level jump on every beat. | BPM. | Color. | ✅ |
+| `rhythmic_bounce` | Parabolic bounce hitting "floor" on beat. | BPM. | Color. | ✅ |
