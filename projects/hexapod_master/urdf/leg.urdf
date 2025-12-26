@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<robot name="hexapod_leg">
+
+  <!-- Materials -->
+  <material name="dark_gray">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.41 0.61 0.5 1.0"/>
+  </material>
+
+  <!-- Base Link (Body attachment) -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+      <material name="dark_gray"/>
+    </visual>
+  </link>
+
+  <!-- Joint 1: Coxa -->
+  <joint name="coxa_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="coxa_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+  </joint>
+
+  <link name="coxa_link">
+    <visual>
+      <origin xyz="0.015 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.02 0.02"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <!-- Joint 2: Femur -->
+  <joint name="femur_joint" type="revolute">
+    <parent link="coxa_link"/>
+    <child link="femur_link"/>
+    <origin xyz="0.03 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+  </joint>
+
+  <link name="femur_link">
+    <visual>
+      <origin xyz="0.025 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.015 0.015"/>
+      </geometry>
+      <material name="dark_gray"/>
+    </visual>
+  </link>
+
+  <!-- Joint 3: Tibia -->
+  <joint name="tibia_joint" type="revolute">
+    <parent link="femur_link"/>
+    <child link="tibia_link"/>
+    <origin xyz="0.05 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="0" effort="10" velocity="1.0"/>
+  </joint>
+
+  <link name="tibia_link">
+    <visual>
+      <origin xyz="0.04 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.08 0.01 0.01"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
+
+  <!-- End Effector (Virtual) -->
+  <link name="tiptoe"/>
+  <joint name="tiptoe_joint" type="fixed">
+    <parent link="tibia_link"/>
+    <child link="tiptoe"/>
+    <origin xyz="0.08 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
