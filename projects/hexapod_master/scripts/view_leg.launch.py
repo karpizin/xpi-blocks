@@ -19,9 +19,9 @@ def generate_launch_description():
             parameters=[{'robot_description': robot_desc}]
         ),
         Node(
-            package='joint_state_publisher_gui',
-            executable='joint_state_publisher_gui',
-            name='joint_state_publisher_gui',
+            package='xpi_actuators', # Используем существующий пакет для запуска
+            executable='/Users/slava/Documents/xpi-blocks/projects/hexapod_master/nodes/leg_ik_viewer_node.py',
+            name='leg_ik_viewer',
             output='screen'
         ),
         Node(
