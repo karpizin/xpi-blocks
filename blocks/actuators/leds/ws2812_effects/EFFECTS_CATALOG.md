@@ -15,12 +15,12 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `blink` | Toggles the entire strip On/Off synchronously. | Frequency (Hz). Example: `1.0` = 1 blink/sec. | Sets the ON color. | ✅ |
 | `breathe` | Smoothly fades brightness up and down (Sinusoidal). | Frequency (Hz) of full cycle. | Sets the base color. | ✅ |
 | `strobe` | Fast, sharp flashes (10% duty cycle). | Frequency (Hz). Example: `10.0` | Sets the flash color. | ✅ |
-| `hyper_strobe` | Extremely fast, aggressive strobe (Epilepsy Warning!). | Frequency (Hz). | Sets the flash color. | ❌ |
+| `hyper_strobe` | Extremely fast, aggressive strobe (Epilepsy Warning!). | Frequency (Hz). | Sets the flash color. | ✅ |
 | `fade_in` | Smoothly transitions from Black to Color once. | Duration (s). | Target color. | ✅ |
 | `fade_out` | Smoothly transitions from Color to Black once. | Duration (s). | Starting color. | ✅ |
 | `alternating` | Odd pixels are Color 1, Even are Black. Swaps positions. | Swap frequency (Hz). | Color 1. | ✅ |
 | `multi_blink` | Blinks Red, then Green, then Blue (or random sequence). | Frequency (Hz). | Ignored. | ❌ |
-| `flash` | Single flash then fade to black. Triggered once. | Fade speed. | Flash color. | ❌ |
+| `flash` | Single flash then fade to black. Triggered once. | Fade speed. | Flash color. | ✅ |
 
 ## 🌈 Group 2: Rainbows
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
@@ -28,7 +28,7 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `static_rainbow` | Displays a rainbow gradient across the whole strip. | Ignored. | Ignored. | ✅ |
 | `rainbow_cycle` | The rainbow gradient slowly moves/rotates along the strip. | Shift speed (Pixel steps per update or Hz). | Ignored. | ✅ |
 | `rainbow_breathe`| The entire strip shows one color, which cycles through the rainbow. | Cycle speed (Hz). | Ignored. | ✅ |
-| `rainbow_strobe` | Strobe effect, but each flash is a different rainbow color. | Frequency (Hz). | Ignored. | ❌ |
+| `rainbow_strobe` | Strobe effect, but each flash is a different rainbow color. | Frequency (Hz). | Ignored. | ✅ |
 | `rainbow_chase` | Segments of rainbow colors "run" along the strip. | Movement speed. | Ignored. | ✅ |
 | `glitter_rainbow`| `rainbow_cycle` with random white pixels flashing (glitter). | Speed of rainbow movement. | Ignored. | ✅ |
 | `pastel_rainbow` | Softer, less saturated rainbow gradient. | Movement speed. | Ignored. | ❌ |
@@ -40,14 +40,14 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | `color_wipe` | Lights up pixels one by one until full, then clears/repeats. | Fill speed (pixels/sec or multiplier). | Fill color. | ✅ |
-| `reverse_wipe` | `color_wipe` but from end to start. | Fill speed. | Fill color. | ❌ |
+| `reverse_wipe` | `color_wipe` but from end to start. | Fill speed. | Fill color. | ✅ |
 | `wipe_random` | `color_wipe` but with a random color each cycle. | Fill speed. | Ignored. | ❌ |
 | `theater_chase` | "Marching ants" effect. Every 3rd pixel is on, pattern moves. | Movement speed. | Pattern color. | ✅ |
 | `theater_chase_rainbow` | `theater_chase` but the pixels cycle rainbow colors. | Movement speed. | Ignored. | ❌ |
 | `larson_scanner` | "KITT" / "Cylon" effect. A packet of light bounces back and forth with a fading trail. | Movement speed. | Scanner color (usually Red). | ✅ |
 | `kitt_scanner` | Similar to Larson, but specifically mimics the Knight Rider car pattern. | Movement speed. | Scanner color. | ❌ |
 | `comet` | A single dot with a long fading tail moving in one direction. | Speed. | Comet color. | ❌ |
-| `bounce` | A simple dot bouncing off the edges (no tail). | Speed. | Dot color. | ❌ |
+| `bounce` | A simple dot bouncing off the edges (no tail). | Speed. | Dot color. | ✅ |
 | `dual_scan` | Two Larson Scanners starting from ends and crossing in the middle. | Speed. | Scanner color. | ❌ |
 | `train` | A solid block of pixels moving around the strip. | Speed. | Train color. | ❌ |
 | `snake` | A snake that grows, moves, and shrinks (like the game). | Speed. | Snake color. | ❌ |
