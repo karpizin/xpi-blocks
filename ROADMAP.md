@@ -191,8 +191,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 9. Noise level sensor (based on microphone with ADS1115) - *Now covered by Analog Sensor Interpreter*
 10. W25Qxx (Flash SPI)
 11. HW-MS03 - radar sensor module (human sensor)
-12. **RCWL-0516 Doppler Radar** - Movement detection through obstacles
-13. **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
+*   **RCWL-0516 Doppler Radar** -> `xpi_sensors/rcwl0516_node`
+*   **Cliff Sensor (TCRT5000)** - Fall prevention for mobile bases
 14. **Vibration Sensor (SW-420)** - Impact and tilt detection
 20. **Optical Flow (PMW3901)** -> `xpi_navigation/optical_flow_node`
 21. NAP07 HIS07 - smoke sensor

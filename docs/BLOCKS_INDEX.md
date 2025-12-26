@@ -72,6 +72,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[Wind Vane (Analog)](../blocks/sensors/environment/wind_vane/README.md)** - Wind direction (16 points, Analog).
 *   **[Wind Vane (Digital)](../blocks/sensors/environment/wind_vane_digital/README.md)** - High-precision wind direction (AS5600 I2C).
 *   **[Rain Gauge](../blocks/sensors/environment/rain_gauge/README.md)** - Precipitation intensity and total (GPIO).
+*   **[RCWL-0516 Doppler Radar](../blocks/sensors/movement/rcwl0516/README.md)** - Microwave motion detection through obstacles.
 *   **[PIR Motion Sensor](../blocks/sensors/movement/pir/README.md)** - Basic infrared motion detection (GPIO).
 *   **[CCS811 Air Quality](../blocks/sensors/ccs811/README.md)** - eCO2 and TVOC sensor.
 *   **[SGP30 Air Quality](../blocks/sensors/environment/sgp30/README.md)** - High-performance TVOC and eCO2 sensor.
