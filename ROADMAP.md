@@ -131,7 +131,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   [x] **AHT10 / AHT20** - Low-cost modern I2C Temp/Humidity.
 *   [ ] **DPS310** - High-Precision Barometric Pressure (I2C).
 *   **#11 LM75A (I2C)** -> `xpi_sensors/lm75a`
-*   [ ] #39 HDC1080 - Temp/Humidity
+*   **HDC1080 Temp/Humidity** -> `xpi_sensors/hdc1080_node`
 *   [ ] #40 LPS22HB - Pressure/Temp
 *   [ ] #41 SHTC3 - Temp/Humidity
 *   [x] **SCD30 / SCD40 / SCD41** - True CO2 (NDIR) Sensors -> `xpi_sensors/scd4x_node`

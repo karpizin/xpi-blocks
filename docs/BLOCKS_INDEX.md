@@ -58,6 +58,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[DHT11 / DHT22 Temperature](../blocks/sensors/dht/README.md)** - Low-cost temp/humidity sensor (GPIO).
 *   **[BME280 Environment](../blocks/sensors/environment/README.md)** - Temperature, Humidity, Pressure (I2C).
 *   **[BME680 Environment](../blocks/sensors/bme680/README.md)** - Gas, Temperature, Humidity, Pressure (I2C).
+*   **[HDC1080 Temp/Humidity](../blocks/sensors/environment/hdc1080/README.md)** - High-precision digital humidity and temperature.
 *   **[BH1750 Light Sensor](../blocks/sensors/bh1750/README.md)** - Ambient light intensity (Lux).
 *   **[OPT3001 Light Sensor](../blocks/sensors/opt3001/README.md)** - High-precision ambient light (Lux).
 *   **[MAX44009 Light Sensor](../blocks/sensors/max44009/README.md)** - Ultra-wide dynamic range lux meter.
