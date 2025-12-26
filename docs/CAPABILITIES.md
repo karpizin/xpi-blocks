@@ -15,13 +15,18 @@ This document lists the high-level functional capabilities of the library.
 
 ## 💡 Advanced Lighting
 *   **Reactive Visuals:** WS2812/NeoPixel effects that flash and morph in sync with live audio beats.
-*   **Modular Library:** 60+ customizable effects including Physics simulations (Fire, Water), Ambient environments (Starry Night, Forest), and Rhythmic patterns (BPM-sync).
+*   **Modular Library:** 75+ customizable effects including Physics simulations (Fire, Water), Ambient environments (Starry Night, Forest), Rhythmic patterns (BPM-sync), and Special effects (Matrix, DNA, Morse).
 *   **Visual Feedback:** High-density status indicators, progress bars, and battery levels using LED strips and rings.
 
 ## 👁️ Visual Perception
 *   **Marker Navigation:** ArUco-based precise indoor localization and marker tracking.
 *   **AI Vision:** Scene interpretation, object description, and obstacle detection using multimodal VLMs.
 *   **Microwave Perception:** Motion detection through non-metallic obstacles using **RCWL-0516** Doppler radar.
+
+## 🗺️ Navigation & Localization
+*   **Autonomous Mapping (SLAM):** Creation of 2D Occupancy Grid maps using LiDAR and `slam_toolbox`.
+*   **High-Precision GPS:** Centimeter-level positioning using **GPS RTK** and NTRIP corrections.
+*   **Indoor Positioning:** BLE and UWB-based trilateration for environments without GPS.
 
 ## 📡 Decentralized Communication
 *   **Swarm Networking:** Reliable long-range communication (up to 1km+) using LoRa Mesh (Meshtastic) or HC-12 wireless serial.

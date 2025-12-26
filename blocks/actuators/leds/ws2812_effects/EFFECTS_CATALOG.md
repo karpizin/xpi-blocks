@@ -134,16 +134,16 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 ## 👾 Group 9: Special
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `matrix` | Green "code" falling down (Matrix digital rain). | Rain speed. | Ignored (Green). | ❌ |
-| `dna` | Two sine waves of different colors intertwining. | Rotation speed. | Colors. | ❌ |
+| `matrix` | Green "code" falling down (Matrix digital rain). | Rain speed. | Ignored (Green). | ✅ |
+| `dna` | Two sine waves of different colors intertwining. | Rotation speed. | Colors. | ✅ |
 | `tetris` | Blocks fall and stack up. | Fall speed. | Block colors. | ❌ |
-| `radar` | (For Rings) A fading beam rotates like a radar sweep. | Sweep speed. | Beam color. | ❌ |
+| `radar` | (For Rings) A fading beam rotates like a radar sweep. | Sweep speed. | Beam color. | ✅ |
 | `clock` | (For Rings) Displays hours/minutes/seconds. | Ignored. | Hand colors. | ❌ |
-| `morse_code` | Flashes a text message (hardcoded or param) in Morse. | WPM speed. | Flash color. | ❌ |
-| `tv_static` | Random black/white/gray noise. | Noise speed. | Ignored. | ❌ |
+| `morse_code` | Flashes a text message (hardcoded or param) in Morse. | WPM speed. | Flash color. | ✅ |
+| `tv_static` | Random black/white/gray noise. | Noise speed. | Ignored. | ✅ |
 | `fairy_dust` | Sparkles that leave a faint trail. | Speed. | Dust color. | ❌ |
-| `heartbeat` | A blip that travels and pulses like an ECG. | Pulse rate (BPM). | Line color. | ❌ |
-| `off` | Turns all pixels OFF (Black). | Ignored. | Ignored. | ❌ |
+| `heartbeat` | A blip that travels and pulses like an ECG. | Pulse rate (BPM). | Line color. | ✅ |
+| `off` | Turns all pixels OFF (Black). | Ignored. | Ignored. | ✅ |
 
 ## 🧘 Group 10: Meditative & Ambient
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
