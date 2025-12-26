@@ -205,8 +205,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 28. **TF-Luna / TFmini Plus** -> `xpi_sensors/tfmini_plus_node`
 29. **Luxonis OAK-D (Spatial AI Camera)** - Stereo depth and AI acceleration
 30. **Intel RealSense L515 (MEMS LiDAR)** - High-resolution point clouds
-31. **LDROBOT LD19 / D300** - Affordable 360° 2D LiDAR
-32. **Livox Mid-360** - Industrial high-range 3D LiDAR
+*   **LDROBOT LD19 / D300** -> `xpi_sensors/ld19_node`
+*   **Livox Mid-360** - Industrial high-range 3D LiDAR
 33. **CE30-A Solid-State LiDAR** - Wide FoV obstacle avoidance
 34. **Garmin Lidar-Lite v3/v4** - High-precision 40m rangefinder
 35. TCS3200 (GY-31) - color sensor

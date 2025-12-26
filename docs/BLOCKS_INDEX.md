@@ -84,6 +84,7 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[HR202 Humidity Sensor](../blocks/sensors/hr202/README.md)** - Low-cost analog resistive humidity sensor.
 *   **[KY-013 Thermistor](../blocks/sensors/ky013/README.md)** - Analog NTC thermistor module.
 *   **[HC-SR04 Sonar](../blocks/sensors/range/README.md)** - Ultrasonic distance measurement (GPIO).
+*   **[LDROBOT LD19 / D300](../blocks/sensors/lidar/ldrobot_ld19/README.md)** - 360° 2D LiDAR scanner for SLAM.
 *   **[VL53L1X ToF Sensor](../blocks/sensors/range/vl53l1x/README.md)** - Precision laser distance measurement (I2C).
 *   **[TFmini Plus LiDAR](../blocks/sensors/range/tfmini_plus/README.md)** - Outdoor long-range distance measurement up to 12m (UART).
 *   **[TF02-Pro & TF03-100 LiDAR](../blocks/sensors/range/tf_long_range/README.md)** - Industrial long-range LiDARs up to 100m+ (UART).
