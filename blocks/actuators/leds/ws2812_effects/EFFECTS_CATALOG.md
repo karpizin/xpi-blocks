@@ -145,6 +145,15 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `heartbeat` | A blip that travels and pulses like an ECG. | Pulse rate (BPM). | Line color. | ✅ |
 | `off` | Turns all pixels OFF (Black). | Ignored. | Ignored. | ✅ |
 
+## 🚨 Group 13: Indication (USIS Patterns)
+| Effect ID | Visual Description | Speed Param | Color Param | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `double_blink` | Two flashes followed by a pause. | Frequency. | Warning color. | ✅ |
+| `sos` | Morse code S-O-S signal. | Speed multiplier. | Alert color. | ✅ |
+| `fast_blink` | High-frequency blinking (5Hz+). | Frequency. | Signal color. | ✅ |
+| `status_pulse` | Short periodic "blip" (heartbeat). | Interval. | Status color. | ✅ |
+
+
 ## 🧘 Group 10: Meditative & Ambient
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
