@@ -29,9 +29,16 @@ class HexapodBodyNode(Node):
         
         # 3. Publishers для каждой лапы
         self.leg_pubs = {}
+        self.gait_offsets = {}
         for leg_name in self.config['legs'].keys():
             topic = f'/hexapod/{leg_name}/goal_point'
             self.leg_pubs[leg_name] = self.create_publisher(Point, topic, 10)
+            
+            # Инициализируем смещения походки нулями
+            self.gait_offsets[leg_name] = [0.0, 0.0, 0.0]
+            # Подписка на смещения походки
+            self.create_subscription(Point, f'/hexapod/{leg_name}/gait_offset', 
+                                     lambda msg, name=leg_name: self.gait_callback(msg, name), 10)
             
         # 4. Subscriber для позы корпуса
         self.create_subscription(Pose, '/hexapod/body_pose', self.pose_callback, 10)
@@ -39,7 +46,10 @@ class HexapodBodyNode(Node):
         # 5. Таймер для плавного обновления (50 Гц)
         self.create_timer(0.02, self.update_loop)
         
-        self.get_logger().info('Hexapod Body Kinematics Node with Smoothing initialized.')
+        self.get_logger().info('Hexapod Body Kinematics Node with Gait Support initialized.')
+
+    def gait_callback(self, msg, name):
+        self.gait_offsets[name] = [msg.x, msg.y, msg.z]
 
     def pose_callback(self, msg):
         # Конвертируем Quaternion в Euler
@@ -75,12 +85,14 @@ class HexapodBodyNode(Node):
         # 2. Считаем IK
         results = self.body_ik.calculate_body_ik(translation, rotation)
         
-        # 3. Публикуем цели для лап
+        # 3. Публикуем цели для лап (База + Смещение походки)
         for leg_name, pos in results.items():
             p_msg = Point()
-            p_msg.x = pos['x']
-            p_msg.y = pos['y']
-            p_msg.z = pos['z']
+            # Суммируем результат IK корпуса и смещение походки
+            g_off = self.gait_offsets.get(leg_name, [0.0, 0.0, 0.0])
+            p_msg.x = pos['x'] + g_off[0]
+            p_msg.y = pos['y'] + g_off[1]
+            p_msg.z = pos['z'] + g_off[2]
             self.leg_pubs[leg_name].publish(p_msg)
 
 def main(args=None):
