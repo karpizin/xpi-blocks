@@ -1,0 +1,12 @@
+# Hexapod Geometry Configuration
+# Coordinates of leg attachment points (Coxa joints) relative to body center (in meters)
+
+legs:
+  leg_rf: {x: 0.12, y: -0.08, z: 0, angle: -0.785}  # Right Front (-45 deg)
+  leg_rm: {x: 0.0,  y: -0.10, z: 0, angle: -1.571}  # Right Middle (-90 deg)
+  leg_rb: {x: -0.12, y: -0.08, z: 0, angle: -2.356}  # Right Back (-135 deg)
+  leg_lf: {x: 0.12, y: 0.08,  z: 0, angle: 0.785}   # Left Front (45 deg)
+  leg_lm: {x: 0.0,  y: 0.10,  z: 0, angle: 1.571}   # Left Middle (90 deg)
+  leg_lb: {x: -0.12, y: 0.08,  z: 0, angle: 2.356}   # Left Back (135 deg)
+
+default_height: 0.08 # Default standing height
