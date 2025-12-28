@@ -1,0 +1,40 @@
+import os
+from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    nodes_dir = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/nodes'
+    
+    return LaunchDescription([
+        # 1. Глобальный управляющий узел (Body Kinematics)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'hexapod_body_kinematics_node.py'),
+            name='body_node',
+            output='screen'
+        ),
+
+        # 2. Генератор походки (Gait Engine)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'hexapod_gait_node.py'),
+            name='gait_node',
+            output='screen'
+        ),
+
+        # 3. Автоматическая стабилизация (Auto-Leveler)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'auto_leveler_node.py'),
+            name='leveler_node',
+            output='screen'
+        ),
+
+        # 4. Просмотрщик (связка с Rviz2/Gazebo)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'leg_ik_viewer_node.py'),
+            name='ik_bridge',
+            output='screen'
+        ),
+    ])
