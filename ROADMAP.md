@@ -41,6 +41,7 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **LED Matrix 8x8 (MAX7219)** -> `xpi_actuators/led_matrix`
 *   **I2C OLED (SSD1306)** -> `xpi_actuators/ssd1306`
 *   **TM1637 (GPIO)** -> `xpi_actuators/tm1637`
+*   **Status Indicator (USIS)** -> `xpi_actuators/status_indicator_node`
 *   **LCD 1602 (I2C)** -> `xpi_actuators/lcd1602_node`
 *   **Unipolar Stepper (ULN2003)** -> `xpi_actuators/unipolar_stepper`
 *   **A4988/DRV8825 Stepper (Step/Dir)** -> `xpi_actuators/a4988_driver`

@@ -16,6 +16,7 @@ This document lists the high-level functional capabilities of the library.
 ## 💡 Advanced Lighting
 *   **Reactive Visuals:** WS2812/NeoPixel effects that flash and morph in sync with live audio beats.
 *   **Modular Library:** 75+ customizable effects including Physics simulations (Fire, Water), Ambient environments (Starry Night, Forest), Rhythmic patterns (BPM-sync), and Special effects (Matrix, DNA, Morse).
+*   **Standardized Status Indication (USIS):** A high-level system for visual communication of robot states (errors, battery, connection) through predefined LED patterns.
 *   **Visual Feedback:** High-density status indicators, progress bars, and battery levels using LED strips and rings.
 
 ## 👁️ Visual Perception
