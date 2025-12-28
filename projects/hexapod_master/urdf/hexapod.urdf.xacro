@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="hexapod_master">
+
+  <!-- Constants -->
+  <xacro:property name="body_m" value="1.0" />
+  <xacro:property name="leg_m" value="0.1" />
+
+  <!-- Materials -->
+  <material name="dark_gray"><color rgba="0.2 0.2 0.2 1.0"/></material>
+  <material name="green"><color rgba="0.41 0.61 0.5 1.0"/></material>
+
+  <!-- Inertia Macros -->
+  <xacro:macro name="box_inertia" params="m x y z">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y+z*z)/12}" ixy="0" ixz="0" iyy="${m*(x*x+z*z)/12}" iyz="0" izz="${m*(x*x+y*y)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Gazebo ros2_control plugin -->
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware><plugin>gazebo_ros2_control/GazeboSystem</plugin></hardware>
+    <xacro:macro name="joint_interface" params="name">
+      <joint name="${name}">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+      </joint>
+    </xacro:macro>
+    
+    <!-- Generate interfaces for all joints -->
+    <xacro:joint_interface name="rf_coxa_joint"/><xacro:joint_interface name="rf_femur_joint"/><xacro:joint_interface name="rf_tibia_joint"/>
+    <xacro:joint_interface name="rm_coxa_joint"/><xacro:joint_interface name="rm_femur_joint"/><xacro:joint_interface name="rm_tibia_joint"/>
+    <xacro:joint_interface name="rb_coxa_joint"/><xacro:joint_interface name="rb_femur_joint"/><xacro:joint_interface name="rb_tibia_joint"/>
+    <xacro:joint_interface name="lf_coxa_joint"/><xacro:joint_interface name="lf_femur_joint"/><xacro:joint_interface name="lf_tibia_joint"/>
+    <xacro:joint_interface name="lm_coxa_joint"/><xacro:joint_interface name="lm_femur_joint"/><xacro:joint_interface name="lm_tibia_joint"/>
+    <xacro:joint_interface name="lb_coxa_joint"/><xacro:joint_interface name="lb_femur_joint"/><xacro:joint_interface name="lb_tibia_joint"/>
+  </ros2_control>
+
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- Body -->
+  <link name="base_link">
+    <visual><geometry><box size="0.24 0.16 0.03"/></geometry><material name="dark_gray"/></visual>
+    <collision><geometry><box size="0.24 0.16 0.03"/></geometry></collision>
+    <xacro:box_inertia m="1.0" x="0.24" y="0.16" z="0.03"/>
+  </link>
+
+  <!-- Leg Macro -->
+  <xacro:macro name="leg" params="prefix x y yaw">
+    <!-- Coxa -->
+    <joint name="${prefix}_coxa_joint" type="revolute">
+      <parent link="base_link"/><child link="${prefix}_coxa_link"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 ${yaw}"/>
+      <axis xyz="0 0 1"/><limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+    </joint>
+    <link name="${prefix}_coxa_link">
+      <visual><origin xyz="0.015 0 0"/><geometry><box size="0.03 0.02 0.02"/></geometry><material name="green"/></visual>
+      <collision><origin xyz="0.015 0 0"/><geometry><box size="0.03 0.02 0.02"/></geometry></collision>
+      <xacro:box_inertia m="0.05" x="0.03" y="0.02" z="0.02"/>
+    </link>
+
+    <!-- Femur -->
+    <joint name="${prefix}_femur_joint" type="revolute">
+      <parent link="${prefix}_coxa_link"/><child link="${prefix}_femur_link"/>
+      <origin xyz="0.03 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+      <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+    </joint>
+    <link name="${prefix}_femur_link">
+      <visual><origin xyz="0.025 0 0"/><geometry><box size="0.05 0.015 0.015"/></geometry><material name="dark_gray"/></visual>
+      <collision><origin xyz="0.025 0 0"/><geometry><box size="0.05 0.015 0.015"/></geometry></collision>
+      <xacro:box_inertia m="0.1" x="0.05" y="0.015" z="0.015"/>
+    </link>
+
+    <!-- Tibia -->
+    <joint name="${prefix}_tibia_joint" type="revolute">
+      <parent link="${prefix}_femur_link"/><child link="${prefix}_tibia_link"/>
+      <origin xyz="0.05 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+      <limit lower="-3.14" upper="0" effort="10" velocity="1.0"/>
+    </joint>
+    <link name="${prefix}_tibia_link">
+      <visual><origin xyz="0.04 0 0"/><geometry><box size="0.08 0.01 0.01"/></geometry><material name="green"/></visual>
+      <collision><origin xyz="0.04 0 0"/><geometry><box size="0.08 0.01 0.01"/></geometry></collision>
+      <xacro:box_inertia m="0.1" x="0.08" y="0.01" z="0.01"/>
+    </link>
+  </xacro:macro>
+
+  <!-- Instantiate 6 Legs -->
+  <xacro:leg prefix="rf" x="0.12"  y="-0.08" yaw="-0.785"/>
+  <xacro:leg prefix="rm" x="0.0"   y="-0.10" yaw="-1.571"/>
+  <xacro:leg prefix="rb" x="-0.12" y="-0.08" yaw="-2.356"/>
+  <xacro:leg prefix="lf" x="0.12"  y="0.08"  yaw="0.785"/>
+  <xacro:leg prefix="lm" x="0.0"   y="0.10"  yaw="1.571"/>
+  <xacro:leg prefix="lb" x="-0.12" y="0.08"  yaw="2.356"/>
+
+</robot>
