@@ -2,59 +2,124 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, ColorRGBA, Float32
+import time
 
 class StatusIndicatorNode(Node):
     def __init__(self):
         super().__init__('status_indicator_node')
         
-        # Mapping USIS logic to LED effects
-        # Key: Status Name, Value: (Effect, ColorRGB, Speed)
-        self.status_map = {
-            'SYSTEM_OK':    ('solid', (0, 255, 0), 1.0),
-            'BOOT':         ('blink', (255, 255, 255), 2.0),
-            'STANDBY':      ('breathe', (0, 255, 0), 0.5),
-            'LOW_BATTERY':  ('double_blink', (255, 100, 0), 1.0),
-            'ERROR_CRITICAL': ('sos', (255, 0, 0), 1.0),
-            'AI_THINKING':  ('breathe', (255, 0, 255), 1.0),
-            'GPS_SEARCH':   ('fast_blink', (0, 255, 255), 2.0),
-            'GPS_FIXED':    ('solid', (0, 255, 255), 1.0),
-            'CONNECTED':    ('status_pulse', (0, 0, 255), 1.0),
-            'CALIBRATION':  ('alternating', (255, 255, 0), 2.0),
+        # Справочник статусов: (Приоритет, Цвет_RGB, Паттерн)
+        # Приоритет: 0-100 (чем выше, тем главнее)
+        self.status_db = {
+            'ERROR_CRITICAL': (100, (255, 0, 0), 'sos'),
+            'LOW_BATTERY':    (80, (255, 100, 0), 'double_blink'),
+            'GPS_SEARCH':     (60, (0, 255, 255), 'fast_blink'),
+            'AI_THINKING':    (50, (255, 0, 255), 'breathe'),
+            'CONNECTED':      (40, (0, 0, 255), 'status_pulse'),
+            'GPS_FIXED':      (30, (0, 255, 255), 'solid'),
+            'SYSTEM_OK':      (10, (0, 255, 0), 'solid'),
+            'STANDBY':        (5, (0, 50, 0), 'breathe'),
         }
 
-        # Publishers to WS2812 Driver
+        # Текущие активные статусы { 'NAME': timestamp_started }
+        self.active_statuses = {'SYSTEM_OK': time.time()}
+        
+        # Переменные для мультиплексирования
+        self.cycle_index = 0
+        self.last_oneshot_time = 0
+        self.oneshot_active = False
+
+        # Publishers
         self.effect_pub = self.create_publisher(String, '/ws2812/set_effect', 10)
         self.color_pub = self.create_publisher(ColorRGBA, '/ws2812/set_color', 10)
         self.speed_pub = self.create_publisher(Float32, '/ws2812/set_speed', 10)
 
-        # Subscriber for incoming status requests
+        # Subscribers
         self.create_subscription(String, '/status/set', self.cb_set_status, 10)
+        self.create_subscription(String, '/status/clear', self.cb_clear_status, 10)
         
-        self.get_logger().info('Status Indicator Node (USIS) started.')
+        # Главный таймер логики (5 Гц — достаточно для переключения слоев)
+        self.create_timer(0.2, self.update_logic)
+        
+        self.get_logger().info('Advanced Multiplexing Status Indicator Node started.')
 
     def cb_set_status(self, msg):
         status = msg.data.upper()
-        if status in self.status_map:
-            effect, color, speed = self.status_map[status]
+        if status in self.status_db:
+            # Если это новый статус, мы можем включить oneshot оверрайд
+            if status not in self.active_statuses:
+                self.trigger_oneshot()
             
-            # 1. Set Color
-            c_msg = ColorRGBA()
-            c_msg.r, c_msg.g, c_msg.b, c_msg.a = color[0]/255.0, color[1]/255.0, color[2]/255.0, 1.0
-            self.color_pub.publish(c_msg)
-            
-            # 2. Set Speed
-            s_msg = Float32()
-            s_msg.data = float(speed)
-            self.speed_pub.publish(s_msg)
-            
-            # 3. Set Effect (Trigger)
-            e_msg = String()
-            e_msg.data = effect
-            self.effect_pub.publish(e_msg)
-            
-            self.get_logger().info(f'Status changed to: {status}')
+            self.active_statuses[status] = time.time()
+            self.get_logger().info(f'Status ACTIVE: {status}')
         else:
-            self.get_logger().warn(f'Unknown status requested: {status}')
+            self.get_logger().warn(f'Unknown status: {status}')
+
+    def cb_clear_status(self, msg):
+        status = msg.data.upper()
+        if status in self.active_statuses:
+            del self.active_statuses[status]
+            self.get_logger().info(f'Status CLEARED: {status}')
+
+    def trigger_oneshot(self):
+        self.oneshot_active = True
+        self.last_oneshot_time = time.time()
+
+    def update_logic(self):
+        if not self.active_statuses:
+            return
+
+        # 1. Получаем список активных статусов, отсортированных по приоритету
+        sorted_active = sorted(
+            self.active_statuses.keys(), 
+            key=lambda x: self.status_db[x][0], 
+            reverse=True
+        )
+
+        target_status = sorted_active[0] # По умолчанию самый важный
+
+        # 2. Логика "Вспышек" (Interjections)
+        # Раз в несколько тиков показываем следующий по приоритету статус
+        self.cycle_index += 1
+        if self.cycle_index % 10 == 0: # Каждые 2 секунды (при таймере 5Гц)
+            # Берем 2-й, 3-й или 4-й статус по кругу
+            secondary_count = min(len(sorted_active) - 1, 3)
+            if secondary_count > 0:
+                sub_idx = (self.cycle_index // 10) % secondary_count + 1
+                target_status = sorted_active[sub_idx]
+                # Форсируем эффект 'flash' для короткой вспышки
+                self.publish_status(target_status, override_effect='flash')
+                return
+
+        # 3. Логика Oneshot (при активации нового статуса — горит 1 сек)
+        if self.oneshot_active:
+            if time.time() - self.last_oneshot_time < 1.0:
+                self.publish_status(sorted_active[0]) # Показываем самый новый/важный
+                return
+            else:
+                self.oneshot_active = False
+
+        # 4. Обычный режим (доминирующий статус)
+        self.publish_status(target_status)
+
+    def publish_status(self, status_name, override_effect=None):
+        priority, color, effect = self.status_db[status_name]
+        if override_effect:
+            effect = override_effect
+
+        # Отправляем в драйвер
+        c_msg = ColorRGBA()
+        c_msg.r, c_msg.g, c_msg.b, c_msg.a = color[0]/255.0, color[1]/255.0, color[2]/255.0, 1.0
+        self.color_pub.publish(c_msg)
+        
+        e_msg = String()
+        e_msg.data = effect
+        self.effect_pub.publish(e_msg)
+        
+        # Скорость берем стандартную или адаптивную
+        s_msg = Float32()
+        s_msg.data = 1.0
+        self.speed_pub.publish(s_msg)
 
 def main(args=None):
     rclpy.init(args=args)
