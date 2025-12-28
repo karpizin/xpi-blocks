@@ -6,12 +6,33 @@
   <material name="green"><color rgba="0.41 0.61 0.5 1.0"/></material>
   <material name="black"><color rgba="0.0 0.0 0.0 1.0"/></material>
 
+  <!-- Gazebo ros2_control plugin -->
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <!-- We will add joint definitions below -->
+  </ros2_control>
+
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
   <!-- Central Body -->
   <link name="base_link">
     <visual>
       <geometry><box size="0.24 0.16 0.03"/></geometry>
       <material name="dark_gray"/>
     </visual>
+    <collision>
+      <geometry><box size="0.24 0.16 0.03"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.006"/>
+    </inertial>
   </link>
 
   <!-- Macro for a single leg -->
