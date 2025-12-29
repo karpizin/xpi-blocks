@@ -10,11 +10,14 @@ The system is built on a top-down principle:
 3.  **Body Node** (Hub) -> Aggregates data from Gait and Leveler, calculates final (X,Y,Z) coordinates for each of the 6 legs.
 4.  **IK Bridge** -> Translates (X,Y,Z) for each leg into 3 servo angles (Coxa, Femur, Tibia).
 5.  **Hardware Driver** -> Sends angles to physical servos or the simulator.
+6.  **Heading Controller** -> High-level pilot for turning to specific angles.
+7.  **Circular Motion** -> High-level pilot for following circular paths.
+8.  **Contact Bridge** -> (Simulation only) Translates physical ground contact in Gazebo into terrain adaptation feedback.
 
 ## 🚀 Running the System
 
 ### 1. Full Launch (Recommended)
-Starts all math and logic nodes with a single command:
+Starts all math, logic, and high-level nodes with a single command:
 ```bash
 ros2 launch xpi_projects hexapod_full.launch.py
 ```
@@ -25,6 +28,7 @@ ros2 launch xpi_projects view_hexapod.launch.py
 ```
 
 ### 3. Simulation (Gazebo)
+Launches the robot in a custom **Hilly Terrain World** (`hexapod_terrain.world`) with simulated IMU and contact sensors.
 ```bash
 ros2 launch xpi_projects gazebo.launch.py
 ```
@@ -44,15 +48,8 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {y: -0.05}}"
 ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.05}, angular: {z: 0.2}}"
 ```
 
-### Advanced Gait Selection
-Change the gait type dynamically via ROS2 parameters:
-```bash
-# Available: tripod, wave, ripple, amble
-ros2 param set /hexapod_gait_node gait_type "amble"
-```
-
 ### Turning to a Specific Angle (Heading Control)
-The robot can autonomously turn to a specific compass heading (Yaw) using IMU feedback.
+The robot can autonomously turn to a specific compass heading (Yaw) using IMU feedback. In simulation, the **Simulated IMU** provides this data automatically.
 ```bash
 # Turn to 90 degrees (Left) - Target is in RADIANS
 ros2 topic pub --once /hexapod/target_heading std_msgs/msg/Float32 "{data: 1.57}"
@@ -75,7 +72,9 @@ ros2 topic pub --once /hexapod/set_circle_speed std_msgs/msg/Float32 "{data: 0.0
 ```
 
 ### Terrain Adaptation
-To manually test uneven terrain correction for a specific leg:
+The robot can adapt to uneven ground (hills, bricks). 
+*   **Automatic (Simulation):** The `contact_bridge_node` detects ground contact in Gazebo and sends feedback.
+*   **Manual (Test):** To manually test correction for a specific leg:
 ```bash
 # Format: x=leg_index (0-5), z=offset in meters
 # Lift Right Front (0) leg by 2cm to adapt to a bump
@@ -83,12 +82,12 @@ ros2 topic pub --once /hexapod/terrain_feedback geometry_msgs/msg/Point "{x: 0, 
 ```
 
 ### Body Pose Control
-Use the `/hexapod/body_pose` topic:
+Use the `/hexapod/body_pose` topic. If the **Auto-Leveler** node is active, it will use the IMU to automatically maintain a horizontal body pose even when standing on a hill in Gazebo.
 ```bash
 # Squat (lower body by 5cm)
 ros2 topic pub --once /hexapod/body_pose geometry_msgs/msg/Pose "{position: {z: -0.05}}"
 
-# Tilt forward (Pitch)
+# Tilt forward (Pitch) manually
 ros2 topic pub --once /hexapod/body_pose geometry_msgs/msg/Pose "{orientation: {x: 0.0, y: 0.1, z: 0.0, w: 0.99}}"
 ```
 

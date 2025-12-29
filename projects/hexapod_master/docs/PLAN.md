@@ -19,7 +19,8 @@ The project is divided into 5 stages, each adding a new level of intelligent beh
 *   [x] URDF/Xacro configuration for Gazebo (adding mass, inertia, and collisions for all links). See `urdf/hexapod.urdf.xacro`.
 *   [x] `ros2_control` configuration for managing 18 joints. See `config/hexapod_controllers.yaml`.
 *   [x] Creation of a Launch file to start Gazebo and "spawn" the robot. See `scripts/gazebo.launch.py`.
-*   [ ] Testing stability in the simulator with various body poses.
+*   [x] Integration of **Simulated IMU** and **Contact Sensors** for autonomous feedback.
+*   [x] Testing stability in the simulator with various body poses and hilly terrain. See `urdf/hexapod_terrain.world`.
 
 ## Stage 4: Gait Generator (The Gait)
 *   [x] Implementation of the `GaitEngine` with support for Tripod, Wave, Ripple, and Amble gaits.
