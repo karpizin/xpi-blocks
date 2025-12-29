@@ -8,8 +8,8 @@ class StatusIndicatorNode(Node):
     def __init__(self):
         super().__init__('status_indicator_node')
         
-        # Справочник статусов: (Приоритет, Цвет_RGB, Паттерн)
-        # Приоритет: 0-100 (чем выше, тем главнее)
+        # Status Dictionary: (Priority, RGB_Color, Pattern)
+        # Priority: 0-100 (higher is more important)
         self.status_db = {
             'ERROR_CRITICAL': (100, (255, 0, 0), 'sos'),
             'LOW_BATTERY':    (80, (255, 100, 0), 'double_blink'),
@@ -21,10 +21,10 @@ class StatusIndicatorNode(Node):
             'STANDBY':        (5, (0, 50, 0), 'breathe'),
         }
 
-        # Текущие активные статусы { 'NAME': timestamp_started }
+        # Currently active statuses { 'NAME': timestamp_started }
         self.active_statuses = {'SYSTEM_OK': time.time()}
         
-        # Переменные для мультиплексирования
+        # Multiplexing variables
         self.cycle_index = 0
         self.last_oneshot_time = 0
         self.oneshot_active = False
@@ -38,7 +38,7 @@ class StatusIndicatorNode(Node):
         self.create_subscription(String, '/status/set', self.cb_set_status, 10)
         self.create_subscription(String, '/status/clear', self.cb_clear_status, 10)
         
-        # Главный таймер логики (5 Гц — достаточно для переключения слоев)
+        # Main logic timer (5 Hz — sufficient for layer switching)
         self.create_timer(0.2, self.update_logic)
         
         self.get_logger().info('Advanced Multiplexing Status Indicator Node started.')
@@ -46,7 +46,7 @@ class StatusIndicatorNode(Node):
     def cb_set_status(self, msg):
         status = msg.data.upper()
         if status in self.status_db:
-            # Если это новый статус, мы можем включить oneshot оверрайд
+            # If it's a new status, we can trigger a oneshot override
             if status not in self.active_statuses:
                 self.trigger_oneshot()
             
@@ -69,37 +69,37 @@ class StatusIndicatorNode(Node):
         if not self.active_statuses:
             return
 
-        # 1. Получаем список активных статусов, отсортированных по приоритету
+        # 1. Get list of active statuses sorted by priority
         sorted_active = sorted(
             self.active_statuses.keys(), 
             key=lambda x: self.status_db[x][0], 
             reverse=True
         )
 
-        target_status = sorted_active[0] # По умолчанию самый важный
+        target_status = sorted_active[0] # Default to the most important
 
-        # 2. Логика "Вспышек" (Interjections)
-        # Раз в несколько тиков показываем следующий по приоритету статус
+        # 2. Interjections Logic
+        # Every few ticks, show the next status in priority order
         self.cycle_index += 1
-        if self.cycle_index % 10 == 0: # Каждые 2 секунды (при таймере 5Гц)
-            # Берем 2-й, 3-й или 4-й статус по кругу
+        if self.cycle_index % 10 == 0: # Every 2 seconds (at 5Hz timer)
+            # Cycle through 2nd, 3rd, or 4th status
             secondary_count = min(len(sorted_active) - 1, 3)
             if secondary_count > 0:
                 sub_idx = (self.cycle_index // 10) % secondary_count + 1
                 target_status = sorted_active[sub_idx]
-                # Форсируем эффект 'flash' для короткой вспышки
+                # Force 'flash' effect for a brief interjection
                 self.publish_status(target_status, override_effect='flash')
                 return
 
-        # 3. Логика Oneshot (при активации нового статуса — горит 1 сек)
+        # 3. Oneshot Logic (when a new status is activated — show for 1 sec)
         if self.oneshot_active:
             if time.time() - self.last_oneshot_time < 1.0:
-                self.publish_status(sorted_active[0]) # Показываем самый новый/важный
+                self.publish_status(sorted_active[0]) # Show the newest/most important
                 return
             else:
                 self.oneshot_active = False
 
-        # 4. Обычный режим (доминирующий статус)
+        # 4. Normal Mode (dominant status)
         self.publish_status(target_status)
 
     def publish_status(self, status_name, override_effect=None):
@@ -107,7 +107,7 @@ class StatusIndicatorNode(Node):
         if override_effect:
             effect = override_effect
 
-        # Отправляем в драйвер
+        # Send to driver
         c_msg = ColorRGBA()
         c_msg.r, c_msg.g, c_msg.b, c_msg.a = color[0]/255.0, color[1]/255.0, color[2]/255.0, 1.0
         self.color_pub.publish(c_msg)
@@ -116,7 +116,7 @@ class StatusIndicatorNode(Node):
         e_msg.data = effect
         self.effect_pub.publish(e_msg)
         
-        # Скорость берем стандартную или адаптивную
+        # Use standard or adaptive speed
         s_msg = Float32()
         s_msg.data = 1.0
         self.speed_pub.publish(s_msg)
