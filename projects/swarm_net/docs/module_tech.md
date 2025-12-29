@@ -1,82 +1,82 @@
-# Техническая документация: Модуль Meshtastic Swarm
+# Technical Documentation: Meshtastic Swarm Module
 
-## 1. Обзор
-Модуль `Meshtastic Swarm` предназначен для обеспечения децентрализованной связи между роботами (дронами) в условиях отсутствия стандартной сетевой инфраструктуры (Wi-Fi, 4G/5G). Использование технологии LoRa Mesh позволяет объединять устройства в единую сеть с дальностью до нескольких десятков километров.
-
----
-
-## 2. Архитектура системы
-
-Система состоит из трех основных уровней:
-
-1.  **Hardware Layer**: Радиомодули (LoRa), прошитые ПО Meshtastic (Heltec, RAK, и др.).
-2.  **Driver Layer (`blocks/drivers/meshtastic`)**: Python-обертка над библиотекой `meshtastic`, обеспечивающая абстракцию от низкоуровневого протокола.
-3.  **Communication Layer (`src/xpi_comms`)**: ROS2-ноды, интегрирующие радиоканал в общую шину данных робота.
+## 1. Overview
+The `Meshtastic Swarm` module is designed to provide decentralized communication between robots (drones) in environments without standard network infrastructure (Wi-Fi, 4G/5G). Using LoRa Mesh technology, it allows devices to be integrated into a single network with a range of up to several tens of kilometers.
 
 ---
 
-## 3. Компоненты модуля
+## 2. System Architecture
+
+The system consists of three main layers:
+
+1.  **Hardware Layer**: LoRa radio modules flashed with Meshtastic firmware (Heltec, RAK, etc.).
+2.  **Driver Layer (`blocks/drivers/meshtastic`)**: A Python wrapper around the `meshtastic` library, providing an abstraction from the low-level protocol.
+3.  **Communication Layer (`src/xpi_comms`)**: ROS2 nodes integrating the radio channel into the robot's common data bus.
+
+---
+
+## 3. Module Components
 
 ### 3.1 MeshtasticDriver (`driver.py`)
-Основной интерфейс для работы с оборудованием.
-*   **Neighbor DB**: Хранит актуальное состояние всех видимых узлов в сети (ID, SNR, последняя телеметрия).
-*   **Event System**: Использует коллбэки для уведомления системы о входящих данных.
-*   **Методы**:
-    *   `broadcast_telemetry(data)`: Рассылка пакета всем участникам.
-    *   `send_command(target, cmd)`: Адресная отправка команды.
+The primary interface for hardware interaction.
+*   **Neighbor DB**: Stores the current state of all visible nodes in the network (ID, SNR, last telemetry).
+*   **Event System**: Uses callbacks to notify the system of incoming data.
+*   **Methods**:
+    *   `broadcast_telemetry(data)`: Sends a packet to all participants.
+    *   `send_command(target, cmd)`: Sends a targeted command to a specific node.
 
 ### 3.2 Meshtastic Bridge Node (`meshtastic_bridge_node.py`)
-Мост между Mesh-сетью и ROS2.
-*   **Подписки**: `/gps/fix` (NavSatFix), `~/outbound_broadcast` (String).
-*   **Публикации**: `~/neighbors` (JSON String), `~/inbound_commands` (JSON String).
-*   **Логика**: Каждое обновление локального GPS-фикса автоматически транслируется в Mesh для информирования соседей.
+The bridge between the Mesh network and ROS2.
+*   **Subscriptions**: `/gps/fix` (NavSatFix), `~/outbound_broadcast` (String).
+*   **Publications**: `~/neighbors` (JSON String), `~/inbound_commands` (JSON String).
+*   **Logic**: Every local GPS fix update is automatically broadcast to the Mesh to inform neighbors.
 
 ### 3.3 Swarm Controller (`swarm_controller_node.py`)
-Пример логики управления роем.
-*   Слушает координаты соседей через Bridge.
-*   Вычисляет дистанцию между роботами.
-*   **Collision Avoidance**: При опасном сближении (< 10м по умолчанию) генерирует команду отворота в топик `/cmd_vel`.
+An example of swarm control logic.
+*   Listens to neighbor coordinates via the Bridge.
+*   Calculates distances between robots.
+*   **Collision Avoidance**: Generates a detour command to the `/cmd_vel` topic if robots come dangerously close (< 10m by default).
 
 ---
 
-## 4. Установка и настройка
+## 4. Installation and Setup
 
-### Зависимости
-Модуль требует наличия следующих Python-пакетов:
+### Dependencies
+The module requires the following Python packages:
 *   `meshtastic`
-*   `pypubsub`
+*   `PyPubSub`
 
-Системные требования:
-*   Установленный `FFMPEG` (для работы с аудио-сэмплами в будущем).
-*   Доступ к последовательному порту (обычно `/dev/ttyUSB0` или `/dev/ttyACM0`).
+System Requirements:
+*   Installed `FFMPEG` (for future audio sample processing).
+*   Access to a serial port (typically `/dev/ttyUSB0` or `/dev/ttyACM0`).
 
-### Настройка прав (Linux)
-Для работы с USB-модемом добавьте пользователя в группу `dialout`:
+### Permissions Setup (Linux)
+To work with a USB modem, add the user to the `dialout` group:
 ```bash
 sudo usermod -a -G dialout $USER
 ```
 
 ---
 
-## 5. Использование
+## 5. Usage
 
-### Запуск через Launch-файл
-Для запуска всей системы (Bridge + Controller):
+### Running via Launch File
+To start the entire system (Bridge + Controller):
 ```bash
 ros2 launch xpi_comms meshtastic_swarm.launch.py
 ```
 
-### Параметры Launch-файла
-*   `address`: Путь к устройству (например, `/dev/ttyUSB0` или IP-адрес для TCP).
-*   `node_name`: Уникальный ID вашего робота в рое (например, `drone_leader`).
-*   `safe_distance`: Порог срабатывания системы предотвращения столкновений.
+### Launch File Parameters
+*   `address`: Path to the device (e.g., `/dev/ttyUSB0` or an IP address for TCP).
+*   `node_name`: Unique ID of your robot in the swarm (e.g., `drone_leader`).
+*   `safe_distance`: Threshold for the collision avoidance system.
 
 ---
 
-## 6. Формат данных
+## 6. Data Format
 
-### Телеметрия (JSON)
-Передается в Mesh в следующем формате:
+### Telemetry (JSON)
+Transmitted in the Mesh in the following format:
 ```json
 {
   "id": "robot_01",
@@ -87,8 +87,8 @@ ros2 launch xpi_comms meshtastic_swarm.launch.py
 }
 ```
 
-### Команды (JSON)
-Передаются в топик `~/inbound_commands`:
+### Commands (JSON)
+Transmitted to the `~/inbound_commands` topic:
 ```json
 {
   "from": "base_station",
@@ -101,7 +101,7 @@ ros2 launch xpi_comms meshtastic_swarm.launch.py
 
 ---
 
-## 7. Планы по развитию
-1.  **Multi-Channel**: Поддержка раздельных каналов для телеметрии (быстрый) и команд (надежный).
-2.  **Adaptive Sampling**: Изменение частоты передачи телеметрии в зависимости от скорости движения робота.
-3.  **Encrypted Swarm**: Настройка AES-шифрования для закрытых групп роботов.
+## 7. Development Roadmap
+1.  **Multi-Channel**: Support for separate channels for telemetry (fast) and commands (reliable).
+2.  **Adaptive Sampling**: Dynamic adjustment of telemetry transmission frequency based on the robot's speed.
+3.  **Encrypted Swarm**: Configuring AES encryption for private groups of robots.

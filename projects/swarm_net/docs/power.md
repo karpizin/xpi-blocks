@@ -1,44 +1,44 @@
-# Энергетический расчет автономного ретранслятора
+# Power Calculation for Autonomous Repeater
 
-Расчет параметров системы питания для обеспечения непрерывной работы (24/7) узла на базе RAK4631 в течение 12+ месяцев.
+Power system parameter calculations to ensure continuous (24/7) operation of a RAK4631-based node for 12+ months.
 
-## 1. Потребление (Расход энергии)
-*   **Базовый ток (Idle/Listen):** 10 мА.
-*   **Средневзвешенный ток (с учетом передач):** 15 мА.
-*   **Напряжение системы:** 3.7 В.
-*   **Суточный расход:** 15 мА * 24 ч = **360 мАч**.
-*   **С учетом КПД конвертации (80%):** 360 / 0.8 = **450 мАч/сутки**.
+## 1. Consumption (Energy Expenditure)
+*   **Base Current (Idle/Listen):** 10 mA.
+*   **Weighted Average Current (including transmissions):** 15 mA.
+*   **System Voltage:** 3.7 V.
+*   **Daily Consumption:** 15 mA * 24 h = **360 mAh**.
+*   **Considering Conversion Efficiency (80%):** 360 / 0.8 = **450 mAh/day**.
 
-## 2. Аккумулятор (Резерв)
-Для выживания в течение 10 дней полной облачности:
-*   **Необходимая емкость:** 450 мАч * 10 дней = 4500 мАч.
-*   **Выбор:** 1x Li-ion 21700 (5000 мАч) или 2x 18650 (3000 мАч каждая).
-*   **Особенность:** Запас емкости также компенсирует деградацию химии при низких температурах.
+## 2. Battery (Reserve)
+To survive 10 days of total cloud cover:
+*   **Required Capacity:** 450 mAh * 10 days = 4500 mAh.
+*   **Selection:** 1x Li-ion 21700 (5000 mAh) or 2x 18650 (3000 mAh each).
+*   **Feature:** Excess capacity also compensates for chemistry degradation at low temperatures.
 
-## 3. Солнечная панель (Генерация)
-*   **Среднее время эффективной инсоляции (зима):** 2-3 часа.
-*   **Требуемый ток заряда:** 450 мАч / 2 ч = 225 мА.
-*   **Мощность панели (P = UI):** 5 В * 0.225 А = 1.125 Вт.
-*   **Коэффициент запаса (ориентация, пыль, износ):** 2.0x.
-*   **Итоговая мощность панели:** **2.25 Вт — 3 Вт**.
+## 3. Solar Panel (Generation)
+*   **Average Effective Insolation (winter):** 2-3 hours.
+*   **Required Charging Current:** 450 mAh / 2 h = 225 mA.
+*   **Panel Power (P = UI):** 5 V * 0.225 A = 1.125 W.
+*   **Safety Factor (orientation, dust, wear):** 2.0x.
+*   **Final Panel Power:** **2.25 W — 3 W**.
 
-## 4. Габариты и физические характеристики панелей
-Современные монокристаллические панели (КПД 20-22%) имеют следующие ориентировочные размеры:
+## 4. Dimensions and Physical Characteristics of Panels
+Modern monocrystalline panels (20-22% efficiency) have the following approximate sizes:
 
-| Мощность | Примерный размер | Вес | Оптимальное применение |
+| Power | Approximate Size | Weight | Optimal Use Case |
 | :--- | :--- | :--- | :--- |
-| **3 Вт** | 120 x 150 мм | ~70 г | Основной стандарт для сбрасываемых узлов |
-| **5 Вт** | 150 x 200 мм | ~110 г | Крупные узлы, базовые станции |
+| **3 W** | 120 x 150 mm | ~70 g | Main standard for droppable nodes |
+| **5 W** | 150 x 200 mm | ~110 g | Large nodes, base stations |
 
-### Рекомендации по размещению:
-1.  **Размер "паруса":** Панель 5 Вт имеет большую площадь (300 см²), что повышает риск опрокидывания ветром при падении.
-2.  **Дублирование:** Для повышения живучести рекомендуется использовать **две панели по 1.5 - 2 Вт**, расположенные под углом друг к другу (например, на гранях пирамиды). Это гарантирует приток энергии даже при неудачном приземлении.
+### Placement Recommendations:
+1.  **"Sail" Effect:** A 5W panel has a large area (300 cm²), increasing the risk of being tipped over by wind during a drop.
+2.  **Redundancy:** To increase survivability, it is recommended to use **two 1.5 - 2 W panels** angled towards each other (e.g., on the faces of a pyramid). This guarantees energy inflow even after a suboptimal landing.
 
-## 5. Конструктивные требования
-1.  **Форм-фактор:** Низкий центр тяжести для правильного приземления.
-2.  **Покрытие панели:** ETFE (устойчивость к ультрафиолету и царапинам).
-3.  **Термоизоляция:** Батарейный отсек должен быть защищен от прямых резких перепадов температур.
-4.  **Watchdog:** Аппаратный сброс при зависании для предотвращения глубокого разряда.
+## 5. Design Requirements
+1.  **Form Factor:** Low center of gravity for correct landing.
+2.  **Panel Coating:** ETFE (resistance to UV and scratches).
+3.  **Thermal Insulation:** The battery compartment should be protected from sharp direct temperature fluctuations.
+4.  **Watchdog:** Hardware reset on freeze to prevent deep discharge.
 
-## 6. Вывод
-Для создания надежного сбрасываемого ретранслятора необходимо использовать связку **RAK4631 + 5000 мАч Li-ion + 3W Solar Panel**. Такая конфигурация обеспечивает многолетний цикл работы без обслуживания.
+## 6. Conclusion
+To create a reliable droppable repeater, it is necessary to use the **RAK4631 + 5000 mAh Li-ion + 3W Solar Panel** combination. This configuration provides a multi-year maintenance-free operational cycle.
