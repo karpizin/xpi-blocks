@@ -6,6 +6,11 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Repo Size](https://img.shields.io/github/repo-size/karpizin/xpi-blocks?style=flat-square&color=blue)](https://github.com/karpizin/xpi-blocks)
+
+[![Hardware](https://img.shields.io/badge/Hardware-RPi%204%20%7C%205%20%7C%20Zero%202W-green?style=for-the-badge&logo=raspberrypi)](ROADMAP.md)
+[![Devices](https://img.shields.io/badge/Devices-80+%20Nodes-blue?style=for-the-badge)](docs/BLOCKS_INDEX.md)
+[![AI Stack](https://img.shields.io/badge/AI-LLM%20%7C%20VLM%20%7C%20Whisper%20%7C%20Piper-blueviolet?style=for-the-badge)](docs/AUDIO_AI_STRATEGY.md)
 
 `xpi-blocks` is a comprehensive, modular library of ROS2 components specifically optimized for **Raspberry Pi 4, 5, and Zero 2W**. Our mission is to lower the barrier to entry for robotics by providing perfectly documented "building blocks" that combine low-level hardware drivers with high-level intelligence (LLM/VLM).
 
