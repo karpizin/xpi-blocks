@@ -38,7 +38,7 @@ class StatusIndicatorNode(Node):
         self.create_subscription(String, '/status/set', self.cb_set_status, 10)
         self.create_subscription(String, '/status/clear', self.cb_clear_status, 10)
         
-        # Main logic timer (5 Hz — sufficient for layer switching)
+        # Main logic timer (5 Hz)
         self.create_timer(0.2, self.update_logic)
         
         self.get_logger().info('Advanced Multiplexing Status Indicator Node started.')
@@ -46,7 +46,6 @@ class StatusIndicatorNode(Node):
     def cb_set_status(self, msg):
         status = msg.data.upper()
         if status in self.status_db:
-            # If it's a new status, we can trigger a oneshot override
             if status not in self.active_statuses:
                 self.trigger_oneshot()
             
@@ -69,37 +68,34 @@ class StatusIndicatorNode(Node):
         if not self.active_statuses:
             return
 
-        # 1. Get list of active statuses sorted by priority
+        # 1. Get active statuses sorted by priority
         sorted_active = sorted(
             self.active_statuses.keys(), 
             key=lambda x: self.status_db[x][0], 
             reverse=True
         )
 
-        target_status = sorted_active[0] # Default to the most important
+        target_status = sorted_active[0]
 
-        # 2. Interjections Logic
-        # Every few ticks, show the next status in priority order
+        # 2. Interjections Logic (Cycle through secondary statuses)
         self.cycle_index += 1
-        if self.cycle_index % 10 == 0: # Every 2 seconds (at 5Hz timer)
-            # Cycle through 2nd, 3rd, or 4th status
+        if self.cycle_index % 10 == 0: 
             secondary_count = min(len(sorted_active) - 1, 3)
             if secondary_count > 0:
                 sub_idx = (self.cycle_index // 10) % secondary_count + 1
                 target_status = sorted_active[sub_idx]
-                # Force 'flash' effect for a brief interjection
                 self.publish_status(target_status, override_effect='flash')
                 return
 
-        # 3. Oneshot Logic (when a new status is activated — show for 1 sec)
+        # 3. Oneshot Logic (Briefly highlight new status)
         if self.oneshot_active:
             if time.time() - self.last_oneshot_time < 1.0:
-                self.publish_status(sorted_active[0]) # Show the newest/most important
+                self.publish_status(sorted_active[0])
                 return
             else:
                 self.oneshot_active = False
 
-        # 4. Normal Mode (dominant status)
+        # 4. Dominant status mode
         self.publish_status(target_status)
 
     def publish_status(self, status_name, override_effect=None):
@@ -107,7 +103,6 @@ class StatusIndicatorNode(Node):
         if override_effect:
             effect = override_effect
 
-        # Send to driver
         c_msg = ColorRGBA()
         c_msg.r, c_msg.g, c_msg.b, c_msg.a = color[0]/255.0, color[1]/255.0, color[2]/255.0, 1.0
         self.color_pub.publish(c_msg)
@@ -116,7 +111,6 @@ class StatusIndicatorNode(Node):
         e_msg.data = effect
         self.effect_pub.publish(e_msg)
         
-        # Use standard or adaptive speed
         s_msg = Float32()
         s_msg.data = 1.0
         self.speed_pub.publish(s_msg)
