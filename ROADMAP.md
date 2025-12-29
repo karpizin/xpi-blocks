@@ -21,12 +21,9 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ## ✅ Implemented
 
 ### Communication & Comms (Wireless & Wired)
-*   **HC-12 UART (433MHz Serial)** -> `xpi_comms/hc12_node`
-*   **SX1276 / SX1278 LoRa SPI (Raw)** -> `xpi_comms/lora_raw_node`
-*   **RS485 / RS232 Universal Serial Bridge** -> `xpi_comms/serial_bridge`
-*   **SocketCAN (MCP2515)** -> `xpi_comms/can_bridge_node`
-*   **Meshtastic LoRa Mesh API** -> `xpi_comms/meshtastic_bridge_node`
-*   **Smart MQTT Gateway (JSON & Multi-topic)** -> `xpi_comms/mqtt_gateway_node`
+...
+*   **RTK GPS Integration (u-blox ZED-F9P)** -> `xpi_sensors/gps_rtk_node`
+*   **NTRIP Client (RTCM Corrections)** -> `xpi_sensors/ntrip_client_node`
 
 ### Sensors (Environment & Light)
 *   **Bosch BME280 / BME680 (I2C/SPI)** -> `xpi_sensors/bme280`
@@ -90,7 +87,7 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **MLX90640 Thermal Camera** - 32x24 pixel IR array.
-*   **RTK GPS Integration** - Centimeter-level positioning.
+*   **RTK GPS Integration (u-blox ZED-F9P)** - Centimeter-level positioning.
 *   **SW6106 / IP5306 Drivers** - *Already implemented, updating docs*
 
 ## 📋 Backlog (Future Supported Sensors)

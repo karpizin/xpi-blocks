@@ -38,3 +38,4 @@ adafruit-circuitpython-st7735
 adafruit-circuitpython-rgb-display
 spidev
 adafruit-circuitpython-24lc32
+pyubx2
