@@ -37,4 +37,4 @@ adafruit-circuitpython-st7789
 adafruit-circuitpython-st7735
 adafruit-circuitpython-rgb-display
 spidev
-adafruit-circuitpython-eeprom
+adafruit-circuitpython-24lc32

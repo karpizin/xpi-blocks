@@ -2,7 +2,7 @@
 import time
 import board
 import busio
-import adafruit_eeprom
+import adafruit_24lc32 as adafruit_eeprom
 
 import rclpy
 from rclpy.node import Node
