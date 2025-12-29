@@ -4,12 +4,10 @@ Choosing the right model for audio processing depends on your latency, privacy, 
 
 ## 🏆 Recommended Models (Late 2025)
 
-| Task | Recommended Model | Implementation | Pros / Cons |
-| :--- | :--- | :--- | :--- |
-| **Scene Understanding** | **Gemini 3.0 Flash** | `audio_analyzer_node` | State-of-the-art analysis. Multimodal. |
-| **Speech-to-Text (STT)** | **Whisper v3 Turbo** | `whisper_node` (local) | High accuracy. Runs on RPi 5. Private. |
-| **Real-time Alerting** | **YAMNet** | `edge_audio_classifier` | Sub-millisecond. Low power. Limited categories. |
-| **Voice Interaction** | **GPT-4o (Realtime)** | `voice_interactor` | Lowest latency for convo. Expensive API. |
+| **Speech-to-Text (STT)** | **Whisper (faster-whisper)** | `whisper_stt_node` | ✅ Implemented. High accuracy. Private. |
+| **Text-to-Speech (TTS)** | **Piper** | `piper_tts_node` | ✅ Implemented. Fast, neural voices. |
+| **Scene Understanding** | **Gemini 2.0 Flash** | `audio_analyzer_node` | Multimodal. High latency. |
+| **Real-time Alerting** | **YAMNet** | `edge_audio_classifier` | Sub-millisecond. Limited categories. |
 
 ---
 

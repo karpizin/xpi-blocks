@@ -10,6 +10,8 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[xpi-top Monitor](../src/xpi_tools/README.md)** - TUI dashboard for viewing sensor data (SSH-friendly).
 
 ## 🎙️ Audio & Sound Intelligence
+*   **[Speech-to-Text (Whisper)](../src/xpi_audio/xpi_audio/whisper_stt_node.py)** - Local speech recognition using faster-whisper.
+*   **[Text-to-Speech (Piper)](../src/xpi_audio/xpi_audio/piper_tts_node.py)** - High-quality local neural voice output.
 *   **[Audio Beat Detector](../blocks/audio/beat_detector/README.md)** - Real-time musical beat tracking and rhythm analysis.
 *   **[ReSpeaker Mic Array v2.0](../blocks/sensors/audio/respeaker/README.md)** - 4-mic array with Direction of Arrival (DOA) and voice detection.
 *   **[Audio Level Monitor](../blocks/sensors/audio/analyzer/README.md)** - Real-time noise level (dB) and RMS monitoring.
