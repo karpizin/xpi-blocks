@@ -4,7 +4,7 @@
   <name>xpi_llm</name>
   <version>0.1.0</version>
   <description>LLM/VLM integration for sensor analysis and smart control</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>MIT</license>
 
   <depend>rclpy</depend>
@@ -12,8 +12,6 @@
   <depend>sensor_msgs</depend>
   
   <exec_depend>python3-numpy</exec_depend> # For data processing
-  <exec_depend>python3-openai</exec_depend> # Example for OpenAI API
-  <exec_depend>google-generativeai</exec_depend> # Example for Google Gemini API
   <exec_depend>python3-requests</exec_depend> # For Ollama/local LLMs
 
   <test_depend>ament_copyright</test_depend>

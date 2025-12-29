@@ -4,14 +4,14 @@
   <name>xpi_inputs</name>
   <version>0.1.0</version>
   <description>Input device blocks for XPI (Joysticks, RC, Keyboard)</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>MIT</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <exec_depend>joy</exec_depend>
   <exec_depend>joy_linux</exec_depend> # For Linux-specific joy node
-  <exec_depend>python3-pyserial</exec_depend>
+  <exec_depend>python3-serial</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
