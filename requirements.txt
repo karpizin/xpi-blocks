@@ -39,3 +39,4 @@ adafruit-circuitpython-rgb-display
 spidev
 adafruit-circuitpython-24lc32
 pyubx2
+piper-tts

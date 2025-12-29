@@ -81,6 +81,7 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ### AI & LLM
 *   **Tool Calling / Function Calling** -> `xpi_llm/tool_calling`
 *   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
+*   **Voice Output (Piper TTS)** -> `xpi_audio/piper_tts_node`
 *   **Sonar Trend Analysis** -> `xpi_llm/sonar_trend_analyzer`
 *   **Facial Expressions (Procedural HCI)** -> `xpi_hci/expression_engine_node`
 
@@ -98,6 +99,5 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 *   **VL53L5CX Multi-zone ToF** - 8x8 distance grid.
 *   **AS5600 Magnetic Encoder** - 12-bit joint positioning.
 *   **TMC2209 Silent Steppers** - UART control.
-*   **Voice Output (TTS)** - Piper/Espeak integration.
 *   **Smart Gripper logic** - Force/position feedback.
 *   **UWB Indoor Positioning**.
