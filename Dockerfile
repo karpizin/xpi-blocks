@@ -29,8 +29,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Build the workspace
-# We use a bash shell to source ROS2 environment before building
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build"
 
 # Add sourcing to bashrc for interactive shells
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
