@@ -4,7 +4,7 @@
   <name>xpi_comms</name>
   <version>0.1.0</version>
   <description>Communication bridges and protocols (Serial, MQTT, etc.) for XPI blocks</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>MIT</license>
 
   <depend>rclpy</depend>

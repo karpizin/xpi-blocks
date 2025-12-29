@@ -4,7 +4,7 @@
   <name>xpi_sensors</name>
   <version>0.1.0</version>
   <description>Sensor blocks for XPI (Lidar, Sonar, IMU, Environmental)</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>MIT</license>
 
   <depend>rclpy</depend>
