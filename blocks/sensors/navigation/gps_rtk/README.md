@@ -15,16 +15,45 @@ Standard GPS receivers have an error margin of **2 to 5 meters** due to atmosphe
 ## 🔌 Connection
 RTK modules (e.g., u-blox ZED-F9P) are typically connected via UART or USB.
 
-## 🚀 How to activate RTK
-To get centimeter-level accuracy, your receiver needs **RTCM corrections**.
+## 🚀 Usage
 
-### Method 1: NTRIP (via Internet)
-1.  Register with a base station provider (e.g., RTK2GO or local networks).
-2.  Run an NTRIP client on the Raspberry Pi to forward network data to the GPS serial port.
+### 1. Launch RTK GPS only
+If you have a local base station or radio link already providing corrections to the serial port:
+```bash
+ros2 launch xpi_sensors gps_rtk.launch.py port:=/dev/ttyUSB0
+```
 
-### Method 2: Local Base Station
-One GPS module is set up as a static Base, and the second is on the robot (Rover). They communicate via a radio link (e.g., using our **HC-12** or **LoRa** blocks).
+### 2. Launch with NTRIP (Centimeter accuracy via Internet)
+To receive corrections from a network provider (e.g., RTK2GO):
+```bash
+ros2 launch xpi_sensors gps_rtk.launch.py ntrip_mount:=YOUR_MOUNTPOINT
+```
+
+## ⚙️ Parameters
+
+### gps_rtk_node
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `port` | string | `/dev/ttyUSB0` | Serial port path |
+| `baudrate` | int | `38400` | Baud rate (ZED-F9P default is 38400) |
+
+### ntrip_client_node
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `host` | string | `rtk2go.com` | NTRIP Caster address |
+| `port` | int | `2101` | Caster port |
+| `mountpoint`| string | `""` | Mountpoint name (Required) |
 
 ## 📡 ROS2 Interface
-*   **Published Topic:** `~/fix` (`sensor_msgs/NavSatFix`)
-*   **Status Topic:** `~/rtk_status` (Custom status including Fix Type)
+
+### Publishers
+*   `~/fix` (`sensor_msgs/NavSatFix`): High-precision position data.
+*   `~/rtk_status` (`std_msgs/Int32`): 0=No Fix, 1=3D, 2=Float RTK, 3=Fixed RTK.
+
+### Subscribers
+*   `/rtk/corrections` (`std_msgs/String`): RTCM correction stream (received as hex).
+
+## 🛠 Troubleshooting
+*   **Stuck in FLOAT (2):** Ensure you have a clear view of the sky and a stable internet connection for NTRIP. It can take 1-5 minutes to reach FIXED status.
+*   **Permission Denied:** Ensure your user is in the `dialout` group: `sudo usermod -aG dialout $USER`.
+*   **No Data:** Check if `pyubx2` is installed: `pip install pyubx2`.
