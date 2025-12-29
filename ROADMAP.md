@@ -3,6 +3,21 @@
 Total devices targeted: 80+
 Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
+## 🛠 Compatibility Matrix (OS & Language)
+
+Для стабильной работы XPI-Blocks рекомендуется придерживаться следующих сочетаний:
+
+| ROS 2 Distro | Ubuntu Version | Python Version | Status | Recommended |
+| :--- | :--- | :--- | :--- | :--- |
+| **Humble Hawksbill** | **22.04 LTS** | **3.10** | **LTS (Active)** | ⭐ **Yes (Gold Standard)** |
+| **Jazzy Jalisco** | **24.04 LTS** | **3.12** | **LTS (Active)** | **Yes (Cutting Edge)** |
+| Iron Irwini | 22.04 LTS | 3.10 | EOL (Soon) | No |
+| Foxy Fitzroy | 20.04 LTS | 3.8 | EOL | No |
+
+**Примечания:**
+*   **ARM64 (aarch64)**: Все пакеты оптимизированы для 64-битной версии Raspberry Pi OS / Ubuntu.
+*   **Docker**: Сборка через Docker гарантирует правильное окружение независимо от хостовой ОС.
+
 ## ✅ Implemented
 *   **HC-12 (433MHz Wireless Serial)** -> `xpi_comms/hc12_node`
 *   **Raw LoRa (SX1276/SX1278)** -> `xpi_comms/lora_raw_node`
