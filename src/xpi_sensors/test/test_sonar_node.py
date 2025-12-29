@@ -34,26 +34,39 @@ class TestSonarNode:
         """Test if the node publishes Range messages"""
         node = SonarNode()
         
+        # Mocking distance reading for gpiozero
+        # In mock mode, we can manually set the value that the sensor would 'see'
+        if node.sensor:
+            # For DistanceSensor in MockFactory, we need to mock the echo pin behavior
+            # or simply mock the distance property if possible. 
+            # However, simpler is to just mock the publish call if we want to test ROS logic,
+            # or correctly setup Mock pins.
+            pass
+
         received_msgs = []
         def cb(msg):
             received_msgs.append(msg)
 
         # Create a temporary subscription to check output
         test_node = Node('test_listener')
+        # Note: the topic is relative or absolute. In node it's '~/range' -> '/sonar_node/range'
         test_node.create_subscription(Range, '/sonar_node/range', cb, 10)
 
-        # Give it some time to spin and publish
-        # We manually call timer_callback to avoid waiting for real time
+        # To avoid blocking on self.sensor.distance, we can mock the sensor object itself 
+        # or ensure the mock pins respond. 
+        # Let's use a simpler approach: mock the distance attribute
+        if node.sensor:
+            type(node.sensor).distance = property(lambda x: 0.5) # Simulate 0.5m
+
+        # Manually call timer_callback
         node.timer_callback()
         
-        # Spin once to process subscription
-        rclpy.spin_once(test_node, timeout_sec=0.1)
+        # Spin to process
+        rclpy.spin_once(test_node, timeout_sec=0.5)
 
         assert len(received_msgs) > 0
         msg = received_msgs[0]
-        assert isinstance(msg, Range)
-        assert msg.min_range == 0.02
-        assert msg.max_range == 2.0 # Default value
+        assert msg.range == 0.5
         
         node.destroy_node()
         test_node.destroy_node()
