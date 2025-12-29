@@ -18,8 +18,10 @@ WORKDIR /xpi_ws
 COPY . .
 
 # Install ROS2 dependencies using rosdep
-RUN rosdep update && \
-    rosdep install --from-paths src --ignore-src -r -y
+RUN apt-get update && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Build the workspace
 # We use a bash shell to source ROS2 environment before building
