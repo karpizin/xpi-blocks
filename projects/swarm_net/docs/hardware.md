@@ -1,72 +1,71 @@
-# Руководство по выбору оборудования для Meshtastic
+# Hardware Selection Guide for Meshtastic
 
-В этом документе собраны рекомендации по подбору аппаратного обеспечения для интеграции LoRa Mesh в робототехнические системы XPI, с особым акцентом на роевые системы и автономные ретрансляторы.
+This document provides recommendations for selecting hardware to integrate LoRa Mesh into XPI robotics systems, with a focus on swarm systems and autonomous repeaters.
 
 ---
 
-## 1. Сценарии интеграции
+## 1. Integration Scenarios
 
-### 1.1 Бортовой компьютер (Raspberry Pi / Jetson)
-Если в роботе есть мощный хост-процессор, LoRa-модуль используется как периферийный модем.
+### 1.1 Onboard Computer (Raspberry Pi / Jetson)
+If the robot has a powerful host processor, the LoRa module is used as a peripheral modem.
 
-*   **Рекомендуемое решение:** **RAK Wireless WisBlock (RAK4631)**.
-    *   **Преимущества:** Чип nRF52840 потребляет в 3-5 раз меньше энергии, чем ESP32. Он практически не создает радиопомех для GPS-приемников дрона.
-    *   **Интерфейс:** USB (через базовую плату RAK5005-O) или UART (прямое подключение к GPIO).
-*   **Альтернатива (HAT):** **Waveshare SX1262 LoRa HAT**.
-    *   **Преимущества:** Компактная установка "бутербродом".
-    *   **Сложность:** Требует специфической конфигурации прошивки для работы именно в режиме Meshtastic Node под Linux.
+*   **Recommended Solution:** **RAK Wireless WisBlock (RAK4631)**.
+    *   **Advantages:** The nRF52840 chip consumes 3-5 times less power than the ESP32. It produces minimal radio interference for drone GPS receivers.
+    *   **Interface:** USB (via RAK5005-O base board) or UART (direct GPIO connection).
+*   **Alternative (HAT):** **Waveshare SX1262 LoRa HAT**.
+    *   **Advantages:** Compact "sandwich" installation.
+    *   **Complexity:** Requires specific firmware configuration to work as a Meshtastic Node under Linux.
 
-### 1.2 Автономный узел (Микро-дроны / Маяки)
-Когда вес и размер критичны, а вычислительной мощности полетного контроллера (MCU) достаточно.
+### 1.2 Standalone Node (Micro-drones / Beacons)
+When weight and size are critical and flight controller (MCU) computing power is sufficient.
 
-*   **Рекомендуемое решение:** **Heltec LoRa Stick (V3)**.
-    *   Размером с USB-флешку, минимальный вес.
+*   **Recommended Solution:** **Heltec LoRa Stick (V3)**.
+    *   USB flash drive sized, minimal weight.
 *   **LilyGO T-Beam S3 Supreme:**
-    *   Встроенный GPS высокой точности и контроллер заряда батареи.
+    *   Built-in high-precision GPS and battery charge controller.
 
 ---
 
-## 2. Специальное решение: Сбрасываемый ретранслятор (Drop-and-Forget)
+## 2. Special Solution: Drop-and-Forget Repeater
 
-Сценарий: Дрон доставляет ретранслятор в труднодоступную точку (крыша здания, вершина холма), сбрасывает его, и узел начинает работать автономно для расширения зоны покрытия роя.
+Scenario: A drone delivers a repeater to a hard-to-reach point (building roof, hilltop), drops it, and the node starts working autonomously to expand the swarm's coverage.
 
-### 2.1 Технические требования
-1.  **Энергоэффективность:** Должен работать неделями без подзарядки.
-2.  **Ударопрочность:** Должен выживать при падении с высоты 2-5 метров.
-3.  **Самодостаточность:** Автоматический запуск и поиск соседей.
+### 2.1 Technical Requirements
+1.  **Energy Efficiency:** Must work for weeks without recharging.
+2.  **Impact Resistance:** Must survive a 2-5 meter drop.
+3.  **Self-sufficiency:** Automatic startup and neighbor discovery.
 
-### 2.2 Рекомендуемый набор (BOM)
-*   **Контроллер:** **RAK4631 (WisBlock Core)**. Использование nRF52 — единственный способ добиться реальной автономности.
-*   **Питание:**
-    *   Аккумулятор: Li-Po или Li-ion 18650 (3000-3500 mAh).
-    *   Солнечная панель: Небольшая панель на 5V/100mA, закрепленная на верхней грани корпуса. RAK WisBlock имеет встроенный контроллер заряда для солнечных панелей.
-*   **Антенна:** Короткая гибкая антенна 868 МГц ("Stubby"), чтобы не сломаться при ударе о землю.
+### 2.2 Recommended BOM
+*   **Controller:** **RAK4631 (WisBlock Core)**. Using nRF52 is the only way to achieve real autonomy.
+*   **Power:**
+    *   Battery: Li-Po or Li-ion 18650 (3000-3500 mAh).
+    *   Solar Panel: Small 5V/100mA panel mounted on the top of the case. RAK WisBlock has a built-in solar charge controller.
+*   **Antenna:** Short flexible 868 MHz antenna ("Stubby") to prevent breaking upon impact with the ground.
 
-### 2.3 Конструктивные особенности
-*   **Амортизация:** Корпус должен быть напечатан из TPU (гибкий пластик) или иметь резиновые демпферы.
-*   **Ориентация:** Утяжеленное дно (аккумулятор снизу), чтобы модуль приземлялся антенной вверх.
-*   **Герметичность:** IP65/67 для защиты от дождя и росы.
+### 2.3 Design Features
+*   **Shock Absorption:** The case should be printed from TPU (flexible plastic) or have rubber dampers.
+*   **Orientation:** Weighted bottom (battery at the bottom) so the module lands antenna-up.
+*   **Sealing:** IP65/67 rating for protection against rain and dew.
 
-### 2.4 Программная логика для сброса
-*   **Режим "Router" или "Repeater":** В настройках Meshtastic узел должен быть помечен как стационарный ретранслятор (это экономит эфирное время, так как он не шлет пакеты о своем перемещении).
-*   **Deep Sleep:** Настройка перехода в сон при низком заряде батареи и пробуждение при появлении солнца.
-
----
-
-## 3. Антенное хозяйство
-
-Эффективность роя на 70% зависит от антенн, а не от мощности передатчика.
-
-*   **Для летающих узлов:** Дипольные антенны на гибком кабеле (U.FL -> SMA). Важно выносить антенну подальше от регуляторов моторов и видеопередатчиков.
-*   **Для наземных станций:** Коллинеарные антенны (Omni-directional) с усилением 5.8 dBi. Установка на мачте дает прирост дальности в 2-3 раза.
+### 2.4 Software Logic for Dropped Repeater
+*   **"Router" or "Repeater" Mode:** In Meshtastic settings, the node should be marked as a static repeater (this saves airtime as it doesn't send packets about its movements).
+*   **Deep Sleep:** Configure the node to enter sleep mode on low battery and wake up when the sun appears.
 
 ---
 
-## 4. Сводная таблица выбора
+## 3. Antenna Strategy
+Swarm efficiency depends 70% on antennas, not transmitter power.
 
-| Задача | Рекомендуемое железо | Интерфейс | Приоритет |
+*   **For Flying Nodes:** Dipole antennas on a flexible cable (U.FL -> SMA). It is important to move the antenna as far as possible from motor ESCs and video transmitters.
+*   **For Ground Stations:** Collinear antennas (Omni-directional) with 5.8 dBi gain. Mounting on a mast increases range by 2-3x.
+
+---
+
+## 4. Selection Summary Table
+
+| Task | Recommended Hardware | Interface | Priority |
 | :--- | :--- | :--- | :--- |
-| **Центр управления (RPi)** | RAK4631 (WisBlock) | USB/UART | Энергоэффективность |
-| **Дрон роя** | Heltec V3 Stick | UART | Вес / Габариты |
-| **Сбрасываемый ретранслятор** | RAK4631 + Solar | Autonomous | Автономность |
-| **Мобильный терминал** | LilyGO T-Echo | Bluetooth/BLE | E-Ink экран |
+| **Control Center (RPi)** | RAK4631 (WisBlock) | USB/UART | Energy Efficiency |
+| **Swarm Drone** | Heltec V3 Stick | UART | Weight / Size |
+| **Dropped Repeater** | RAK4631 + Solar | Autonomous | Autonomy |
+| **Mobile Terminal** | LilyGO T-Echo | Bluetooth/BLE | E-Ink Screen |

@@ -1,81 +1,81 @@
-# Стратегия развития роевого интеллекта (XPI Swarm Intelligence)
+# XPI Swarm Intelligence Strategy
 
-## 1. Визия и миссия
-Превратить группу автономных единиц (дронов, наземных роботов) в самоорганизующуюся систему, способную выполнять комплексные миссии в условиях отсутствия внешней связи и GPS, используя принципы биологических роев.
-
----
-
-## 2. Ключевые принципы (Core Pillars)
-
-### 2.1 Децентрализация (Leaderless by default)
-*   Отсутствие единой точки отказа. Любой робот может стать временным координатором или ретранслятором.
-*   Решения принимаются локально на основе общих правил поведения и данных от соседей.
-
-### 2.2 Эмерджентность (Emergent Behavior)
-*   Сложное поведение всей группы возникает из простых правил взаимодействия отдельных юнитов (например, алгоритмы Boids: разделение, выравнивание, сплочение).
-
-### 2.3 Самовосстановление (Self-Healing)
-*   Если один или несколько роботов выходят из строя, рой автоматически перераспределяет задачи и перестраивает топологию сети (через Meshtastic).
+## 1. Vision and Mission
+Transform a group of autonomous units (drones, ground robots) into a self-organizing system capable of executing complex missions in environments without external communication or GPS, using principles of biological swarms.
 
 ---
 
-## 3. Архитектурные уровни роя
+## 2. Core Pillars
 
-### Уровень 1: Коммуникационный («Нервная система»)
-*   **Технология:** Meshtastic (LoRa Mesh).
-*   **Задача:** Гарантированная доставка критически важных данных (статус, координаты, угрозы) с минимальной пропускной способностью.
-*   **Цель:** Поддержание «общего сознания» (Shared State) роя.
+### 2.1 Decentralization (Leaderless by default)
+*   No single point of failure. Any robot can become a temporary coordinator or relay.
+*   Decisions are made locally based on common behavioral rules and data from neighbors.
 
-### Уровень 2: Ситуационная осведомленность («Общие глаза»)
-*   **Shared World Map:** Каждый робот видит не только свои сенсоры, но и синтезированную карту от соседей.
-*   **Collaborative Sensing:** Если один дрон видит препятствие или цель, об этом мгновенно узнает весь рой.
+### 2.2 Emergence (Emergent Behavior)
+*   Complex group behavior arises from simple interaction rules between individual units (e.g., Boids: separation, alignment, cohesion).
 
-### Уровень 3: Алгоритмическое поведение («Инстинкты»)
-*   **Flocking:** Удержание строя при перемещении.
-*   **Area Coverage:** Эффективное распределение группы для сканирования территории без перекрытий.
-*   **Collision Avoidance:** Коллективное маневрирование в узких пространствах.
-
-### Уровень 4: Коллективный разум («Стратегия»)
-*   **Dynamic Task Allocation:** Рой сам решает, кто летит на базу заряжаться, а кто заменяет его на посту, исходя из уровня заряда и позиции.
-*   **Consensus Reaching:** Голосование юнитов за смену режима миссии (например, «Атака», «Поиск», «Эвакуация»).
+### 2.3 Self-Healing
+*   If one or more robots fail, the swarm automatically redistributes tasks and rebuilds the network topology via Meshtastic.
 
 ---
 
-## 4. Сценарии применения (Use Cases)
+## 3. Swarm Architectural Levels
 
-1.  **Поиск и спасение (SAR):** Рой из 10 дешевых дронов прочесывает лес в 10 раз быстрее одного дорогого, передавая сигнал бедствия по цепочке через Mesh.
-2.  **Точное земледелие:** Группа роботов распределяет между собой участки поля для внесения удобрений или мониторинга влажности.
-3.  **Периметральная охрана:** Роботы динамически патрулируют границу, сближаясь в местах обнаружения движения.
-4.  **Связующее звено (Radio Relay):** Создание временного «информационного моста» между удаленным объектом и базой через цепочку дронов-ретрансляторов.
+### Level 1: Communication ("Nervous System")
+*   **Technology:** Meshtastic (LoRa Mesh).
+*   **Goal:** Guaranteed delivery of critical data (status, coordinates, threats) with minimal bandwidth.
+*   **Objective:** Maintaining the "Shared State" of the swarm.
+
+### Level 2: Situational Awareness ("Shared Eyes")
+*   **Shared World Map:** Each robot sees not only its own sensors but a synthesized map from neighbors.
+*   **Collaborative Sensing:** If one drone detects an obstacle or target, the entire swarm is instantly informed.
+
+### Level 3: Algorithmic Behavior ("Instincts")
+*   **Flocking:** Maintaining formation while moving.
+*   **Area Coverage:** Efficient distribution of the group to scan territory without overlaps.
+*   **Collision Avoidance:** Collective maneuvering in tight spaces.
+
+### Level 4: Collective Intelligence ("Strategy")
+*   **Dynamic Task Allocation:** The swarm itself decides who flies to the base to charge and who replaces them, based on charge level and position.
+*   **Consensus Reaching:** Units vote to change the global mission state (e.g., "Search", "Rescue", "Evacuate").
 
 ---
 
-## 5. Технологический стек XPI Swarm
+## 4. Use Cases
+
+1.  **Search and Rescue (SAR):** A swarm of 10 cheap drones scours a forest 10 times faster than one expensive one, relaying distress signals through the Mesh.
+2.  **Precision Agriculture:** A group of robots distributes field sectors among themselves for fertilizing or moisture monitoring.
+3.  **Perimeter Security:** Robots dynamically patrol a border, converging on detected motion.
+4.  **Radio Relay:** Creating a temporary "information bridge" between a remote object and the base via a chain of drone repeaters.
+
+---
+
+## 5. XPI Swarm Tech Stack
 
 *   **Logic:** ROS2 Humble / Jazzy.
-*   **Comm:** Meshtastic (LoRa) + ZeroMQ (для локального высокоскоростного обмена, если есть Wi-Fi).
-*   **AI:** Edge LLM для интерпретации команд и принятия решений на борту (Qwen/Llama-Tiny).
-*   **Coordination:** Алгоритмы на базе роевых моделей (Boids, Particle Swarm Optimization).
+*   **Comm:** Meshtastic (LoRa) + ZeroMQ (for local high-speed exchange when Wi-Fi is available).
+*   **AI:** Edge LLM for command interpretation and onboard decision-making (Qwen/Llama-Tiny).
+*   **Coordination:** Algorithms based on swarm models (Boids, Particle Swarm Optimization).
 
 ---
 
-## 6. Дорожная карта (Roadmap)
+## 6. Roadmap
 
-### Этап 1: Связность (Текущий)
-*   [x] Драйвер Meshtastic.
-*   [x] Обмен базовой телеметрией.
-*   [ ] Визуализация соседей на карте.
+### Stage 1: Connectivity (Current)
+*   [x] Meshtastic Driver.
+*   [x] Basic telemetry exchange.
+*   [ ] Neighbor visualization on a map.
 
-### Этап 2: Координация
-*   [ ] Реализация алгоритмов удержания строя (Formation Control).
-*   [ ] Протокол распределения простых задач.
+### Stage 2: Coordination
+*   [ ] Implementation of formation control algorithms.
+*   [ ] Simple task distribution protocol.
 
-### Этап 3: Интеллект
-*   [ ] Автоматическое планирование маршрута группы с учетом угроз.
-*   [ ] Децентрализованное принятие решений (Consensus algorithms).
+### Stage 3: Intelligence
+*   [ ] Automatic group route planning considering threats.
+*   [ ] Decentralized decision-making (Consensus algorithms).
 
 ---
 
-## 7. Философия проекта
-«Один робот — это инструмент. Рой — это инфраструктура».
-Мы не просто строим роботов, мы создаем распределенную среду, способную адаптироваться к любой задаче.
+## 7. Project Philosophy
+"One robot is a tool. A swarm is infrastructure."
+We are not just building robots; we are creating a distributed environment capable of adapting to any task.

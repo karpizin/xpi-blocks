@@ -1,39 +1,39 @@
-# Коллективное принятие решений в рое XPI
+# Collective Decision Making in XPI Swarm
 
-## 🎯 Задача
-Обеспечить достижение согласия (консенсуса) между всеми участниками роя по критически важным вопросам (смена режима миссии, выбор лидера, определение цели) в условиях нестабильной связи.
-
----
-
-## 🏎 Выбранный алгоритм: Weighted Voting (Взвешенное голосование)
-
-Для Meshtastic (LoRa) мы используем оптимизированный алгоритм голосования с учетом «веса» (уровня заряда батареи и качества связи) каждого узла.
-
-### Принципы:
-1.  **Proposal (Предложение):** Любой узел может инициировать голосование, отправив пакет `type: "proposal"`.
-2.  **Observation (Наблюдение):** Узлы слушают предложения и сравнивают их со своим состоянием.
-3.  **Vote (Голосование):** Узел отправляет свое «мнение» или подтверждение.
-4.  **Consensus Threshold:** Решение считается принятым, если за него проголосовало > 50% активных узлов (кворум).
+## 🎯 Objective
+Achieve consensus among all swarm participants on critical issues (mission state changes, leader election, goal definition) in unstable communication environments.
 
 ---
 
-## 🛠 Типы принимаемых решений
+## 🏎 Selected Algorithm: Weighted Voting
 
-### 1. Mission State (Состояние миссии)
-*   Пример: Переход из режима "Search" в режим "Rescue".
-*   Логика: Если 3+ дрона увидели объект, рой голосует за смену глобального состояния.
+For Meshtastic (LoRa), we use an optimized voting algorithm considering the "weight" (battery level and link quality) of each node.
 
-### 2. Leader Election (Выборы лидера)
-*   Пример: Назначение временного координатора для трансляции данных на базу.
-*   Критерии: Выбирается узел с максимальным зарядом батареи и лучшим SNR до базы.
-
-### 3. Waypoint Agreement (Согласование цели)
-*   Пример: Выбор точки сбора.
-*   Логика: Узлы усредняют предложенные координаты, чтобы найти оптимальный центр масс группы.
+### Principles:
+1.  **Proposal:** Any node can initiate a vote by sending a `type: "proposal"` packet.
+2.  **Observation:** Nodes listen to proposals and compare them with their local state.
+3.  **Vote:** A node sends its "opinion" or confirmation.
+4.  **Consensus Threshold:** A decision is accepted if > 50% of active nodes vote for it (quorum).
 
 ---
 
-## 📦 Формат пакета голосования (JSON)
+## 🛠 Types of Decisions
+
+### 1. Mission State
+*   Example: Switching from "Search" to "Rescue" mode.
+*   Logic: If 3+ drones detect the target, the swarm votes to change the global state.
+
+### 2. Leader Election
+*   Example: Appointing a temporary coordinator to relay data to the base.
+*   Criteria: The node with the highest battery charge and best SNR to the base is selected.
+
+### 3. Waypoint Agreement
+*   Example: Choosing a rally point.
+*   Logic: Nodes average the proposed coordinates to find the optimal center of mass for the group.
+
+---
+
+## 📦 Voting Packet Format (JSON)
 
 ```json
 {
@@ -48,7 +48,7 @@
 
 ---
 
-## 🚀 Реализация в XPI
+## 🚀 Implementation in XPI
 
-Модуль `ConsensusEngine` будет работать как надстройка над `MeshtasticDriver`.
-Он хранит таблицу текущих голосований (`Voting Table`) и выдает событие `consensus_reached`, когда порог пройден.
+The `ConsensusEngine` module will work as an extension of `MeshtasticDriver`.
+It maintains a table of current voting processes (`Voting Table`) and emits a `consensus_reached` event once the threshold is met.
