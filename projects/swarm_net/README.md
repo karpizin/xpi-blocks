@@ -1,44 +1,44 @@
 # XPI SwarmNet: Decentralized Robotics OS
 
 ## 1. Vision
-Создание первого в мире полностью открытого, децентрализованного протокола управления роями роботов, не зависящего от внешней инфраструктуры (GPS, Cloud, GSM). 
+Creating the world's first fully open, decentralized protocol for swarm robotics that does not depend on external infrastructure (GPS, Cloud, GSM).
 
-## 2. Основные компоненты системы (The Pillars)
+## 2. Core Components (The Pillars)
 
 ### A. SwarmNet Core (The Protocol)
-*   Обертка над Meshtastic LoRa.
-*   Кастомный прикладной уровень (XPI-Link) для робототехнических команд.
-*   Система обнаружения узлов и управления топологией.
+*   Wrapper for Meshtastic LoRa.
+*   Custom application layer (XPI-Link) for robotic teams.
+*   Node discovery and topology management system.
 
 ### B. Consensus Engine (The Mind)
-*   Децентрализованное принятие решений.
-*   Распределенное планирование миссий.
-*   Dynamic Role Allocation (Разведчик, Ретранслятор, Исполнитель).
+*   Decentralized decision-making.
+*   Distributed mission planning.
+*   Dynamic Role Allocation (Scout, Relay, Performer).
 
 ### C. Hardware Abstraction (The Body)
-*   Стандартизированные схемы для бортовых модулей (WisBlock, Heltec).
-*   Спецификации сбрасываемых и стационарных ретрансляторов.
-*   Системы автономного питания (Solar/BMS).
+*   Standardized schematics for onboard modules (WisBlock, Heltec).
+*   Specifications for dropped and stationary repeaters.
+*   Autonomous power systems (Solar/BMS).
 
 ### D. SwarmStation (The Interface)
-*   Web-интерфейс для мониторинга.
-*   CLI-инструментарий для полевых инженеров.
-*   Интеграция с ROS2 / PX4 / ArduPilot.
+*   Web-interface for real-time monitoring.
+*   CLI toolkit for field engineers.
+*   Integration with ROS2 / PX4 / ArduPilot.
 
-## 3. Философия разработки
-1.  **Offline-First:** Любая функция должна работать без интернета.
-2.  **Hardware Agnostic:** Софт должен работать на любой плате с LoRa.
-3.  **Safety by Design:** Встроенные алгоритмы предотвращения столкновений и потери связи.
+## 3. Development Philosophy
+1.  **Offline-First:** Any function must work without internet access.
+2.  **Hardware Agnostic:** Software must run on any LoRa-capable board.
+3.  **Safety by Design:** Built-in algorithms for collision avoidance and link-loss prevention.
 
 ---
 
-## 4. Этапы становления проекта
+## 4. Project Milestones
 
 ### Phase 1: Connectivity (Done)
-*   Драйверы, базовый мост в ROS2, простейшая телеметрия.
+*   Drivers, basic ROS2 bridge, simple telemetry exchange.
 
 ### Phase 2: Coordination (Current)
-*   Алгоритмы удержания строя, групповое голосование, управление зарядом.
+*   Formation keeping algorithms, group voting, power management.
 
 ### Phase 3: Intelligence (Next)
-*   Семантическое сжатие данных, Edge AI на борту, автономные миссии.
+*   Semantic data compression, Onboard Edge AI, autonomous missions.

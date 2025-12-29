@@ -14,16 +14,16 @@ class ConsensusEngine:
         self.node_id = node_id
         self.quorum_ratio = quorum_ratio
         
-        # Активные голосования
+        # Active voting processes
         # topic -> { "proposal_id": { "votes": {node_id: value}, "timestamp": float } }
         self.active_votes: Dict[str, Dict] = {}
         
-        # Результаты (согласованные значения)
+        # Consensus results (agreed values)
         self.agreed_states: Dict[str, Any] = {}
 
     def process_incoming_vote(self, sender_id: str, vote_data: Dict[str, Any], total_nodes: int):
         """
-        Обрабатывает входящий голос из сети.
+        Processes an incoming vote from the network.
         """
         topic = vote_data.get("topic")
         proposal_id = vote_data.get("proposal_id")
@@ -41,20 +41,20 @@ class ConsensusEngine:
                 "start_time": time.time()
             }
             
-        # Записываем голос
+        # Record the vote
         self.active_votes[topic][proposal_id]["votes"][sender_id] = value
         
-        # Проверяем кворум
+        # Check if quorum is reached
         return self._check_consensus(topic, proposal_id, total_nodes)
 
     def _check_consensus(self, topic: str, proposal_id: str, total_nodes: int):
         """
-        Проверяет, достигнут ли консенсус по конкретному предложению.
+        Checks if consensus is reached for a specific proposal.
         """
         vote_info = self.active_votes[topic][proposal_id]
         votes = vote_info["votes"]
         
-        # Считаем количество голосов за каждое значение
+        # Count votes for each value
         counts = {}
         for val in votes.values():
             counts[val] = counts.get(val, 0) + 1
@@ -63,7 +63,7 @@ class ConsensusEngine:
             if count / total_nodes > self.quorum_ratio:
                 logger.info(f"CONSENSUS REACHED on topic '{topic}': {val}")
                 self.agreed_states[topic] = val
-                # Очищаем старые голосования по этому топику
+                # Clear old votes for this topic
                 del self.active_votes[topic]
                 return val
                 
@@ -71,7 +71,7 @@ class ConsensusEngine:
 
     def create_proposal(self, topic: str, value: Any):
         """
-        Создает новое предложение для рассылки в сеть.
+        Creates a new proposal to be broadcasted to the network.
         """
         proposal_id = f"prop_{int(time.time())}_{self.node_id}"
         proposal = {
@@ -82,7 +82,7 @@ class ConsensusEngine:
             "timestamp": time.time()
         }
         
-        # Голосуем сами за свое предложение
+        # Vote for our own proposal
         if topic not in self.active_votes:
             self.active_votes[topic] = {}
         self.active_votes[topic][proposal_id] = {

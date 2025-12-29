@@ -1,46 +1,30 @@
-# GPS RTK (Real-Time Kinematic)
+# RTK GPS Block (High Precision Positioning)
 
-## 🛰️ Что такое RTK и чем он отличается от обычного GPS?
+This block provides centimeter-level positioning accuracy using Real-Time Kinematic (RTK) technology.
 
-Обычный GPS приемник имеет погрешность от **2 до 5 метров** из-за искажений в ионосфере Земли. 
-**RTK (Real-Time Kinematic)** использует дополнительный поток данных (поправки) от наземной **Базовой станции** с известными координатами. Это позволяет устранить ошибки и достичь точности **1-2 сантиметра**.
+## 🛰️ What is RTK and how does it differ from standard GPS?
+Standard GPS receivers have an error margin of **2 to 5 meters** due to atmospheric distortions.
+**RTK (Real-Time Kinematic)** uses an additional data stream (corrections) from a stationary **Base Station** with known coordinates. This eliminates errors and achieves an accuracy of **1-2 centimeters**.
 
-### Статусы решения (Fix Type):
-1.  **NO FIX (0)**: Спутники не найдены.
-2.  **GPS FIX (1)**: Обычная точность (2-5 метров).
-3.  **FLOAT (2)**: Поправки приходят, но точность еще плавает (~20-50 см).
-4.  **FIXED (3)**: Фазовая определенность достигнута. Точность **1-3 см**.
+### Fix Types:
+1.  **NO FIX (0)**: No satellites found.
+2.  **GPS FIX (1)**: Standard precision (2-5 meters).
+3.  **FLOAT (2)**: Corrections received, but phase ambiguity is not yet resolved (~20-50 cm accuracy).
+4.  **FIXED (3)**: Full phase resolution achieved. Centimeter precision (**1-3 cm**).
 
-## 🔌 Подключение
-RTK-модули (например, u-blox ZED-F9P) подключаются по UART.
+## 🔌 Connection
+RTK modules (e.g., u-blox ZED-F9P) are typically connected via UART or USB.
 
-| GPS Pin | RPi Pin (Physical) | Description |
-| :--- | :--- | :--- |
-| **VCC** | 5V/3.3V | Power Supply |
-| **GND** | GND | Ground |
-| **TX** | GPIO 15 (Pin 10) | NMEA Data to Pi |
-| **RX** | GPIO 14 (Pin 8) | RTCM Corrections from Pi to GPS |
+## 🚀 How to activate RTK
+To get centimeter-level accuracy, your receiver needs **RTCM corrections**.
 
-## 🚀 Как активировать RTK
-Чтобы получить сантиметровую точность, вашему приемнику нужны **RTCM-поправки**.
+### Method 1: NTRIP (via Internet)
+1.  Register with a base station provider (e.g., RTK2GO or local networks).
+2.  Run an NTRIP client on the Raspberry Pi to forward network data to the GPS serial port.
 
-### Метод 1: NTRIP (через Интернет)
-1.  Зарегистрируйтесь у провайдера базовых станций (например, RTK2GO или локальные сети).
-2.  Запустите NTRIP-клиент на Raspberry Pi, который будет пересылать данные из сети в последовательный порт GPS.
-    ```bash
-    ros2 run xpi_sensors ntrip_client_node --ros-args -p host:=rtk2go.com -p mountpoint:=YOUR_MOUNT
-    ```
-
-### Метод 2: Своя Базовая станция
-Один GPS модуль ставится статично (Base), второй на робота (Rover). Они соединяются по радиоканалу (например, через наш блок **HC-12** или **LoRa**).
+### Method 2: Local Base Station
+One GPS module is set up as a static Base, and the second is on the robot (Rover). They communicate via a radio link (e.g., using our **HC-12** or **LoRa** blocks).
 
 ## 📡 ROS2 Interface
-### Topics
-| Topic | Type | Description |
-| :--- | :--- | :--- |
-| `~/fix` | `sensor_msgs/NavSatFix` | Latitude, Longitude, Altitude. |
-| `~/status` | `std_msgs/Int32` | 0:No Fix, 1:GPS, 2:Float, 3:Fixed. |
-
-### Parameters
-*   `port` (string, default: `/dev/ttyAMA0`): Serial port.
-*   `baudrate` (int, default: `38400`): Link speed.
+*   **Published Topic:** `~/fix` (`sensor_msgs/NavSatFix`)
+*   **Status Topic:** `~/rtk_status` (Custom status including Fix Type)
