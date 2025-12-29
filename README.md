@@ -1,5 +1,12 @@
 # XPI-Blocks: Open Source ROS2 Humble Library for Raspberry Pi Robotics & AI
 
+[![ROS2 Humble](https://img.shields.io/badge/ROS2-Humble-blue?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/index.html)
+[![CI Build](https://github.com/karpizin/xpi-blocks/actions/workflows/ros2-ci.yml/badge.svg)](https://github.com/karpizin/xpi-blocks/actions)
+[![Multi-Arch](https://img.shields.io/badge/Platform-amd64%20%7C%20arm64-green)](https://github.com/karpizin/xpi-blocks/pkgs/container/xpi-blocks)
+[![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 `xpi-blocks` is a comprehensive, modular library of ROS2 components specifically optimized for **Raspberry Pi 4, 5, and Zero 2W**. Our mission is to lower the barrier to entry for robotics by providing perfectly documented "building blocks" that combine low-level hardware drivers with high-level intelligence (LLM/VLM).
 
 ## 🚀 Core Features
