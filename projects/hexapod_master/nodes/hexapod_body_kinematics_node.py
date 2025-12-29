@@ -5,8 +5,9 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
 import yaml
+import math
 
-# Добавляем пути
+# Add paths
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
 from body_kinematics import BodyKinematics
 from interpolator import Interpolator
@@ -15,35 +16,35 @@ class HexapodBodyNode(Node):
     def __init__(self):
         super().__init__('hexapod_body_node')
         
-        # 1. Загрузка конфига
+        # 1. Config Loading
         config_path = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_config.yaml'
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
         self.body_ik = BodyKinematics(self.config['legs'])
         
-        # 2. Интерполятор для позы (x, y, z, roll, pitch, yaw)
-        # Начальная высота берется из конфига
+        # 2. Interpolator for pose (x, y, z, roll, pitch, yaw)
+        # Initial height is taken from config
         h = self.config.get('default_height', 0.08)
-        self.pose_interp = Interpolator([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], speed=0.05) # 5см или 0.05рад в сек
+        self.pose_interp = Interpolator([0.0, 0.0, 0.0, 0.0, 0.0, 0.0], speed=0.05) # 5cm or 0.05rad per sec
         
-        # 3. Publishers для каждой лапы
+        # 3. Publishers for each leg
         self.leg_pubs = {}
         self.gait_offsets = {}
         for leg_name in self.config['legs'].keys():
             topic = f'/hexapod/{leg_name}/goal_point'
             self.leg_pubs[leg_name] = self.create_publisher(Point, topic, 10)
             
-            # Инициализируем смещения походки нулями
+            # Initialize gait offsets with zeros
             self.gait_offsets[leg_name] = [0.0, 0.0, 0.0]
-            # Подписка на смещения походки
+            # Subscribe to gait offsets
             self.create_subscription(Point, f'/hexapod/{leg_name}/gait_offset', 
                                      lambda msg, name=leg_name: self.gait_callback(msg, name), 10)
             
-        # 4. Subscriber для позы корпуса
+        # 4. Subscriber for body pose
         self.create_subscription(Pose, '/hexapod/body_pose', self.pose_callback, 10)
         
-        # 5. Таймер для плавного обновления (50 Гц)
+        # 5. Timer for smooth updates (50 Hz)
         self.create_timer(0.02, self.update_loop)
         
         self.get_logger().info('Hexapod Body Kinematics Node with Gait Support initialized.')
@@ -52,7 +53,7 @@ class HexapodBodyNode(Node):
         self.gait_offsets[name] = [msg.x, msg.y, msg.z]
 
     def pose_callback(self, msg):
-        # Конвертируем Quaternion в Euler
+        # Convert Quaternion to Euler
         q = msg.orientation
         
         # Roll (x-axis rotation)
@@ -76,19 +77,19 @@ class HexapodBodyNode(Node):
         self.pose_interp.set_target(target)
 
     def update_loop(self):
-        # 1. Получаем сглаженную текущую позу
+        # 1. Get smoothed current pose
         curr_pose = self.pose_interp.update()
         
         translation = curr_pose[0:3]
         rotation = curr_pose[3:6]
         
-        # 2. Считаем IK
+        # 2. Calculate IK
         results = self.body_ik.calculate_body_ik(translation, rotation)
         
-        # 3. Публикуем цели для лап (База + Смещение походки)
+        # 3. Publish leg targets (Base + Gait offset)
         for leg_name, pos in results.items():
             p_msg = Point()
-            # Суммируем результат IK корпуса и смещение походки
+            # Sum body IK result and gait offset
             g_off = self.gait_offsets.get(leg_name, [0.0, 0.0, 0.0])
             p_msg.x = pos['x'] + g_off[0]
             p_msg.y = pos['y'] + g_off[1]

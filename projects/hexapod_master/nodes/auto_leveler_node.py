@@ -10,42 +10,42 @@ class AutoLevelerNode(Node):
         super().__init__('auto_leveler_node')
         
         # 1. Parameters
-        self.declare_parameter('kp', 0.5) # Коэффициент усиления
+        self.declare_parameter('kp', 0.5) # Gain coefficient
         self.kp = self.get_parameter('kp').value
         
         # 2. Publishers & Subscribers
         self.pose_pub = self.create_publisher(Pose, '/hexapod/body_pose', 10)
         self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
         
-        # Состояние
+        # State
         self.current_pose = Pose()
-        self.current_pose.position.z = -0.08 # Начальная высота
+        self.current_pose.position.z = -0.08 # Initial height
         
         self.get_logger().info('Auto-Leveler Node initialized. Watching /imu/data')
 
     def imu_callback(self, msg):
-        # В реальной системе мы бы использовали фильтр Калмана или Маджвика
-        # Но для простоты возьмем углы из акселерометра напрямую
+        # In a real system, we would use a Kalman or Madgwick filter.
+        # But for simplicity, we'll take angles from the accelerometer directly.
         accel = msg.linear_acceleration
         
-        # Расчет Roll и Pitch из ускорения свободного падения
+        # Calculate Roll and Pitch from gravity acceleration
         roll_accel = math.atan2(accel.y, accel.z)
         pitch_accel = math.atan2(-accel.x, math.sqrt(accel.y**2 + accel.z**2))
         
-        # Инвертируем их, чтобы скомпенсировать наклон
+        # Invert them to compensate for tilt
         target_roll = -roll_accel * self.kp
         target_pitch = -pitch_accel * self.kp
         
-        # Публикуем новую желаемую позу корпуса
-        # Примечание: Для упрощения передаем углы через положение или ориентацию
-        # В нашем body_node мы пока берем только позицию, обновим его
+        # Publish new desired body pose
+        # Note: For simplification, we pass angles through position or orientation.
+        # In our body_node we currently only take position, let's update it.
         
         new_msg = Pose()
         new_msg.position.x = 0.0
         new_msg.position.y = 0.0
         new_msg.position.z = self.current_pose.position.z
         
-        # Используем ориентацию (кватернион)
+        # Use orientation (quaternion)
         new_msg.orientation = self.euler_to_quaternion(target_roll, target_pitch, 0.0)
         
         self.pose_pub.publish(new_msg)
