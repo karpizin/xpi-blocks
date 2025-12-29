@@ -42,7 +42,10 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}}"
 Use the `/hexapod/body_pose` topic:
 ```bash
 # Squat (lower body by 5cm)
-ros2 topic pub /hexapod/body_pose geometry_msgs/msg/Pose "{position: {z: -0.05}}"
+ros2 topic pub --once /hexapod/body_pose geometry_msgs/msg/Pose "{position: {z: -0.05}}"
+
+# Tilt forward (Pitch)
+ros2 topic pub --once /hexapod/body_pose geometry_msgs/msg/Pose "{orientation: {x: 0.0, y: 0.1, z: 0.0, w: 0.99}}"
 ```
 
 ## 🎭 Demos & Tricks
