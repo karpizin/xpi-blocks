@@ -82,15 +82,15 @@ class HexapodGaitNode(Node):
 
     def terrain_callback(self, msg):
         """
-        Receives terrain correction for a specific leg.
-        Format: msg.x = leg_index (0-5), msg.z = offset.
-        Simplified for demo.
+        Receives terrain correction/contact for a specific leg.
+        Format: msg.x = leg_index (0-5), msg.z = offset/height.
         """
         leg_names = ['rf', 'rm', 'rb', 'lf', 'lm', 'lb']
         idx = int(msg.x)
         if 0 <= idx < 6:
             name = leg_names[idx]
-            self.gait.set_terrain_offsets({name: msg.z})
+            # Register contact in the engine for Ground Search logic
+            self.gait.register_contact(name, msg.z)
 
     def update_gait(self):
         now = time.time()
