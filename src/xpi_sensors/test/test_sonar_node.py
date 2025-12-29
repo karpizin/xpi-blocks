@@ -32,31 +32,20 @@ class TestSonarNode:
 
     def test_range_publication(self):
         """Test if the node publishes Range messages"""
+        from unittest.mock import MagicMock
         node = SonarNode()
         
-        # Mocking distance reading for gpiozero
-        # In mock mode, we can manually set the value that the sensor would 'see'
-        if node.sensor:
-            # For DistanceSensor in MockFactory, we need to mock the echo pin behavior
-            # or simply mock the distance property if possible. 
-            # However, simpler is to just mock the publish call if we want to test ROS logic,
-            # or correctly setup Mock pins.
-            pass
+        # Replace the real sensor with a mock
+        mock_sensor = MagicMock()
+        mock_sensor.distance = 0.5
+        node.sensor = mock_sensor
 
         received_msgs = []
         def cb(msg):
             received_msgs.append(msg)
 
-        # Create a temporary subscription to check output
         test_node = Node('test_listener')
-        # Note: the topic is relative or absolute. In node it's '~/range' -> '/sonar_node/range'
         test_node.create_subscription(Range, '/sonar_node/range', cb, 10)
-
-        # To avoid blocking on self.sensor.distance, we can mock the sensor object itself 
-        # or ensure the mock pins respond. 
-        # Let's use a simpler approach: mock the distance attribute
-        if node.sensor:
-            type(node.sensor).distance = property(lambda x: 0.5) # Simulate 0.5m
 
         # Manually call timer_callback
         node.timer_callback()
