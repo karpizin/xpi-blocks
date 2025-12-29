@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3-gpiozero \
     libgpiod2 \
     curl \
+    portaudio19-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install LLM and project dependencies via pip
