@@ -12,31 +12,31 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 
 ## ✅ Implemented
 
-### Communication & Comms
-*   **HC-12 (433MHz Wireless Serial)** -> `xpi_comms/hc12_node`
-*   **Raw LoRa (SX1276/SX1278)** -> `xpi_comms/lora_raw_node`
-*   **Universal Serial Bridge (UART/USB)** -> `xpi_comms/serial_bridge`
-*   **CAN Bus (SocketCAN)** -> `xpi_comms/can_bridge_node`
-*   **Meshtastic LoRa Bridge** -> `xpi_comms/meshtastic_bridge_node`
-*   **Smart MQTT Gateway** -> `xpi_comms/mqtt_gateway_node`
+### Communication & Comms (Wireless & Wired)
+*   **HC-12 UART (433MHz Serial)** -> `xpi_comms/hc12_node`
+*   **SX1276 / SX1278 LoRa SPI** -> `xpi_comms/lora_raw_node`
+*   **RS485 / RS232 Serial Bridge** -> `xpi_comms/serial_bridge`
+*   **SocketCAN (MCP2515)** -> `xpi_comms/can_bridge_node`
+*   **Meshtastic LoRa Mesh API** -> `xpi_comms/meshtastic_bridge_node`
+*   **MQTT Bridge (JSON Serialization)** -> `xpi_comms/mqtt_gateway_node`
 
 ### Sensors (Environment & Light)
-*   **#9 BME280 / BME680 (I2C)** -> `xpi_sensors/bme280`
-*   **#2 BMP085/180 (I2C)** -> `xpi_sensors/bmp085`
-*   **HTU21D / SHT20 / SHT3x** -> `xpi_sensors/htu21d_node`
-*   **AHT10 / AHT20** -> `xpi_sensors/aht20`
-*   **BH1750 / TSL2561 / TSL2591** -> `xpi_sensors/bh1750_node`
-*   **CCS811 Air Quality** -> `xpi_sensors/ccs811_node`
-*   **SCD4x (CO2 NDIR)** -> `xpi_sensors/scd4x_node`
-*   **SGP30 Gas Sensor** -> `xpi_sensors/sgp30_node`
+*   **Bosch BME280 / BME680 (I2C/SPI)** -> `xpi_sensors/bme280`
+*   **Bosch BMP085 / BMP180 / BMP280** -> `xpi_sensors/bmp085`
+*   **Sensirion SHT30 / SHT31 / SHT35** -> `xpi_sensors/sht3x_node`
+*   **AHT10 / AHT20 (High Accuracy)** -> `xpi_sensors/aht20`
+*   **BH1750 / TSL2561 / TSL2591 (Lux Meter)** -> `xpi_sensors/bh1750_node`
+*   **Sciosense CCS811 Air Quality (VOC)** -> `xpi_sensors/ccs811_node`
+*   **Sensirion SCD40 / SCD41 (CO2 NDIR)** -> `xpi_sensors/scd4x_node`
+*   **Sensirion SGP30 Gas/eCO2** -> `xpi_sensors/sgp30_node`
 
-### Sensors (Motion & Distance)
-*   **#35 HC-SR04 (GPIO)** -> `xpi_sensors/sonar_node`
-*   **#24 MPU6050 / MPU9250** -> `xpi_sensors/mpu6050`
-*   **BNO055 Intelligent IMU** -> `xpi_sensors/bno055_node`
-*   **VL53L1X Time-of-Flight** -> `xpi_sensors/vl53l1x_node`
-*   **TF-Luna / TFmini Plus** -> `xpi_sensors/tfmini_plus_node`
-*   **LDROBOT LD19 / D300 LiDAR** -> `xpi_sensors/ld19_node`
+### Sensors (Motion, Distance & Lidar)
+*   **Ultrasonic HC-SR04 / JSN-SR04T** -> `xpi_sensors/sonar_node`
+*   **MPU6050 / MPU9250 (6/9-DOF IMU)** -> `xpi_sensors/mpu6050`
+*   **Bosch BNO055 Absolute Orientation** -> `xpi_sensors/bno055_node`
+*   **ST VL53L1X Time-of-Flight (ToF)** -> `xpi_sensors/vl53l1x_node`
+*   **TF-Luna / TFmini Plus (Lidar Range)** -> `xpi_sensors/tfmini_plus_node`
+*   **LDROBOT LD19 / D300 (360 Lidar)** -> `xpi_sensors/ld19_node`
 
 ### Power & Storage
 *   **INA219 Power Monitor** -> `xpi_sensors/ina219_node`
