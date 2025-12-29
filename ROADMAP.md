@@ -82,6 +82,7 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 *   **Tool Calling / Function Calling** -> `xpi_llm/tool_calling`
 *   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
 *   **Voice Output (Piper TTS)** -> `xpi_audio/piper_tts_node`
+*   **Speech-to-Text (Whisper)** -> `xpi_audio/whisper_stt_node`
 *   **Sonar Trend Analysis** -> `xpi_llm/sonar_trend_analyzer`
 *   **Facial Expressions (Procedural HCI)** -> `xpi_hci/expression_engine_node`
 

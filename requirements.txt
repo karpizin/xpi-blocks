@@ -40,3 +40,5 @@ spidev
 adafruit-circuitpython-24lc32
 pyubx2
 piper-tts
+faster-whisper
+pyaudio
