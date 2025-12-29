@@ -22,7 +22,9 @@ The project is divided into 5 stages, each adding a new level of intelligent beh
 *   [ ] Testing stability in the simulator with various body poses.
 
 ## Stage 4: Gait Generator (The Gait)
-*   [x] Implementation of the `GaitEngine` with support for Tripod, Wave, and Ripple gaits.
+*   [x] Implementation of the `GaitEngine` with support for Tripod, Wave, Ripple, and Amble gaits.
+*   [x] Support for omnidirectional movement (sideways, backwards) and rotation.
+*   [x] Integration of terrain adaptation logic (Z-axis correction for uneven surfaces).
 *   [x] Integration of the gait engine into the ROS2 control loop.
 
 ## Stage 5: Manipulation and VLM (The Action)

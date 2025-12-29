@@ -32,10 +32,31 @@ ros2 launch xpi_projects gazebo.launch.py
 ## 🎮 Control (Topics)
 
 ### Walking (Velocity Control)
-Use the standard `/cmd_vel` topic:
+Use the standard `/cmd_vel` topic. The robot now supports **Omnidirectional movement** (walking sideways and backwards simultaneously) and **Rotation**.
 ```bash
 # Move forward at 0.1 m/s
 ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}}"
+
+# Walk sideways (Right)
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {y: -0.05}}"
+
+# Rotate while moving
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.05}, angular: {z: 0.2}}"
+```
+
+### Advanced Gait Selection
+Change the gait type dynamically via ROS2 parameters:
+```bash
+# Available: tripod, wave, ripple, amble
+ros2 param set /hexapod_gait_node gait_type "amble"
+```
+
+### Terrain Adaptation
+To manually test uneven terrain correction for a specific leg:
+```bash
+# Format: x=leg_index (0-5), z=offset in meters
+# Lift Right Front (0) leg by 2cm to adapt to a bump
+ros2 topic pub --once /hexapod/terrain_feedback geometry_msgs/msg/Point "{x: 0, z: 0.02}"
 ```
 
 ### Body Pose Control
