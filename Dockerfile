@@ -32,7 +32,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Build the workspace
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --merge-install --event-handlers console_direct+"
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && rm -rf build install log && colcon build --merge-install --event-handlers console_direct+"
 
 # Add sourcing to bashrc for interactive shells
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
