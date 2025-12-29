@@ -1,100 +1,48 @@
-# XPI-Blocks: The ROS2 & Raspberry Pi Building Blocks Library
+# XPI-Blocks: Modular ROS2 Robotics Library
 
-## 🎯 Mission
-To create a **comprehensive, modular, and perfectly documented** library of examples (blocks) for ROS2 and Raspberry Pi. This project aims to **lower the barrier to entry for robotics and enable intelligent behaviors through LLM/VLM integration**.
-**Goal:** A developer should be able to pick a "block" (code + diagram), connect the peripheral, and have a working ROS2 node in 5 minutes.
+`xpi-blocks` — это открытая библиотека модульных компонентов для робототехники на базе **ROS2 Humble**, оптимизированная для Raspberry Pi. Проект объединяет драйверы оборудования, алгоритмы кинематики и инструменты интеграции с ИИ (LLM/VLM).
 
-## 🏗 Block Architecture
-Each example in this library is an atomic "Block" containing:
-*   **ROS2 Node:** Clean, idiomatic code (Python/C++).
-*   **Hardware Interface:** Hardware abstraction (GPIO, I2C, SPI, UART, 1-Wire) or intelligent LLM/VLM interfaces.
-*   **Launch file:** Launch configuration with sane defaults.
-*   **Documentation:**
-    *   Wiring Diagram.
-    *   Bill of Materials (BOM).
-    *   Topic Interfaces (input/output).
-    *   Verification Command (one-liner).
+## 🚀 Основные возможности
 
-## 📂 Repository Structure
-```text
-xpi-blocks/
-├── docs/               # Global documentation and guides (e.g., ARCHITECTURE.md, ROADMAP.md, LLM_VLM_SCENARIOS.md, NEXT_KEY_TASKS.md)
-├── blocks/             # Individual block documentation (e.g., wiring, usage)
-│   ├── inputs/         # Input devices (joystick, keyboard, RC receivers)
-│   ├── actuators/      # Actuators (motors, servos, relays, steppers, LEDs, displays)
-│   ├── sensors/        # Sensors (IMU, lidar, range, environment, analog, 1-wire, digital-input)
-│   ├── comms/          # Communication bridges (Serial, UDP, etc.)
-│   └── llm/            # LLM/VLM integration blocks
-├── src/                # ROS2 packages
-│   ├── xpi_commons/    # Common utilities, HAL for GPIO/I2C
-│   ├── xpi_inputs/     # Input device drivers
-│   ├── xpi_actuators/  # Actuator drivers
-│   ├── xpi_sensors/    # Sensor drivers
-│   ├── xpi_comms/      # Communication nodes
-│   └── xpi_llm/        # LLM/VLM integration nodes
-└── scripts/            # Setup utilities (Docker, udev rules)
+*   **80+ поддерживаемых устройств**: Сенсоры (Lidar, IMU, Env), Актуаторы (Servos, Motors), Дисплеи и средства связи.
+*   **Hexapod Master**: Полноценный стек для шестиногих роботов (IK, генераторы походок Tripod/Wave/Ripple, Gazebo-симуляция).
+*   **AI Integration**: Пакет `xpi_llm` для анализа контекста и управления роботом через голосовые команды и визуальные инсайты.
+*   **USIS (Universal Status Indication System)**: Интеллектуальная система светодиодной индикации состояний робота.
+*   **Hardware Abstraction Layer (HAL)**: Единый стандарт написания драйверов на базе `gpiozero` и `smbus2`.
+
+## 🏗 Структура проекта
+
+*   **`src/`**: Исходный код ROS2 пакетов, разделенный по категориям (actuators, sensors, vision и т.д.).
+*   **`blocks/`**: Техническая документация, схемы подключения и спецификации для каждого модуля.
+*   **`projects/`**: Готовые комплексные решения (Hexapod, Weather Station, Swarm Net).
+*   **`docs/`**: Глубокие технические руководства и стратегии (LIDAR, AI).
+
+## 📦 Быстрый старт через Docker
+
+Библиотека поставляется в виде готового Docker-образа, что гарантирует работу всех зависимостей.
+
+```bash
+# Сборка образа
+docker build -t xpi-blocks .
+
+# Запуск контейнера с доступом к I2C/GPIO
+docker run -it --privileged --network host xpi-blocks
 ```
 
-## 🚀 Getting Started (Docker - Recommended)
+## 🧪 Тестирование
 
-The easiest way to run XPI-Blocks is using Docker. The images are pre-compiled and ready to use.
+Проект поддерживает автоматизированное тестирование с использованием Mock-объектов для имитации оборудования.
 
-1.  **Run with Docker Compose:**
-    ```bash
-    wget https://raw.githubusercontent.com/karpizin/xpi-blocks/main/docker-compose.yml
-    docker compose up -d
-    ```
-2.  **Verify hardware access:**
-    ```bash
-    docker exec -it xpi-blocks-container i2cdetect -y 1
-    ```
+```bash
+colcon test --packages-select xpi_sensors
+colcon test-result --verbose
+```
 
-See the [**Detailed Docker Deployment Guide**](docs/DEPLOYMENT_DOCKER.md) for more info.
+## 🛠 Совместимость
 
-## 🛠 Manual Installation (Advanced)
-If you prefer not to use Docker, follow the [**Manual Setup Guide**](docs/MANUAL_INSTALLATION.md).
+*   **OS**: Ubuntu 22.04 LTS / Raspberry Pi OS (64-bit).
+*   **ROS2**: Humble Hawksbill (LTS).
+*   **Python**: 3.10+.
 
-## 🛠 Tech Stack & Standards
-*   **Primary OS:** Ubuntu Server 22.04 LTS (64-bit) for Raspberry Pi.
-*   **ROS2 Distro:** Humble Hawksbill (LTS).
-*   **Compatibility:** Code is forward-compatible with Jazzy/Ubuntu 24.04 where possible.
-*   **Language:** Python 3.10+ (primary), C++ (time-critical).
-*   **GPIO Access:** `gpiozero` (Standardized HAL).
-*   **I2C Access:** `smbus2` via `xpi_commons` (Standardized HAL) and libraries like `luma.oled`.
-*   **SPI Access:** `luma.led_matrix` for displays.
-*   **UART Access:** `pyserial` for RC receivers.
-*   **1-Wire Access:** Kernel modules (`w1_gpio`, `w1_therm`).
-*   **LLM/VLM:** Flexible backend support (Gemini, OpenRouter, Ollama) via `xpi_llm`.
-*   **Audio Intelligence:** Real-time sound source localization (DOA), noise level monitoring, and local AI-based sound classification (YAMNet).
-*   **Universal Input:** `joy_mapper_node` converts any Joystick, Mouse, or Keyboard into standard robot commands (`Twist`, `Bool`, `Float32`) via YAML config.
-*   **LoRa Mesh & Swarm:** Native support for `Meshtastic` LoRa devices for decentralized robot-to-robot communication and swarm intelligence (collision avoidance, collective consensus).
-*   **Containerization:** `Dockerfile` support for rapid deployment.
-...
-*   **[📡 SWARM NET PROJECT](projects/swarm_net/README.md)** - Comprehensive example of decentralized communication and collective intelligence.
-*   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
-
-## 📋 Prerequisites
-Before using these blocks, ensure you have:
-1.  **Raspberry Pi 4 or 5** (Zero 2W is also supported).
-2.  **Ubuntu 22.04 Installed** (Official RPi Imager image).
-3.  **ROS2 Humble Desktop/Base** installed and sourced.
-    ```bash
-    source /opt/ros/humble/setup.bash
-    ```
-4.  **GPIO Privileges:** User must be in `gpio` group (or `dialout` for UART, `i2c` for I2C, `spi` for SPI, `users` for 1-Wire).
-5.  **I2C Enabled:** `sudo raspi-config` -> Interface Options -> I2C.
-6.  **SPI Enabled:** `sudo raspi-config` -> Interface Options -> SPI.
-7.  **1-Wire Enabled:** `sudo raspi-config` -> Interface Options -> 1-Wire.
-8.  **UART Configured:** For RC receivers, UART needs to be freed from console (`sudo raspi-config`).
-
-## 📝 Documentation Guidelines
-*   **README Driven:** Documentation is written before code.
-*   **Visuals:** Photos of real wiring + Fritzing/Schematic diagrams.
-*   **Troubleshooting:** Dedicated section for common issues in every block.
-
-## 📈 Project Status & Roadmap
-*   **[🚀 PROJECT CAPABILITIES (Full List of Features)](docs/CAPABILITIES.md)** - Start here for a high-level overview.
-*   **[📚 LIBRARY INDEX (Detailed Links)](docs/BLOCKS_INDEX.md)** - Index of all implemented blocks with direct links to docs.
-*   See [ROADMAP.md](ROADMAP.md) for a list of all targeted devices.
-*   See [LLM_VLM_SCENARIOS.md](docs/LLM_VLM_SCENARIOS.md) for the LLM/VLM integration plan.
-*   See [NEXT_KEY_TASKS.md](NEXT_KEY_TASKS.md) for high-priority future tasks.
+## 🤝 Контакты
+Разработчик: Viacheslav Karpizin (viacheslav.karpizin@gmail.com)
