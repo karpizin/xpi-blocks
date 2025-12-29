@@ -47,6 +47,12 @@ class GaitEngine:
             self.gait_type = gait_type
 
     def calculate_offsets(self, velocity, omega, dt):
+        """
+        Calculates leg offsets based on desired velocity and rotation.
+        velocity: (vx, vy) - target linear velocity
+        omega: angular velocity (yaw)
+        dt: time elapsed since last update
+        """
         config = self.gait_configs.get(self.gait_type, self.gait_configs[self.TRIPOD])
         swing_dur = config['swing_duration']
         stance_dur = 1.0 - swing_dur
