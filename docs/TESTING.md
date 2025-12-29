@@ -1,38 +1,38 @@
-# Тестирование в XPI-Blocks
+# Testing in XPI-Blocks
 
-В проекте используется `pytest` совместно с инструментами тестирования ROS2 (`ament_cmake_pytest`).
+This project uses `pytest` alongside standard ROS2 testing tools (`ament_cmake_pytest`).
 
-## 🛠 Подготовка окружения
+## 🛠 Environment Setup
 
-Для запуска тестов локально (даже на Mac/Windows) без реального железа:
+To run tests locally (even on macOS or Windows) without real hardware:
 
 ```bash
-# Установка эмулятора GPIO
+# Enable GPIO emulation
 export GPIOZERO_PIN_FACTORY=mock
 ```
 
-## 🧪 Запуск тестов
+## 🧪 Running Tests
 
-### Через colcon (рекомендуется)
-Эта команда соберет пакеты и запустит все тесты в воркспейсе:
+### Via colcon (Recommended)
+This command builds packages and runs all tests in the workspace:
 ```bash
 colcon test --packages-select xpi_sensors
 colcon test-result --verbose
 ```
 
-### Напрямую через pytest
-Для быстрой отладки конкретного файла:
+### Directly via pytest
+For rapid debugging of a specific file:
 ```bash
 pytest src/xpi_sensors/test/test_sonar_node.py
 ```
 
-## 🧩 Принципы написания тестов
+## 🧩 Testing Principles
 
-1.  **Использование MagicMock**: Мы подменяем объекты `sensor` или `bus`, чтобы тестировать логику публикации ROS-сообщений независимо от железа.
-2.  **Изоляция контекста**: Каждый тест должен самостоятельно инициализировать и завершать ноду.
-3.  **Проверка типов**: Обязательно проверяйте типы и границы значений публикуемых сообщений (`sensor_msgs`).
+1.  **Use MagicMock**: We replace `sensor` or `bus` objects to test ROS message publication logic independently of the hardware.
+2.  **Context Isolation**: Each test must initialize and shutdown its own ROS2 node context.
+3.  **Type Validation**: Always verify message types and value ranges for published `sensor_msgs`.
 
-Пример мока для I2C:
+Example Mock for I2C:
 ```python
 from unittest.mock import MagicMock
 mock_bus = MagicMock()

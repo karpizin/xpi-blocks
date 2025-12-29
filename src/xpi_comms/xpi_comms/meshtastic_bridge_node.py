@@ -1,114 +1,98 @@
 #!/usr/bin/env python3
-"""
-ROS2 Node for Meshtastic Bridge.
-Connects the XPI robot event bus with the LoRa Mesh network.
-"""
 import rclpy
 from rclpy.node import Node
+from std_msgs.msg import String
+from sensor_msgs.msg import NavSatFix
 import json
 import os
 import sys
 
-# Добавляем путь к нашему драйверу и движку консенсуса
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../../blocks/drivers/meshtastic'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../../blocks/swarm/consensus'))
-from driver import MeshtasticDriver
-from engine import ConsensusEngine # NEW
+# Add paths to our driver and consensus engine
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'blocks', 'drivers', 'meshtastic'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'blocks', 'swarm', 'consensus'))
 
-from std_msgs.msg import String, Header
-from sensor_msgs.msg import NavSatFix
+from driver import MeshtasticDriver
+from engine import ConsensusEngine
 
 class MeshtasticBridgeNode(Node):
     def __init__(self):
-        super().__init__('meshtastic_bridge')
-
-        # 1. Параметры
-        self.declare_parameter('interface', 'serial')
+        super().__init__('meshtastic_bridge_node')
+        
+        # 1. Parameters
+        self.declare_parameter('interface', 'serial') # or 'tcp', 'ble'
         self.declare_parameter('address', '/dev/ttyUSB0')
-        self.declare_parameter('node_name', 'robot_01')
         
-        interface_type = self.get_parameter('interface').value
+        interface = self.get_parameter('interface').value
         address = self.get_parameter('address').value
-        self.robot_id = self.get_parameter('node_name').value
-
-        # 2. Инициализация драйвера и консенсуса
-        self.driver = MeshtasticDriver(interface_type, address)
-        self.consensus = ConsensusEngine(self.robot_id) # NEW
         
-        self.driver.on_telemetry_received.append(self._on_mesh_telemetry)
-        self.driver.on_command_received.append(self._on_mesh_command)
+        # 2. Driver & Consensus Init
+        self.driver = MeshtasticDriver(node_id=self.get_name())
+        self.consensus = ConsensusEngine(node_id=self.get_name())
         
-        try:
-            self.driver.connect()
-        except Exception as e:
-            self.get_logger().error(f"Failed to connect to Meshtastic: {e}")
+        # 3. ROS2 Interfaces
+        # Subscriptions
+        self.create_subscription(NavSatFix, '/gps/fix', self._gps_callback, 10)
+        self.create_subscription(String, '~/outbound_broadcast', self._broadcast_callback, 10)
+        # Subscribe to local consensus requests (e.g., "suggest mode change")
+        self.create_subscription(String, '~/request_consensus', self._consensus_request_callback, 10)
 
-        # 3. ROS2 Интерфейсы
-        self.pub_neighbors = self.create_publisher(String, '~/neighbors', 10)
-        self.pub_commands = self.create_publisher(String, '~/inbound_commands', 10)
-        self.pub_consensus = self.create_publisher(String, '~/consensus_reached', 10) # NEW
-
-        self.sub_gps = self.create_subscription(NavSatFix, '/gps/fix', self._gps_callback, 10)
-        self.sub_outbound = self.create_subscription(String, '~/outbound_broadcast', self._outbound_callback, 10)
+        # Publications
+        self.neighbors_pub = self.create_publisher(String, '~/neighbors', 10)
+        self.commands_pub = self.create_publisher(String, '~/inbound_commands', 10)
         
-        # Подписка на локальные запросы на консенсус (например, "предлагаю сменить режим")
-        self.sub_propose = self.create_subscription(String, '~/propose_decision', self._propose_callback, 10) # NEW
-
-        self.get_logger().info(f"Meshtastic Bridge Node started. ID: {self.robot_id}")
-
-    def _on_mesh_command(self, sender_id, command):
-        """Обработка команд И голосований."""
-        if isinstance(command, dict) and command.get("type") == "consensus":
-            # Логика голосования
-            total_nodes = len(self.driver.neighbors) + 1 # + мы сами
-            result = self.consensus.process_incoming_vote(sender_id, command, total_nodes)
-            
-            if result:
-                # Консенсус достигнут!
-                msg = String()
-                msg.data = json.dumps({"topic": command.get("topic"), "value": result})
-                self.pub_consensus.publish(msg)
-                self.get_logger().info(f"CONSENSUS REACHED: {command.get('topic')} = {result}")
+        # Connect to hardware
+        if self.driver.connect(interface, address):
+            self.get_logger().info(f'Connected to Meshtastic device at {address}')
         else:
-            # Обычная команда
-            msg = String()
-            msg.data = json.dumps({"from": sender_id, "cmd": command})
-            self.pub_commands.publish(msg)
+            self.get_logger().error(f'Failed to connect to Meshtastic device!')
 
-    def _propose_callback(self, msg: String):
-        """Создание нового предложения в сеть от нашего робота."""
+        # Set driver callback
+        self.driver.on_message = self._on_mesh_message
+        
+        self.get_logger().info('Meshtastic Bridge Node started.')
+
+    def _on_mesh_message(self, sender_id, data):
+        """Processes incoming commands AND votes."""
         try:
-            data = json.loads(msg.data) # {"topic": "mode", "value": "SEARCH"}
-            proposal = self.consensus.create_proposal(data['topic'], data['value'])
-            self.driver.broadcast_telemetry(proposal)
-            self.get_logger().info(f"Broadcasted proposal: {data['topic']}={data['value']}")
-        except Exception as e:
-            self.get_logger().error(f"Failed to create proposal: {e}")
+            msg_dict = json.loads(data)
+            
+            if msg_dict.get('type') == 'consensus':
+                # Voting logic
+                total_nodes = len(self.driver.neighbors) + 1 # + ourselves
+                result = self.consensus.process_incoming_vote(sender_id, msg_dict, total_nodes)
+                if result:
+                    self.get_logger().info(f'CONSENSUS ACHIEVED: {result}')
+                    # Broadcast result locally
+            else:
+                # Normal command
+                self.commands_pub.publish(String(data=data))
+        except:
+            pass
 
-    def _gps_callback(self, msg: NavSatFix):
-        """Отправка локальных координат в Mesh."""
-        # Мы отправляем телеметрию раз в N секунд (чтобы не забивать эфир LoRa)
-        # В реальной реализации тут нужен таймер или фильтр изменений
-        payload = {
-            "id": self.robot_id,
+    def _consensus_request_callback(self, msg):
+        """Creates a new proposal into the network from our robot."""
+        try:
+            req = json.loads(msg.data)
+            proposal = self.consensus.create_proposal(req['topic'], req['value'])
+            self.driver.broadcast_telemetry(json.dumps(proposal))
+        except: pass
+
+    def _gps_callback(self, msg):
+        """Sends local coordinates to the Mesh."""
+        # We send telemetry once every N seconds to avoid clogging LoRa airtime
+        # In a real implementation, a timer or change filter is needed here
+        telemetry = {
+            "id": self.get_name(),
             "type": "telemetry",
             "lat": msg.latitude,
             "lon": msg.longitude,
             "alt": msg.altitude
         }
-        self.driver.broadcast_telemetry(payload)
+        self.driver.broadcast_telemetry(json.dumps(telemetry))
 
-    def _outbound_callback(self, msg: String):
-        """Рассылка произвольных данных из ROS в Mesh."""
-        try:
-            data = json.loads(msg.data)
-            self.driver.broadcast_telemetry(data)
-        except Exception as e:
-            self.get_logger().error(f"Failed to broadcast outbound data: {e}")
-
-    def destroy_node(self):
-        self.driver.close()
-        super().destroy_node()
+    def _broadcast_callback(self, msg):
+        """Broadcasts arbitrary data from ROS into Mesh."""
+        self.driver.broadcast_telemetry(msg.data)
 
 def main(args=None):
     rclpy.init(args=args)

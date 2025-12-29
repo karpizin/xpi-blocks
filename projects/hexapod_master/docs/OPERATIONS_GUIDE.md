@@ -1,72 +1,57 @@
-# Руководство по эксплуатации Hexapod Master
+# Hexapod Master Operations Guide
 
-Этот документ описывает, как устроена система управления гексаподом и как её правильно запускать.
+This document describes the architecture of the hexapod control system and instructions for running it.
 
-## 🏗 Архитектура управления (Иерархия узлов)
+## 🏗 Control Architecture (Node Hierarchy)
 
-Система построена по принципу "сверху вниз":
+The system is built on a top-down principle:
+1.  **Gait Node** (`/cmd_vel`) -> Generates dynamic leg offsets (walking).
+2.  **Auto-Leveler Node** (`/imu/data`) -> Generates body correction angles (leveling).
+3.  **Body Node** (Hub) -> Aggregates data from Gait and Leveler, calculates final (X,Y,Z) coordinates for each of the 6 legs.
+4.  **IK Bridge** -> Translates (X,Y,Z) for each leg into 3 servo angles (Coxa, Femur, Tibia).
+5.  **Hardware Driver** -> Sends angles to physical servos or the simulator.
 
-1.  **Gait Node** (`/cmd_vel`) -> Генерирует динамические смещения (шаги).
-2.  **Auto-Leveler Node** (`/imu/data`) -> Генерирует углы коррекции корпуса (наклон).
-3.  **Body Node** (Центр) -> Собирает данные от Gait и Leveler, суммирует их и вычисляет финальные координаты (X,Y,Z) для каждой из 6 лап.
-4.  **IK Bridge** -> Переводит (X,Y,Z) каждой лапы в 3 угла сервоприводов (Coxa, Femur, Tibia).
-5.  **Hardware Driver** -> Отправляет углы на физические сервоприводы (или в симулятор).
+## 🚀 Running the System
 
----
-
-## 🚀 Запуск системы
-
-### 1. Полный запуск (Рекомендуется)
-Запускает все математические узлы одной командой:
+### 1. Full Launch (Recommended)
+Starts all math and logic nodes with a single command:
 ```bash
-ros2 launch projects/hexapod_master/scripts/hexapod_full.launch.py
+ros2 launch xpi_projects hexapod_full.launch.py
 ```
 
-### 2. Запуск визуализации (Rviz2)
+### 2. Visualization (Rviz2)
 ```bash
-ros2 launch projects/hexapod_master/scripts/view_hexapod.launch.py
+ros2 launch xpi_projects view_hexapod.launch.py
 ```
 
-### 3. Запуск симуляции (Gazebo)
+### 3. Simulation (Gazebo)
 ```bash
-ros2 launch projects/hexapod_master/scripts/gazebo.launch.py
+ros2 launch xpi_projects gazebo.launch.py
 ```
 
----
+## 🎮 Control (Topics)
 
-## 🎮 Управление (Команды в топики)
-
-### Ходьба (Velocity Control)
-Используйте стандартный топик `/cmd_vel`:
+### Walking (Velocity Control)
+Use the standard `/cmd_vel` topic:
 ```bash
-# Идти вперед со скоростью 0.1 м/с
-ros2 topic pub /cmd_vel geometry_msgs/Twist "{linear: {x: 0.1, y: 0.0, z: 0.0}}"
+# Move forward at 0.1 m/s
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}}"
 ```
 
-### Поза корпуса (Pose Control)
-Используйте топик `/hexapod/body_pose`:
+### Body Pose Control
+Use the `/hexapod/body_pose` topic:
 ```bash
-# Присесть (опустить корпус на 5 см)
-ros2 topic pub --once /hexapod/body_pose geometry_msgs/Pose "{position: {z: -0.05}}"
-
-# Наклониться вперед (Pitch)
-ros2 topic pub --once /hexapod/body_pose geometry_msgs/Pose "{orientation: {x: 0.0, y: 0.1, z: 0.0, w: 0.99}}"
+# Squat (lower body by 5cm)
+ros2 topic pub /hexapod/body_pose geometry_msgs/msg/Pose "{position: {z: -0.05}}"
 ```
 
----
+## 🎭 Demos & Tricks
+Ready-to-use scripts for rapid capability demonstration located in `scripts/demos/`:
+1.  **Push-ups**: `bash scripts/demos/push_ups.sh`
+2.  **Look around**: `bash scripts/demos/look_around.sh`
+3.  **Body dance**: `bash scripts/demos/body_dance.sh`
 
-## 🎭 Демонстрационные сценарии (Трюки)
-
-Мы подготовили набор готовых скриптов для быстрой демонстрации возможностей робота. Они находятся в папке `scripts/demos/`.
-
-1.  **Отжимания**: `bash scripts/demos/push_ups.sh` (Циклическое движение вверх-вниз).
-2.  **Осмотр по сторонам**: `bash scripts/demos/look_around.sh` (Вращение корпуса влево-вправо).
-3.  **Танец корпуса**: `bash scripts/demos/body_dance.sh` (Плавные наклоны по кругу).
-
----
-
-## 🛠 Отладка и Траблшутинг
-
-*   **Лапа не движется:** Проверьте, запущен ли `ik_bridge`. Он является последним звеном перед железом.
-*   **Движения слишком резкие:** Настройте параметры `speed` в `hexapod_body_kinematics_node.py` (интерполятор).
-*   **Робот "лагает":** Убедитесь, что частота публикации во всех топиках не ниже 30-50 Гц.
+## 🛠 Debugging
+*   **Leg not moving:** Check if `ik_bridge` is running. It is the final link before the hardware.
+*   **Jerky movements:** Adjust the `speed` parameter in `hexapod_body_kinematics_node.py` (interpolator).
+*   **Robot "lagging":** Ensure publishing frequency in all topics is at least 30-50 Hz.

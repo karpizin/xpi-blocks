@@ -1,58 +1,48 @@
 # Universal Status Indication System (USIS)
 
-Этот стандарт определяет визуальные сигналы для одного RGB светодиода (WS2812 или обычный 4-pin RGB), используемого в качестве системного индикатора в проектах XPI-Blocks.
+This standard defines visual signals for a single RGB LED (WS2812 or standard 4-pin RGB) used as a system indicator in XPI-Blocks projects.
 
-## 🎨 1. Цветовая палитра (High Contrast)
+## 🎨 1. Color Palette (High Contrast)
 
-| Цвет | Код (HEX) | Значение (Смысл) |
+| Color | HEX Code | Meaning / Intent |
 | :--- | :--- | :--- |
-| **Зеленый** | `#00FF00` | Все системы в норме (System OK) |
-| **Красный** | `#FF0000` | Критическая ошибка (Hardware Failure) |
-| **Оранжевый** | `#FFAA00` | Предупреждение / Низкий заряд (Warning / Low Battery) |
-| **Синий** | `#0000FF` | Связь: Bluetooth / WiFi / LoRa (Connection) |
-| **Голубой** | `#00FFFF` | Автономный режим / Навигация (Autonomous / GPS) |
-| **Пурпурный** | `#FF00FF` | Интеллект / Обработка AI (AI Thinking / Processing) |
-| **Желтый** | `#FFFF00` | Режим калибровки / Настройки (Calibration) |
-| **Белый** | `#FFFFFF` | Системный статус / Инициализация (System Boot) |
+| **Green** | `#00FF00` | All systems nominal (System OK) |
+| **Red** | `#FF0000` | Critical error (Hardware Failure) |
+| **Orange** | `#FFAA00` | Warning / Low Battery |
+| **Blue** | `#0000FF` | Communication Active (Bluetooth / LoRa) |
+| **Cyan** | `#00FFFF` | Autonomous Mode / GPS Fixed |
+| **Magenta** | `#FF00FF` | AI Thinking / Processing |
+| **Yellow** | `#FFFF00` | Calibration Mode / Settings |
+| **White** | `#FFFFFF` | System Boot / Initialization |
 
----
+## ⚡ 2. Animation Patterns
 
-## ⚡ 2. Паттерны мерцания (Animation Patterns)
-
-| Паттерн | Описание | Состояние системы |
+| Pattern | Description | System State |
 | :--- | :--- | :--- |
-| **Solid** | Горит постоянно | Стабильная работа в текущем режиме. |
-| **Breathe** | Плавное затухание (1-2 сек) | Режим ожидания (Standby) / Сон. |
-| **Blink (1Hz)** | Равномерно (500ms ON / 500ms OFF) | Обычная активность / Передача данных. |
-| **Fast-Blink (5Hz)** | Быстрое мигание | Поиск сигнала / Процесс сопряжения. |
-| **Double-Blink** | Две вспышки и пауза | Некритическая ошибка (например, плохой сигнал GPS). |
-| **SOS / Heartbeat** | Два коротких, один длинный | Тревога / Нужна помощь. |
+| **Solid** | Constant on | Stable operation in current mode. |
+| **Breathe** | Slow fade (1-2 sec) | Standby / Sleep mode. |
+| **Blink (1Hz)** | 500ms ON / 500ms OFF | Normal activity / Data transfer. |
+| **Fast-Blink (5Hz)** | High frequency | Signal seeking / Pairing process. |
+| **Double-Blink** | Two flashes then pause | Non-critical error (e.g., poor GPS signal). |
+| **SOS / Heartbeat** | Two short, one long | Alert / Help needed. |
 
----
+## 🛠 3. Error Code Specification (Visual Codes)
 
-## 🛠 3. Спецификация кодов ошибок (Visual Codes)
+When errors occur, the indicator switches to **Red** mode with specific pulse counts:
+*   **1 flash**: Power error / Battery Critical.
+*   **2 flashes**: I2C Bus error / Sensor not found.
+*   **3 flashes**: Communication Down.
+*   **4 flashes**: ROS2 Error (Node Crash).
+*   **5 flashes**: Actuator Error / Motor Stalled.
 
-При возникновении ошибок индикатор переключается в **Красный** режим с кодом:
+## 🚀 4. Software Implementation (API)
 
-*   **1 вспышка**: Ошибка питания / Battery Critical.
-*   **2 вспышки**: Ошибка шины I2C / Датчик не найден.
-*   **3 вспышки**: Потеря связи (Comms Down).
-*   **4 вспышки**: Ошибка ROS2 (Node Crash).
-*   **5 вспышек**: Ошибка привода / Заблокирован мотор.
+The `status_indicator_node` provides the following:
+1.  Listens to the `/status/code` topic (`String` or `Int32`).
+2.  Translates codes into parameters for the WS2812 driver.
+3.  Implements priority logic: errors override normal status indication.
 
----
-
-## 🚀 4. Программная реализация (API)
-
-Я предлагаю создать узел `status_indicator_node`, который:
-1.  Слушает топик `/status/code` (сообщения типа `String` или `Int32`).
-2.  Транслирует код в соответствующие параметры для драйвера WS2812.
-3.  Имеет высокий приоритет: ошибки должны перекрывать обычную индикацию.
-
----
-
-## 🛰 5. Примеры использования
-
-*   **Дрон на взлете**: Белый (Blink) -> Зеленый (Solid).
-*   **Робопес думает (VLM)**: Пурпурный (Breathe).
-*   **Потеря пульта**: Оранжевый (Fast-Blink).
+## 🛰 5. Usage Examples
+*   **Drone Takeoff**: White (Blink) -> Green (Solid).
+*   **Robodog Thinking (VLM)**: Magenta (Breathe).
+*   **RC Connection Lost**: Orange (Fast-Blink).
