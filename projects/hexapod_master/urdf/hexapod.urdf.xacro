@@ -79,6 +79,7 @@
       <collision><origin xyz="0.015 0 0"/><geometry><box size="0.03 0.02 0.02"/></geometry></collision>
       <xacro:box_inertia m="0.05" x="0.03" y="0.02" z="0.02"/>
     </link>
+    <gazebo reference="${prefix}_coxa_link"><material>Gazebo/Green</material></gazebo>
 
     <!-- Femur -->
     <joint name="${prefix}_femur_joint" type="revolute">
@@ -91,6 +92,7 @@
       <collision><origin xyz="0.025 0 0"/><geometry><box size="0.05 0.015 0.015"/></geometry></collision>
       <xacro:box_inertia m="0.1" x="0.05" y="0.015" z="0.015"/>
     </link>
+    <gazebo reference="${prefix}_femur_link"><material>Gazebo/DarkGrey</material></gazebo>
 
     <!-- Tibia -->
     <joint name="${prefix}_tibia_joint" type="revolute">
@@ -103,6 +105,27 @@
       <collision><origin xyz="0.04 0 0"/><geometry><box size="0.08 0.01 0.01"/></geometry></collision>
       <xacro:box_inertia m="0.1" x="0.08" y="0.01" z="0.01"/>
     </link>
+    <gazebo reference="${prefix}_tibia_link">
+      <material>Gazebo/Green</material>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>1000000.0</kp>
+      <kd>1.0</kd>
+      <!-- Contact Sensor for Terrain Feedback -->
+      <sensor name="${prefix}_contact_sensor" type="contact">
+        <always_on>true</always_on>
+        <update_rate>50</update_rate>
+        <contact>
+          <collision>${prefix}_tibia_link_collision</collision>
+        </contact>
+        <plugin name="${prefix}_contact_plugin" filename="libgazebo_ros_contact.so">
+          <ros>
+            <namespace>/</namespace>
+            <remapping>~/out:=${prefix}_contact</remapping>
+          </ros>
+        </plugin>
+      </sensor>
+    </gazebo>
   </xacro:macro>
 
   <!-- Instantiate 6 Legs -->

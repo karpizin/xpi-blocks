@@ -46,6 +46,14 @@ def generate_launch_description():
             output='screen'
         ),
 
+        # 7. Contact Bridge (for Gazebo feedback)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'contact_bridge_node.py'),
+            name='contact_bridge_node',
+            output='screen'
+        ),
+
         # 4. Viewer (link with Rviz2/Gazebo)
         Node(
             package='xpi_actuators',
