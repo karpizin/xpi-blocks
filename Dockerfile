@@ -11,8 +11,10 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install LLM dependencies via pip
+# Install LLM and project dependencies via pip
+COPY requirements.txt .
 RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir \
     openai \
     google-generativeai
