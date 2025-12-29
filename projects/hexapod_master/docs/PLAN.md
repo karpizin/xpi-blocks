@@ -27,6 +27,8 @@ The project is divided into 5 stages, each adding a new level of intelligent beh
 *   [x] Support for omnidirectional movement (sideways, backwards) and rotation.
 *   [x] Integration of terrain adaptation logic (Z-axis correction for uneven surfaces).
 *   [x] Integration of the gait engine into the ROS2 control loop.
+*   [x] Implementation of **Unit Tests** for Kinematics and Gait logic.
+*   [x] Implementation of **Integration Tests** for ROS2 nodes.
 
 ## Stage 5: Manipulation and VLM (The Action)
 *   [ ] Integration of the manipulator arm IK.
