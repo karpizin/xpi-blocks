@@ -89,6 +89,8 @@ Current Focus: Establishing core patterns for GPIO, I2C, and PWM.
 *   **CAN Bus (SocketCAN)** -> `xpi_comms/can_bridge_node`
 *   **EPEver MPPT Solar Controller** -> `blocks/power/epever_mppt`
 *   **MAX17048 Battery Gauge** -> `xpi_sensors/max17048_node`
+*   **IP5306 Power Bank IC** -> `xpi_sensors/ip5306_node`
+*   **SW6106 Power Bank IC** -> `xpi_sensors/sw6106_node`
 *   **Facial Expressions (Procedural)** -> `xpi_hci/expression_engine_node`
 *   **GPS/GNSS (NMEA UART)** -> `xpi_sensors/gps_node`
 *   **QMC5883L Magnetometer** -> `xpi_sensors/qmc5883l_node`
