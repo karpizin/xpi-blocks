@@ -30,6 +30,22 @@ def generate_launch_description():
             output='screen'
         ),
 
+        # 5. Heading Controller (Turn to Angle)
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'heading_controller_node.py'),
+            name='heading_node',
+            output='screen'
+        ),
+
+        # 6. Circular Motion Controller
+        Node(
+            package='xpi_actuators',
+            executable=os.path.join(nodes_dir, 'circular_motion_node.py'),
+            name='circular_motion_node',
+            output='screen'
+        ),
+
         # 4. Viewer (link with Rviz2/Gazebo)
         Node(
             package='xpi_actuators',

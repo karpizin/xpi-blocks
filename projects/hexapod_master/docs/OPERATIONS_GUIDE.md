@@ -51,6 +51,29 @@ Change the gait type dynamically via ROS2 parameters:
 ros2 param set /hexapod_gait_node gait_type "amble"
 ```
 
+### Turning to a Specific Angle (Heading Control)
+The robot can autonomously turn to a specific compass heading (Yaw) using IMU feedback.
+```bash
+# Turn to 90 degrees (Left) - Target is in RADIANS
+ros2 topic pub --once /hexapod/target_heading std_msgs/msg/Float32 "{data: 1.57}"
+
+# Return to 0 (Facing forward)
+ros2 topic pub --once /hexapod/target_heading std_msgs/msg/Float32 "{data: 0.0}"
+```
+
+### Circular Movement
+The robot can follow a circular path by specifying a radius and speed.
+```bash
+# 1. Set the radius (e.g., 1 meter). Positive = Left turn, Negative = Right.
+ros2 topic pub --once /hexapod/set_circle_radius std_msgs/msg/Float32 "{data: 1.0}"
+
+# 2. Set the speed to start moving (e.g., 0.1 m/s)
+ros2 topic pub --once /hexapod/set_circle_speed std_msgs/msg/Float32 "{data: 0.1}"
+
+# 3. To stop, set speed to 0
+ros2 topic pub --once /hexapod/set_circle_speed std_msgs/msg/Float32 "{data: 0.0}"
+```
+
 ### Terrain Adaptation
 To manually test uneven terrain correction for a specific leg:
 ```bash
