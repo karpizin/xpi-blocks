@@ -10,7 +10,7 @@ def generate_launch_description():
             name='meshtastic_bridge',
             parameters=[{
                 'interface': 'serial',
-                'address': '/dev/ttyUSB0', # Смените на ваш порт
+                'address': '/dev/ttyUSB0', # Change to your port
                 'node_name': 'drone_01'
             }],
             output='screen'
@@ -22,7 +22,7 @@ def generate_launch_description():
             executable='swarm_controller',
             name='swarm_controller',
             parameters=[{
-                'safe_distance': 10.0 # метры
+                'safe_distance': 10.0 # meters
             }],
             output='screen'
         )

@@ -3,7 +3,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Путь к полной URDF модели
+    # Path to the full URDF model
     urdf_file = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/urdf/hexapod.urdf'
     
     with open(urdf_file, 'r') as infp:
@@ -17,7 +17,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{'robot_description': robot_desc}]
         ),
-        # Используем GUI для ручного теста всех суставов одновременно (все 18 серв)
+        # Use GUI for manual testing of all joints simultaneously (all 18 servos)
         Node(
             package='joint_state_publisher_gui',
             executable='joint_state_publisher_gui',

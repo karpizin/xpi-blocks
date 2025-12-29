@@ -1,5 +1,5 @@
 """
-Meshtastic Driver for XPI
+Meshtastic Driver for XPI-Blocks
 
 Handles real-time telemetry, commands, and neighbor tracking.
 """
@@ -19,40 +19,42 @@ class MeshtasticDriver:
         self.address = address
         self.interface = None
         
-        # Состояние соседей (Neighbor DB)
+        # Neighbor DB state
         # ID -> { "last_seen": timestamp, "telemetry": {}, "snr": float }
         self.neighbors: Dict[str, Any] = {}
         
-        # Коллбэки для внешних систем (например, ROS2)
+        # Callbacks for external systems (e.g., ROS2)
         self.on_telemetry_received: List[Callable] = []
         self.on_command_received: List[Callable] = []
 
     def connect(self):
+        """Connects to the hardware Meshtastic device."""
         try:
             if self.interface_type == "serial":
                 self.interface = meshtastic.serial_interface.SerialInterface(self.address)
             else:
                 self.interface = meshtastic.tcp_interface.TCPInterface(self.address)
             
-            # Подписываемся на входящие пакеты от Meshtastic
+            # Subscribe to incoming packets from Meshtastic
             pub.subscribe(self._on_packet_received, "meshtastic.receive")
             logger.info(f"Successfully connected to Meshtastic @ {self.address}")
+            return True
         except Exception as e:
             logger.error(f"Failed to connect to Meshtastic: {e}")
-            raise
+            return False
 
     def _on_packet_received(self, packet, interface):
-        """Внутренний обработчик всех пакетов из Mesh."""
+        """Internal handler for all packets from the Mesh."""
         try:
             sender_id = packet.get("fromId")
             decoded = packet.get("decoded", {})
             portnum = decoded.get("portnum")
             
-            # 1. Обработка телеметрии (CUSTOM_APP порта или POSITION_APP)
+            # 1. Handle telemetry (CUSTOM_APP port or POSITION_APP)
             if portnum == "TELEMETRY_APP" or portnum == "POSITION_APP":
                 self._handle_telemetry(sender_id, decoded, packet)
             
-            # 2. Обработка текстовых сообщений (команд)
+            # 2. Handle text messages (commands)
             elif portnum == "TEXT_MESSAGE_APP":
                 payload = decoded.get("text", "")
                 self._handle_command(sender_id, payload)
@@ -61,7 +63,7 @@ class MeshtasticDriver:
             logger.error(f"Error processing packet: {e}")
 
     def _handle_telemetry(self, node_id: str, data: Dict, packet: Dict):
-        """Обновляет состояние соседа и уведомляет подписчиков."""
+        """Updates neighbor state and notifies subscribers."""
         telemetry = {
             "node_id": node_id,
             "timestamp": time.time(),
@@ -72,42 +74,50 @@ class MeshtasticDriver:
         self.neighbors[node_id] = telemetry
         
         for callback in self.on_telemetry_received:
-            callback(telemetry)
+            callback(node_id, data) # Match the expectation of meshtastic_bridge_node
 
     def _handle_command(self, sender_id: str, payload: str):
-        """Проверка и выполнение входящей команды."""
+        """Validates and executes incoming command."""
         logger.info(f"Received command from {sender_id}: {payload}")
         try:
-            # Пробуем распарсить JSON команду
+            # Try to parse JSON command
             cmd_data = json.loads(payload)
             for callback in self.on_command_received:
                 callback(sender_id, cmd_data)
         except json.JSONDecodeError:
-            # Если не JSON, передаем как строку
+            # If not JSON, pass as raw string
             for callback in self.on_command_received:
                 callback(sender_id, {"raw": payload})
 
-    def broadcast_telemetry(self, telemetry_data: Dict):
-        """Рассылка собственной телеметрии всем участникам роя."""
+    def broadcast_telemetry(self, telemetry_data: Any):
+        """Broadcasts own telemetry to all swarm participants."""
         if not self.interface:
             return
         
-        payload = json.dumps(telemetry_data)
+        if isinstance(telemetry_data, dict):
+            payload = json.dumps(telemetry_data)
+        else:
+            payload = str(telemetry_data)
+            
         self.interface.sendText(payload, wantAck=False)
         logger.debug(f"Broadcasted local telemetry: {payload}")
 
-    def send_command(self, target_node: str, command: Dict):
-        """Отправка адресной команды конкретному узлу."""
+    def send_command(self, target_node: str, command: Any):
+        """Sends a targeted command to a specific node."""
         if not self.interface:
             return
         
-        payload = json.dumps(command)
+        if isinstance(command, dict):
+            payload = json.dumps(command)
+        else:
+            payload = str(command)
+            
         self.interface.sendText(payload, destinationId=target_node, wantAck=True)
         logger.info(f"Sent command to {target_node}: {payload}")
 
     def get_neighbor_states(self) -> List[Dict]:
-        """Возвращает список актуальных состояний всех соседей."""
-        # Можно добавить фильтрацию по времени (удалять тех, кто пропал > 5 мин назад)
+        """Returns a list of current states of all neighbors."""
+        # Optional: filter by time (remove those missing for > 5 min)
         return list(self.neighbors.values())
 
     def close(self):

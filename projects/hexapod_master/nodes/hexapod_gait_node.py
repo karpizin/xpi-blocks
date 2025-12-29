@@ -14,12 +14,22 @@ class HexapodGaitNode(Node):
     def __init__(self):
         super().__init__('hexapod_gait_node')
         
-        self.gait = GaitEngine()
+        # Parameters
+        self.declare_parameter('gait_type', 'tripod')
+        self.declare_parameter('step_height', 0.03)
+        self.declare_parameter('step_length', 0.05)
+        
+        gait_type = self.get_parameter('gait_type').value
+        step_h = self.get_parameter('step_height').value
+        step_l = self.get_parameter('step_length').value
+        
+        # Initialize Gait Engine with parameters
+        self.gait = GaitEngine(step_height=step_h, step_length=step_l, gait_type=gait_type)
+        
         self.current_vel = [0.0, 0.0]
         self.current_omega = 0.0
         
         # Publishers for each leg (offsets will be summed in body_node or go separately)
-        # For simplicity, we publish to offset topics
         self.leg_pubs = {}
         leg_names = ['rf', 'rm', 'rb', 'lf', 'lm', 'lb']
         for name in leg_names:
@@ -33,7 +43,22 @@ class HexapodGaitNode(Node):
         self.last_time = time.time()
         self.create_timer(0.02, self.update_gait)
         
-        self.get_logger().info('Hexapod Gait Node (Tripod) started. Waiting for /cmd_vel')
+        # Dynamic parameter update callback
+        self.add_on_set_parameters_callback(self.parameters_callback)
+        
+        self.get_logger().info(f'Hexapod Gait Node started. Gait: {gait_type.upper()}')
+
+    def parameters_callback(self, params):
+        """Handles dynamic parameter updates."""
+        for param in params:
+            if param.name == 'gait_type':
+                self.gait.set_gait_type(param.value)
+                self.get_logger().info(f'Gait switched to: {param.value.upper()}')
+            elif param.name == 'step_height':
+                self.gait.step_height = param.value
+            elif param.name == 'step_length':
+                self.gait.step_length = param.value
+        return rclpy.node.SetParametersResult(successful=True)
 
     def cmd_callback(self, msg):
         self.current_vel = [msg.linear.x, msg.linear.y]

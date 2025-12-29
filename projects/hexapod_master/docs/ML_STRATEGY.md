@@ -1,13 +1,13 @@
-# Стратегия Машинного Обучения (ML Strategy)
+# Machine Learning Strategy
 
-## 1. Сбор данных (Imitation Learning)
-Запись телеметрии при управлении роботом классическими алгоритмами:
-*   Вход: Желаемый вектор скорости + данные IMU.
-*   Выход: Углы сервоприводов.
+## 1. Data Collection (Imitation Learning)
+Recording telemetry while controlling the robot using classical algorithms:
+*   **Input:** Desired velocity vector + IMU data.
+*   **Output:** Servo angles.
 
-## 2. Обучение с подкреплением (Reinforcement Learning)
-Основная цель: Балансировка и минимизация тряски.
-*   **Reward Function:** + за скорость по вектору, - за отклонение IMU от горизонтали, - за резкие скачки тока/напряжения на сервах.
+## 2. Reinforcement Learning
+Main Goal: Balancing and minimizing shaking.
+*   **Reward Function:** + for velocity matching the target vector, - for IMU deviation from horizontal, - for sharp spikes in servo current/voltage.
 
-## 3. Инференс
-Использование библиотеки **ONNX Runtime** или **TensorFlow Lite** для исполнения модели на CPU Raspberry Pi с частотой не менее 50 Гц.
+## 3. Inference
+Using **ONNX Runtime** or **TensorFlow Lite** to execute the model on the Raspberry Pi CPU at a frequency of at least 50 Hz.

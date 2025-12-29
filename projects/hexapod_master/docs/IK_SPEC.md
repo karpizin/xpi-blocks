@@ -1,15 +1,15 @@
-# Техническая спецификация IK (3-DOF Leg)
+# Technical Specification: Leg IK (3-DOF)
 
-## Схема сочленений
-1.  **Coxa (Бедро):** Вращение вокруг оси Z (Yaw).
-2.  **Femur (Плечо):** Вращение вокруг оси Y (Pitch).
-3.  **Tibia (Голень):** Вращение вокруг оси Y (Pitch).
+## Joint Configuration
+1.  **Coxa (Hip):** Rotation around Z-axis (Yaw).
+2.  **Femur (Shoulder):** Rotation around Y-axis (Pitch).
+3.  **Tibia (Knee):** Rotation around Y-axis (Pitch).
 
-## Математический подход
-Используем аналитическое решение:
-1.  Проекция на плоскость XY для нахождения угла Coxa.
-2.  Решение треугольника Femur-Tibia в вертикальной плоскости через теорему косинусов.
+## Mathematical Approach
+We use an analytical solution:
+1.  Projection onto the XY plane to find the Coxa angle.
+2.  Solving the Femur-Tibia triangle in the vertical plane using the Law of Cosines.
 
-## Ограничения
-*   Коллизии Tibia с корпусом.
-*   Предельные углы сервоприводов (обычно 0-180°).
+## Constraints
+*   Tibia collision with the body.
+*   Servo angle limits (typically 0-180°).

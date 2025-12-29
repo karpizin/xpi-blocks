@@ -162,7 +162,7 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `fireplace` | Pulsating red and orange embers. | Flicker intensity. | Ignored. | ✅ |
 | `calm_ocean` | Slow morphing of blue and seafoam colors. | Morph speed. | Ignored. | ✅ |
 | `sunny_forest` | Green foliage with golden sunbeam glints. | Beam movement. | Ignored. | ✅ |
-| `aurora_borealis` | Dancing изумрудный, purple and blue waves. | Dancing speed. | Ignored. | ✅ |
+| `aurora_borealis` | Dancing emerald, purple and blue waves. | Dancing speed. | Ignored. | ✅ |
 | `zen_pulse` | Ultra-slow breathing of warm white/amber. | Pulse speed. | Base color. | ✅ |
 | `morning_mist` | Drifting grey-blue and white misty clouds. | Drift speed. | Ignored. | ✅ |
 | `autumn_leaves` | Dark red carpet with occasional falling gold leaves. | Leaf frequency. | Ignored. | ✅ |

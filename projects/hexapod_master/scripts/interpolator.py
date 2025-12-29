@@ -1,40 +1,32 @@
-import time
+import numpy as np
 
 class Interpolator:
-    def __init__(self, start_val, speed=0.1):
+    def __init__(self, start_val, speed=1.0):
         """
-        start_val: начальное значение (может быть числом, списком или кортежем)
-        speed: скорость изменения единиц в секунду
+        start_val: initial value (can be a number, list, or tuple)
+        speed: rate of change in units per second
         """
-        self.current_val = np.array(start_val, dtype=float)
-        self.target_val = np.array(start_val, dtype=float)
+        self.current = np.array(start_val, dtype=float)
+        self.target = np.array(start_val, dtype=float)
         self.speed = speed
-        self.last_time = time.time()
 
     def set_target(self, target):
-        self.target_val = np.array(target, dtype=float)
+        self.target = np.array(target, dtype=float)
 
-    def update(self):
-        now = time.time()
-        dt = now - self.last_time
-        self.last_time = now
+    def update(self, dt):
+        if np.array_equal(self.current, self.target):
+            return self.current
 
-        # Вектор разницы
-        diff = self.target_val - self.current_val
+        # Difference vector
+        diff = self.target - self.current
         dist = np.linalg.norm(diff)
 
-        if dist < 0.0001:
-            self.current_val = self.target_val
-            return self.current_val
-
-        # Максимальный шаг за это время
+        # Maximum step for this time
         step = self.speed * dt
-        
-        if step >= dist:
-            self.current_val = self.target_val
+
+        if dist <= step:
+            self.current = np.copy(self.target)
         else:
-            self.current_val += (diff / dist) * step
+            self.current += (diff / dist) * step
 
-        return self.current_val
-
-import numpy as np # Нужен для векторных операций
+        return self.current

@@ -4,7 +4,7 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    # Путь к URDF файлу (используем абсолютный для простоты в данном контексте)
+    # Path to URDF file (use absolute path for simplicity in this context)
     urdf_file = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/urdf/leg.urdf'
     
     with open(urdf_file, 'r') as infp:
@@ -19,7 +19,7 @@ def generate_launch_description():
             parameters=[{'robot_description': robot_desc}]
         ),
         Node(
-            package='xpi_actuators', # Используем существующий пакет для запуска
+            package='xpi_actuators', # Use an existing package for launch
             executable='/Users/slava/Documents/xpi-blocks/projects/hexapod_master/nodes/leg_ik_viewer_node.py',
             name='leg_ik_viewer',
             output='screen'
@@ -29,6 +29,6 @@ def generate_launch_description():
             executable='rviz2',
             name='rviz2',
             output='screen',
-            # arguments=['-d', rviz_config_dir] # Можно добавить конфиг позже
+            # arguments=['-d', rviz_config_dir] # Config can be added later
         ),
     ])

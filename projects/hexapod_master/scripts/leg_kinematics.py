@@ -1,65 +1,51 @@
 import math
 
 class LegKinematics:
-    def __init__(self, l1, l2, l3):
-        """
-        Инициализация длин звеньев лапы.
-        l1: Coxa
-        l2: Femur
-        l3: Tibia
-        """
-        self.l1 = l1
-        self.l2 = l2
-        self.l3 = l3
+    def __init__(self, params):
+        """Initializes leg link lengths."""
+        self.l1 = params['l1'] # Coxa
+        self.l2 = params['l2'] # Femur
+        self.l3 = params['l3'] # Tibia
 
     def calculate_ik(self, x, y, z):
         """
-        Расчет обратной кинематики.
-        Возвращает кортеж (coxa_angle, femur_angle, tibia_angle) в радианах.
+        Calculates inverse kinematics.
+        Returns a tuple (coxa_angle, femur_angle, tibia_angle) in radians.
         """
-        # 1. Угол Coxa
-        theta1 = math.atan2(y, x)
+        # 1. Coxa Angle
+        coxa_angle = math.atan2(y, x)
 
-        # 2. Расстояния в 2D плоскости лапы
+        # 2. Distances in 2D leg plane
         r = math.sqrt(x**2 + y**2) - self.l1
         s = math.sqrt(r**2 + z**2)
 
-        # Проверка достижимости
+        # Reachability Check
         if s > (self.l2 + self.l3):
-            raise ValueError(f"Точка ({x}, {y}, {z}) вне зоны досягаемости (s={s:.2f})")
+            raise ValueError(f"Point ({x}, {y}, {z}) is out of reach (s={s:.2f})")
         if s < abs(self.l2 - self.l3):
-            raise ValueError(f"Точка ({x}, {y}, {z}) слишком близко (s={s:.2f})")
+            raise ValueError(f"Point ({x}, {y}, {z}) is too close (s={s:.2f})")
 
-        # 3. Угол Tibia (по теореме косинусов)
-        cos_gamma = (self.l2**2 + self.l3**2 - s**2) / (2 * self.l2 * self.l3)
-        # Ограничиваем точность для acos
-        cos_gamma = max(-1.0, min(1.0, cos_gamma))
-        theta3 = math.acos(cos_gamma) - math.pi
+        # 3. Tibia Angle (using Law of Cosines)
+        cos_t3 = (self.l2**2 + self.l3**2 - s**2) / (2 * self.l2 * self.l3)
+        # Precision clamping for acos
+        cos_t3 = max(-1.0, min(1.0, cos_t3))
+        tibia_angle = math.acos(cos_t3) - math.pi
 
-        # 4. Угол Femur
-        alpha1 = math.atan2(z, r)
+        # 4. Femur Angle
+        alpha = math.atan2(z, r)
         cos_beta = (self.l2**2 + s**2 - self.l3**2) / (2 * self.l2 * s)
         cos_beta = max(-1.0, min(1.0, cos_beta))
-        alpha2 = math.acos(cos_beta)
-        theta2 = alpha1 + alpha2
+        beta = math.acos(cos_beta)
+        femur_angle = alpha + beta
 
-        return theta1, theta2, theta3
+        return (coxa_angle, femur_angle, tibia_angle)
 
-    def to_degrees(self, angles):
-        return tuple(math.degrees(a) for a in angles)
-
-# Простой тест
+# Simple test
 if __name__ == "__main__":
-    # Пример параметров: Coxa=30mm, Femur=50mm, Tibia=80mm
-    leg = LegKinematics(30, 50, 80)
-    
+    # Example params: Coxa=30mm, Femur=50mm, Tibia=80mm
+    leg = LegKinematics({'l1': 30, 'l2': 50, 'l3': 80})
     try:
-        target = (80, 0, -40)
-        angles_rad = leg.calculate_ik(*target)
-        angles_deg = leg.to_degrees(angles_rad)
-        
-        print(f"Target: {target}")
-        print(f"Angles (Rad): Coxa={angles_rad[0]:.2f}, Femur={angles_rad[1]:.2f}, Tibia={angles_rad[2]:.2f}")
-        print(f"Angles (Deg): Coxa={angles_deg[0]:.2f}, Femur={angles_deg[1]:.2f}, Tibia={angles_deg[2]:.2f}")
+        angles = leg.calculate_ik(100, 0, -50)
+        print(f"Angles: {list(map(math.degrees, angles))}")
     except ValueError as e:
-        print(f"Error: {e}")
+        print(e)
