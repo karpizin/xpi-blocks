@@ -14,26 +14,49 @@ class HexapodGaitNode(Node):
     def __init__(self):
         super().__init__('hexapod_gait_node')
         
-        self.gait = GaitEngine()
+        # Parameters
+        self.declare_parameter('gait_type', 'tripod')
+        self.declare_parameter('step_height', 0.03)
+        self.declare_parameter('step_length', 0.05)
+        
+        gait_type = self.get_parameter('gait_type').value
+        step_h = self.get_parameter('step_height').value
+        step_l = self.get_parameter('step_length').value
+        
+        self.gait = GaitEngine(step_height=step_h, step_length=step_l, gait_type=gait_type)
+        
         self.current_vel = [0.0, 0.0]
         self.current_omega = 0.0
         
-        # Publishers для каждой лапы (смещения будут суммироваться в body_node или идти отдельно)
-        # Для простоты публикуем в топики смещений
+        # Publishers
         self.leg_pubs = {}
         leg_names = ['rf', 'rm', 'rb', 'lf', 'lm', 'lb']
         for name in leg_names:
             topic = f'/hexapod/{name}/gait_offset'
             self.leg_pubs[name] = self.create_publisher(Point, topic, 10)
             
-        # Subscriber для команд движения
+        # Subscriber
         self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 10)
         
-        # Таймер обновления походки (50 Гц)
+        # Timer (50 Hz)
         self.last_time = time.time()
         self.create_timer(0.02, self.update_gait)
         
-        self.get_logger().info('Hexapod Gait Node (Tripod) started. Waiting for /cmd_vel')
+        # Parameter Callback
+        self.add_on_set_parameters_callback(self.parameters_callback)
+        
+        self.get_logger().info(f'Hexapod Gait Node started. Gait: {gait_type.upper()}')
+
+    def parameters_callback(self, params):
+        for param in params:
+            if param.name == 'gait_type':
+                self.gait.set_gait_type(param.value)
+                self.get_logger().info(f'Gait switched to: {param.value.upper()}')
+            elif param.name == 'step_height':
+                self.gait.step_height = param.value
+            elif param.name == 'step_length':
+                self.gait.step_length = param.value
+        return rclpy.node.SetParametersResult(successful=True)
 
     def cmd_callback(self, msg):
         self.current_vel = [msg.linear.x, msg.linear.y]
