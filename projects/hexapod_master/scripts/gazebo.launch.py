@@ -25,10 +25,12 @@ def generate_launch_description():
     )
 
     # Gazebo Launch
-    # We include standard gazebo_ros launch
+    # We include standard gazebo_ros launch and pass our world file
+    world_file = os.path.join(project_path, 'urdf', 'hexapod_terrain.world')
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             '/opt/ros/humble/share/gazebo_ros/launch', 'gazebo.launch.py')]),
+        launch_arguments={'world': world_file}.items()
     )
 
     # Spawn Robot
