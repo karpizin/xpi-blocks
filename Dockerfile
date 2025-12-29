@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install LLM dependencies via pip
-RUN pip3 install --no-cache-dir \
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --no-cache-dir \
     openai \
     google-generativeai
 
@@ -29,7 +30,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Build the workspace
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build"
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --merge-install --event-handlers console_direct+"
 
 # Add sourcing to bashrc for interactive shells
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
