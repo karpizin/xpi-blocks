@@ -7,7 +7,17 @@ on:
     branches: [ main, master, develop ]
 
 jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Ruff
+        run: pip install ruff
+      - name: Run Ruff
+        run: ruff check src/
+
   build-and-test:
+    needs: linting
     runs-on: ubuntu-22.04
     permissions:
       contents: read
