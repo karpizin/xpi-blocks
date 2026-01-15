@@ -21,7 +21,11 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ## ✅ Implemented
 
 ### Communication & Comms (Wireless & Wired)
-...
+*   **Serial Terminal Interpreter** -> `xpi_comms/serial_node`
+*   **MQTT Bridge (Standardized Telemetry)** -> `xpi_comms/mqtt_bridge`
+*   **Websocket Streamer (Video/Data)** -> `xpi_comms/websocket_node`
+*   **LoRa Gateway Integration (SX1276)** -> `xpi_comms/lora_node`
+*   **CAN Bus Interface (MCP2515)** -> `xpi_comms/can_bus_node`
 *   **RTK GPS Integration (u-blox ZED-F9P)** -> `xpi_sensors/gps_rtk_node`
 *   **NTRIP Client (RTCM Corrections)** -> `xpi_sensors/ntrip_client_node`
 
@@ -71,7 +75,23 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 *   **W25Qxx Flash (SPI)** -> `xpi_commons/w25qxx_node`
 
 ### Actuators & HCI
-...
+*   **#7 PCA9685 (16-Ch PWM I2C)** -> `xpi_actuators/pca9685_node`
+*   **WS2812B (NeoPixel) Effects Library** -> `xpi_actuators/ws2812_driver`
+*   **Status Indicator (USIS Standard)** -> `xpi_actuators/status_indicator_node`
+*   **LCD 1602 / OLED SSD1306 (I2C)** -> `xpi_actuators/lcd1602_node`
+*   **Stepper Drivers (A4988 / ULN2003)** -> `xpi_actuators/a4988_driver`
+*   **L298/L293 DC Motor Drivers** -> `xpi_actuators/l298_driver`
+*   **Direct GPIO Servo** -> `xpi_actuators/direct_servo`
+*   **Buzzer / RTTTL Melodies** -> `xpi_actuators/buzzer_node`
+
+### AI & LLM
+*   **Tool Calling / Function Calling** -> `xpi_llm/tool_calling`
+*   **Audio Pattern Analyzer (LLM)** -> `xpi_llm/audio_analyzer_node`
+*   **Voice Output (Piper TTS)** -> `xpi_audio/piper_tts_node`
+*   **Speech-to-Text (Whisper)** -> `xpi_audio/whisper_stt_node`
+*   **Sonar Trend Analysis** -> `xpi_llm/sonar_trend_analyzer`
+*   **Facial Expressions (Procedural HCI)** -> `xpi_hci/expression_engine_node`
+
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **MLX90640 Thermal Camera** - 32x24 pixel IR array.
