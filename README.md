@@ -6,6 +6,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Repo Size](https://img.shields.io/github/repo-size/karpizin/xpi-blocks?style=flat-square&color=blue)](https://github.com/karpizin/xpi-blocks)
 
 [![Hardware](https://img.shields.io/badge/Hardware-RPi%204%20%7C%205%20%7C%20Zero%202W-green?style=for-the-badge&logo=raspberrypi)](ROADMAP.md)
@@ -69,10 +70,19 @@ colcon test-result --verbose
 
 ## 📈 Project Roadmap & Capabilities
 *   [🚀 Project Capabilities](docs/CAPABILITIES.md) — High-level feature overview.
-*   [🎮 Desktop Simulation Guide](docs/SIMULATION_DESKTOP.md) — Run XPI-Blocks in Gazebo on your PC.
 *   [📚 Library Index](docs/BLOCKS_INDEX.md) — Direct links to all implemented blocks.
 *   [🗺️ Device Roadmap](ROADMAP.md) — List of targeted and completed devices.
 *   [🤖 LLM Scenarios](docs/LLM_VLM_SCENARIOS.md) — Plan for AI integration.
 
-## 🤝 Contact
-Developer: Viacheslav Karpizin (viacheslav.karpizin@gmail.com)
+## 🤝 Community & Contributing
+We welcome contributions from the community! Whether you are fixing a bug or adding a new device driver, please refer to our guidelines:
+*   [🌿 Contributing Guidelines](CONTRIBUTING.md) — How to get started.
+*   [📜 Code of Conduct](CODE_OF_CONDUCT.md) — Standards for our community.
+*   [🛡️ Security Policy](SECURITY.md) — How to report vulnerabilities.
+
+## 👥 Maintainers
+*   **Viacheslav Karpizin** ([@karpizin](https://github.com/karpizin)) — Lead Architect.
+*   **vcb88** ([@vcb88](https://github.com/vcb88)) — CI/CD & Infrastructure.
+
+## ⚖️ License
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
