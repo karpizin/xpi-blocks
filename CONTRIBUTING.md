@@ -6,9 +6,10 @@ To maintain high quality and consistency, we ask all contributors to follow thes
 
 ## 🌿 Branching Strategy
 
-We use a simple branching model:
-*   **main**: The stable branch. Do not commit directly to `main`.
-*   **feature/name**: For new device drivers or major features.
+We use a standard branching model:
+*   **main**: The stable branch. Represents the latest production-ready state.
+*   **develop**: The integration branch for new features. All Pull Requests should be targeted here.
+*   **feature/name**: For new device drivers or major features. Created from `develop`.
 *   **fix/name**: For bug fixes.
 *   **docs/name**: For documentation improvements.
 
@@ -35,11 +36,12 @@ Every new device driver must include a documentation folder in `blocks/<category
 
 ## 🚀 Pull Request Process
 
-1.  **Fork the repository** and create your branch from `main`.
+1.  **Fork the repository** and create your branch from `develop`.
 2.  **Verify on Hardware**: If you are adding a driver, you *must* test it on a physical Raspberry Pi with the actual device.
 3.  **Update Roadmap**: If adding a new device, move it from "Backlog" to "Implemented" in `ROADMAP.md`.
-4.  **Submit PR**: Describe what you've added, provide a log of the node running successfully, and link any related issues.
-5.  **Code Review**: At least one maintainer must review and approve your PR before merging.
+4.  **Submit PR**: Target your PR to the **develop** branch. Describe what you've added, provide a log of the node running successfully, and link any related issues.
+5.  **Code Review**: At least one maintainer must review and approve your PR before merging into `develop`.
+6.  **Release**: Periodically, `develop` will be merged into `main` for stable releases.
 
 ## 🛠 Development Environment
 
