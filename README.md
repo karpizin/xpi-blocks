@@ -70,6 +70,7 @@ colcon test-result --verbose
 
 ## 📈 Project Roadmap & Capabilities
 *   [🚀 Project Capabilities](docs/CAPABILITIES.md) — High-level feature overview.
+*   [🎮 Desktop Simulation Guide](docs/SIMULATION_DESKTOP.md) — Run XPI-Blocks in Gazebo on your PC.
 *   [📚 Library Index](docs/BLOCKS_INDEX.md) — Direct links to all implemented blocks.
 *   [🗺️ Device Roadmap](ROADMAP.md) — List of targeted and completed devices.
 *   [🤖 LLM Scenarios](docs/LLM_VLM_SCENARIOS.md) — Plan for AI integration.
