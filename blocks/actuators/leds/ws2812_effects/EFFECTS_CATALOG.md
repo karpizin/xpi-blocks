@@ -31,11 +31,10 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `rainbow_strobe` | Strobe effect, but each flash is a different rainbow color. | Frequency (Hz). | Ignored. | ✅ |
 | `rainbow_chase` | Segments of rainbow colors "run" along the strip. | Movement speed. | Ignored. | ✅ |
 | `glitter_rainbow`| `rainbow_cycle` with random white pixels flashing (glitter). | Speed of rainbow movement. | Ignored. | ✅ |
-| `pastel_rainbow` | Softer, less saturated rainbow gradient. | Movement speed. | Ignored. | ❌ |
-| `neon_rainbow` | High contrast, limited palette rainbow (Pink, Cyan, Lime). | Movement speed. | Ignored. | ❌ |
+| `pastel_rainbow` | Softer, less saturated rainbow gradient. | Movement speed. | Ignored. | ✅ |
+| `neon_rainbow` | High contrast, limited palette rainbow (Pink, Cyan, Lime). | Movement speed. | Ignored. | ✅ |
 | `vertical_rainbow`| For matrices: Rainbow gradient flows vertically. | Movement speed. | Ignored. | ❌ |
-| `double_rainbow` | Two rainbow gradients starting from ends and meeting in center. | Movement speed. | Ignored. | ❌ |
-
+| `double_rainbow` | Two rainbow gradients starting from ends and meeting in center. | Movement speed. | Ignored. | ✅ |
 ## 🏃 Group 3: Chases & Scanners
 | Effect ID | Visual Description | Speed Param | Color Param | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -43,16 +42,16 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `reverse_wipe` | `color_wipe` but from end to start. | Fill speed. | Fill color. | ✅ |
 | `wipe_random` | `color_wipe` but with a random color each cycle. | Fill speed. | Ignored. | ✅ |
 | `theater_chase` | "Marching ants" effect. Every 3rd pixel is on, pattern moves. | Movement speed. | Pattern color. | ✅ |
-| `theater_chase_rainbow` | `theater_chase` but the pixels cycle rainbow colors. | Movement speed. | Ignored. | ❌ |
+| `theater_chase_rainbow` | `theater_chase` but the pixels cycle rainbow colors. | Movement speed. | Ignored. | ✅ |
 | `larson_scanner` | "KITT" / "Cylon" effect. A packet of light bounces back and forth with a fading trail. | Movement speed. | Scanner color (usually Red). | ✅ |
-| `kitt_scanner` | Similar to Larson, but specifically mimics the Knight Rider car pattern. | Movement speed. | Scanner color. | ❌ |
+| `kitt_scanner` | Similar to Larson, but specifically mimics the Knight Rider car pattern. | Movement speed. | Scanner color. | ✅ |
 | `comet` | A single dot with a long fading tail moving in one direction. | Speed. | Comet color. | ✅ |
 | `bounce` | A simple dot bouncing off the edges (no tail). | Speed. | Dot color. | ✅ |
 | `dual_scan` | Two Larson Scanners starting from ends and crossing in the middle. | Speed. | Scanner color. | ✅ |
 | `train` | A solid block of pixels moving around the strip. | Speed. | Train color. | ✅ |
-| `snake` | A snake that grows, moves, and shrinks (like the game). | Speed. | Snake color. | ❌ |
-| `pac_man` | A yellow dot chased by a ghost dot. | Speed. | Ignored. | ❌ |
-| `conveyor_belt` | Pattern shifts continuously. | Speed. | Pattern. | ❌ |
+| `snake` | A snake that grows, moves, and shrinks (like the game). | Speed. | Snake color. | ✅ |
+| `pac_man` | A yellow dot chased by a ghost dot. | Speed. | Ignored. | ✅ |
+| `conveyor_belt` | Pattern shifts continuously. | Speed. | Pattern. | ✅ |
 | `marquee` | Theater style border lights effect. | Speed. | Color. | ✅ |
 
 ## ✨ Group 4: Sparkles & Weather
@@ -60,15 +59,14 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | :--- | :--- | :--- | :--- | :--- |
 | `sparkle` | Strip is black. Random pixels flash briefly. | Probability/Frequency of sparkles. | Sparkle color. | ✅ |
 | `snow_sparkle` | Strip is Background Color. Random pixels flash White. | Probability/Frequency. | Background color (e.g., Gray). | ✅ |
-| `rain` | Blue pixels "fall" from one end to the other, dimming out. | Rain speed. | Rain color (usually Blue). | ❌ |
-| `meteor_rain` | Bright head, decaying trail, falling effect. | Speed. | Meteor color. | ❌ |
+| `rain` | Blue pixels "fall" from one end to the other, dimming out. | Rain speed. | Rain color (usually Blue). | ✅ |
+| `meteor_rain` | Bright head, decaying trail, falling effect. | Speed. | Meteor color. | ✅ |
 | `fireflies` | Pixels slowly fade in and out at random locations (soft sparkle). | Fade speed. | Firefly color (Yellow/Green). | ✅ |
 | `twinkle` | Pixels flicker at different rates. | Flicker speed. | Base color. | ✅ |
-| `twinkle_random` | `twinkle` with random colors. | Flicker speed. | Ignored. | ❌ |
+| `twinkle_random` | `twinkle` with random colors. | Flicker speed. | Ignored. | ✅ |
 | `lightning` | Entire strip or large sections flash randomly like lightning storms. | Storm intensity. | Flash color (White/Purple). | ✅ |
-| `storm` | Dark pulsating background with occasional lightning flashes. | Pulse speed. | Background color. | ❌ |
-| `snowfall` | Pixels fall and "stack up" at the bottom of the strip. | Fall speed. | Snow color (White). | ❌ |
-| `drizzle` | Fast, short, dim droplets falling. | Speed. | Color. | ❌ |
+| `storm` | Dark pulsating background with occasional lightning flashes. | Pulse speed. | Background color. | ✅ |
+| `snowfall` | Pixels fall and "stack up" at the bottom of the strip. | Fall speed. | Snow color (White). | ✅ || `drizzle` | Fast, short, dim droplets falling. | Speed. | Color. | ❌ |
 | `confetti` | Random colored pixels appear and fade. | Density. | Ignored. | ❌ |
 | `popcorn` | Pixels "jump" up from bottom and fall back. | Gravity/Speed. | Color. | ❌ |
 | `explosion` | Bright flash in center expanding outwards and fading. | Expansion speed. | Explosion color. | ❌ |
@@ -80,9 +78,8 @@ Adjust parameters via `~/set_speed` (Float32) and `~/set_color` (ColorRGBA).
 | `fire` | Realistic fire simulation (Heat map algorithm). Hot at bottom, cooling up. | Cooling rate / Sparking chance. | Ignored (Always Red/Orange/Yellow). | ✅ |
 | `blue_fire` | `fire` algorithm mapped to Blue/Cyan/White palette. | Cooling rate. | Ignored. | ✅ |
 | `ice_fire` | `fire` algorithm mapped to White/Blue palette. | Cooling rate. | Ignored. | ✅ |
-| `lava` | Slowly morphing red/black blobs. | Flow speed. | Ignored. | ❌ |
-| `water` | Flowing waves of blue/aqua. | Flow speed. | Ignored. | ✅ |
-| `ripple` | A wave (pulse) originates from center/random and spreads out. | Wave speed. | Water color. | ❌ |
+| `lava` | Slowly morphing red/black blobs. | Flow speed. | Ignored. | ✅ |
+| `water` | Flowing waves of blue/aqua. | Flow speed. | Ignored. | ✅ || `ripple` | A wave (pulse) originates from center/random and spreads out. | Wave speed. | Water color. | ❌ |
 | `plasma` | Psychedelic interference pattern of sine waves. | Animation speed. | Ignored. | ✅ |
 | `bubble` | Individual pixels "bubble" up from bottom to top. | Rise speed. | Bubble color. | ✅ |
 | `bouncing_balls` | Multiple dots falling and bouncing with gravity. | Gravity/Simulation speed. | Ball color. | ❌ |

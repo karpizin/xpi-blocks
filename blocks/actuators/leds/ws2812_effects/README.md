@@ -82,39 +82,39 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Rainbow Strobe** - Fast rainbow flashes.
 *   [x] **Rainbow Chase** - Running rainbow segments.
 *   [x] **Glitter Rainbow** - Sparkling rainbow.
-*   [ ] **Pastel Rainbow**
-*   [ ] **Neon Rainbow**
+*   [x] **Pastel Rainbow**
+*   [x] **Neon Rainbow**
 *   [ ] **Vertical Rainbow**
-*   [ ] **Double Rainbow**
+*   [x] **Double Rainbow**
 
 ### 🏃 Group 3: Chases & Scanners
 *   [x] **Color Wipe** - Sequential filling.
 *   [x] **Reverse Wipe** - Filling from end to start.
 *   [x] **Wipe Random** - Filling with random colors.
 *   [x] **Theater Chase** - Marching ants.
-*   [ ] **Theater Chase Rainbow**
+*   [x] **Theater Chase Rainbow**
 *   [x] **Larson Scanner** - Cylon/KITT eye.
-*   [ ] **KITT Scanner**
+*   [x] **KITT Scanner**
 *   [x] **Comet** - Single dot with fading trail.
 *   [x] **Bounce** - Bouncing dot.
 *   [x] **Dual Scan** - Two crossing scanners.
 *   [x] **Train** - Block of pixels moving.
-*   [ ] **Snake**
-*   [ ] **Pac-Man**
-*   [ ] **Conveyor Belt**
+*   [x] **Snake**
+*   [x] **Pac-Man**
+*   [x] **Conveyor Belt**
 *   [x] **Marquee** - Theater border effect.
 
 ### ✨ Group 4: Sparkles & Weather
 *   [x] **Sparkle** - Random white flashes.
 *   [x] **Snow Sparkle** - Random flashes on background.
-*   [ ] **Rain**
-*   [ ] **Meteor Rain**
+*   [x] **Rain**
+*   [x] **Meteor Rain**
 *   [x] **Fireflies** - Glowing and fading spots.
 *   [x] **Twinkle** - Random pixel flickering.
-*   [ ] **Twinkle Random**
+*   [x] **Twinkle Random**
 *   [x] **Lightning** - Random storm flashes.
-*   [ ] **Storm**
-*   [ ] **Snowfall**
+*   [x] **Storm**
+*   [x] **Snowfall**
 *   [ ] **Drizzle**
 *   [ ] **Confetti**
 *   [ ] **Popcorn**
@@ -125,7 +125,7 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Fire** - Burning fire simulation.
 *   [x] **Blue Fire** - Blue flame.
 *   [x] **Ice Fire** - White/Cyan flame.
-*   [ ] **Lava**
+*   [x] **Lava**
 *   [x] **Water** - Flowing sine waves.
 *   [ ] **Ripple**
 *   [x] **Plasma** - Morphing color blobs.
@@ -153,27 +153,27 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 
 ### 📊 Group 6: Utility
 *   [x] **Progress Bar** - Linear fill based on `speed` (0-100).
-*   [ ] **Battery Charge**
-*   [ ] **Loading Spinner**
+*   [x] **Battery Charge**
+*   [x] **Loading Spinner**
 *   [ ] **Pulse Indicator**
-*   [ ] **Traffic Light**
+*   [x] **Traffic Light**
 *   [x] **Police Lights** - Red/Blue strobe.
-*   [ ] **Ambulance**
-*   [ ] **Construction**
-*   [ ] **Error Alert**
-*   [ ] **Success**
+*   [x] **Ambulance**
+*   [x] **Construction**
+*   [x] **Error Alert**
+*   [x] **Success**
 
 ### 🎨 Group 7: Palettes & Themes
-*   [ ] **Cyberpunk**
-*   [ ] **Halloween**
-*   [ ] **Christmas**
+*   [x] **Cyberpunk**
+*   [x] **Halloween**
+*   [x] **Christmas**
 *   [ ] **USA/Flag**
 *   [ ] **Jungle**
-*   [ ] **Ocean**
-*   [ ] **Heatmap**
-*   [ ] **Sunset**
+*   [x] **Ocean**
+*   [x] **Heatmap**
+*   [x] **Sunset**
 *   [ ] **Zebra**
-*   [ ] **Party**
+*   [x] **Party**
 
 ### 📐 Group 8: Math & Audio
 *   [ ] **Sine Wave**
@@ -188,16 +188,16 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [ ] **Dissolve**
 
 ### 👾 Group 9: Special
-*   [ ] **Matrix (Digital Rain)**
-*   [ ] **DNA**
+*   [x] **Matrix (Digital Rain)**
+*   [x] **DNA**
 *   [ ] **Tetris**
-*   [ ] **Radar**
+*   [x] **Radar**
 *   [ ] **Clock**
-*   [ ] **Morse Code Message**
-*   [ ] **TV Static**
+*   [x] **Morse Code Message**
+*   [x] **TV Static**
 *   [ ] **Fairy Dust**
-*   [ ] **Heartbeat Sensor (ECG)**
-*   [ ] **Off**
+*   [x] **Heartbeat Sensor (ECG)**
+*   [x] **Off**
 
 ## ⚠️ Troubleshooting
 *   **"Can't open /dev/mem":** You are not running as root. Use `sudo`.
