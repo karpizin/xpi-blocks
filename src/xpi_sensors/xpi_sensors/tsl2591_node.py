@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 import adafruit_tsl2591
 
 import rclpy
@@ -41,20 +39,32 @@ class TSL2591Node(Node):
             self.sensor = adafruit_tsl2591.TSL2591(i2c)
             
             # Set Gain
-            if gain_str == 'LOW': self.sensor.gain = adafruit_tsl2591.GAIN_LOW
-            elif gain_str == 'MEDIUM': self.sensor.gain = adafruit_tsl2591.GAIN_MED
-            elif gain_str == 'HIGH': self.sensor.gain = adafruit_tsl2591.GAIN_HIGH
-            elif gain_str == 'MAX': self.sensor.gain = adafruit_tsl2591.GAIN_MAX
-            else: self.get_logger().warn(f"Unknown gain '{gain_str}', using MEDIUM.")
+            if gain_str == 'LOW':
+                self.sensor.gain = adafruit_tsl2591.GAIN_LOW
+            elif gain_str == 'MEDIUM':
+                self.sensor.gain = adafruit_tsl2591.GAIN_MED
+            elif gain_str == 'HIGH':
+                self.sensor.gain = adafruit_tsl2591.GAIN_HIGH
+            elif gain_str == 'MAX':
+                self.sensor.gain = adafruit_tsl2591.GAIN_MAX
+            else:
+                self.get_logger().warn(f"Unknown gain '{gain_str}', using MEDIUM.")
 
             # Set Integration Time
-            if int_time_str == '100MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_100MS
-            elif int_time_str == '200MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_200MS
-            elif int_time_str == '300MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_300MS
-            elif int_time_str == '400MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_400MS
-            elif int_time_str == '500MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_500MS
-            elif int_time_str == '600MS': self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_600MS
-            else: self.get_logger().warn(f"Unknown integration time '{int_time_str}', using 100MS.")
+            if int_time_str == '100MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_100MS
+            elif int_time_str == '200MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_200MS
+            elif int_time_str == '300MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_300MS
+            elif int_time_str == '400MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_400MS
+            elif int_time_str == '500MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_500MS
+            elif int_time_str == '600MS':
+                self.sensor.integration_time = adafruit_tsl2591.INTEGRATIONTIME_600MS
+            else:
+                self.get_logger().warn(f"Unknown integration time '{int_time_str}', using 100MS.")
 
             self.get_logger().info(f"TSL2591 Initialized. Gain: {gain_str}, Int. Time: {int_time_str}")
 
