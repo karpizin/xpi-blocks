@@ -40,12 +40,6 @@ class WebJoystickNode(Node):
         # We try both or rely on ament resource index, but simple path check is robust enough for python node.
         
         self.html_content = ""
-        possible_paths = [
-            os.path.join(os.path.dirname(__file__), '../../web_static/index.html'), # Dev
-            os.path.join(os.getcwd(), 'src/xpi_inputs/web_static/index.html'), # From root
-            '/opt/ros/humble/share/xpi_inputs/web_static/index.html', # Install (example)
-            os.path.join(os.path.dirname(__file__), '../web_static/index.html') # Relative package
-        ]
         
         # Dynamic lookup using ament_index is better but let's try direct read first
         # Actually, in ROS2 python packages, data_files put things in share/package/
