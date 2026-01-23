@@ -151,7 +151,8 @@ class LTEModemNode(Node):
             msg.header.frame_id = "gps_link"
             msg.latitude = latitude
             msg.longitude = longitude
-            if data[6]: msg.altitude = float(data[6])
+            if data[6]:
+                msg.altitude = float(data[6])
             
             self.gps_pub.publish(msg)
         except Exception:

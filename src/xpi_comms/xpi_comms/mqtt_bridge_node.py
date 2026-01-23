@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import time
 import paho.mqtt.client as mqtt
 import rclpy
 from rclpy.node import Node
