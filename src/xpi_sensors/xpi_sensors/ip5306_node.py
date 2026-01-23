@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int32, Bool, Float32
+from std_msgs.msg import Int32, Bool
 from sensor_msgs.msg import BatteryState
 import smbus2
 
@@ -34,7 +34,8 @@ class IP5306Node(Node):
         self.timer = self.create_timer(1.0 / rate, self.timer_callback)
 
     def read_battery_level(self):
-        if not self.bus: return 0
+        if not self.bus:
+            return 0
         try:
             # Register 0x78 contains fuel level (0-100)
             # Some versions use different registers, but 0x78 is common for IP5306 I2C version
@@ -44,7 +45,8 @@ class IP5306Node(Node):
             return -1
 
     def is_charging(self):
-        if not self.bus: return False
+        if not self.bus:
+            return False
         try:
             # Register 0x70 bit 3 is charging status
             stat = self.bus.read_byte_data(self.address, 0x70)
@@ -54,7 +56,8 @@ class IP5306Node(Node):
 
     def timer_callback(self):
         level = self.read_battery_level()
-        if level < 0: return
+        if level < 0:
+            return
 
         msg = BatteryState()
         msg.header.stamp = self.get_clock().now().to_msg()

@@ -3,7 +3,6 @@ from rclpy.node import Node
 from sensor_msgs.msg import Temperature
 from xpi_commons.i2c_helper import get_smbus
 import time
-import struct
 import math
 
 class LM75ANode(Node):

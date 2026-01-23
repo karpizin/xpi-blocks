@@ -38,7 +38,8 @@ class LD19Node(Node):
         self.create_timer(0.001, self.read_and_parse)
 
     def read_and_parse(self):
-        if not self.ser.is_open: return
+        if not self.ser.is_open:
+            return
 
         # Protocol LD19: Packet starts with 0x54, length 0x2C (44 bytes)
         while self.ser.in_waiting >= 44:
@@ -51,7 +52,6 @@ class LD19Node(Node):
         # Data format: 
         # [Speed(2)][StartAngle(2)][Data(12*3)][EndAngle(2)][Timestamp(2)][CRC(1)]
         # Total 44 bytes (2 read already)
-        speed = struct.unpack('<H', data[0:2])[0]
         start_angle = struct.unpack('<H', data[2:4])[0] / 100.0
         
         # 12 points of (distance, intensity)
@@ -81,7 +81,8 @@ class LD19Node(Node):
             self.last_angle = angle
 
     def publish_scan(self):
-        if not self.points: return
+        if not self.points:
+            return
         
         # Sort points by angle
         self.points.sort(key=lambda x: x[0])
