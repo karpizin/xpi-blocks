@@ -1,9 +1,8 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String, Float32, Bool
+from std_msgs.msg import String, Float32
 from .llm_clients import llm_client_factory
 import sounddevice as sd
-import numpy as np
 import scipy.io.wavfile as wav
 import io
 import os

@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import String, Empty
+from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 import threading
-import time
 import os
 from xpi_llm.llm_clients import llm_client_factory
 
@@ -109,7 +107,7 @@ class VLMObserverNode(Node):
             image_bytes = encoded_img.tobytes()
 
             # Call VLM
-            self.get_logger().info(f"Sending image to VLM...")
+            self.get_logger().info("Sending image to VLM...")
             response, _ = self.llm_client.generate(prompt, image_data=image_bytes)
 
             self.get_logger().info(f"VLM Response: {response}")

@@ -8,7 +8,7 @@ import math
 
 # Try to import the hardware library
 try:
-    from pmw3901 import PMW3901, PAA5100
+    from pmw3901 import PMW3901
     HAS_HARDWARE = True
 except ImportError:
     HAS_HARDWARE = False

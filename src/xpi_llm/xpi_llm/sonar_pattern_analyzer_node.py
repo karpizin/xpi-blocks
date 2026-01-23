@@ -3,10 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import String
 from xpi_llm.llm_clients import llm_client_factory, LLMClient
-import numpy as np
-import os
 import threading
-import time
 import math
 
 class SonarPatternAnalyzerNode(Node):

@@ -1,8 +1,8 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String, Bool, Float32, Int32, Float32MultiArray
+from std_msgs.msg import String, Bool, Float32, Int32
 from sensor_msgs.msg import Temperature, RelativeHumidity, Illuminance, BatteryState
-from xpi_llm.llm_clients import llm_client_factory, LLMClient
+from xpi_llm.llm_clients import llm_client_factory
 import json
 import os
 import threading
