@@ -21,7 +21,7 @@ class HexapodBodyNode(Node):
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
-        self.body_ik = BodyKinematics(self.config['legs'])
+        self.body_ik = BodyKinematics(self.config)
         
         # 2. Interpolator for pose (x, y, z, roll, pitch, yaw)
         # Initial height is taken from config
@@ -84,17 +84,20 @@ class HexapodBodyNode(Node):
         rotation = curr_pose[3:6]
         
         # 2. Calculate IK
-        results = self.body_ik.calculate_body_ik(translation, rotation)
-        
-        # 3. Publish leg targets (Base + Gait offset)
-        for leg_name, pos in results.items():
-            p_msg = Point()
-            # Sum body IK result and gait offset
-            g_off = self.gait_offsets.get(leg_name, [0.0, 0.0, 0.0])
-            p_msg.x = pos['x'] + g_off[0]
-            p_msg.y = pos['y'] + g_off[1]
-            p_msg.z = pos['z'] + g_off[2]
-            self.leg_pubs[leg_name].publish(p_msg)
+        try:
+            results = self.body_ik.calculate_body_ik(translation, rotation)
+            
+            # 3. Publish leg targets (Base + Gait offset)
+            for leg_name, pos in results.items():
+                p_msg = Point()
+                # Sum body IK result and gait offset
+                g_off = self.gait_offsets.get(leg_name, [0.0, 0.0, 0.0])
+                p_msg.x = pos['x'] + g_off[0]
+                p_msg.y = pos['y'] + g_off[1]
+                p_msg.z = pos['z'] + g_off[2]
+                self.leg_pubs[leg_name].publish(p_msg)
+        except ValueError as e:
+            self.get_logger().warning(f'Body IK Error: {e}. Body pose might be too extreme.')
 
 def main(args=None):
     rclpy.init(args=args)

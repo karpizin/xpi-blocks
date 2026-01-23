@@ -1,5 +1,11 @@
-# Hexapod Geometry Configuration
-# Coordinates of leg attachment points (Coxa joints) relative to body center (in meters)
+# Hexapod Geometry Configuration (in meters)
+# l1: Coxa, l2: Femur, l3: Tibia
+dimensions:
+  l1: 0.03
+  l2: 0.05
+  l3: 0.08
+
+default_height: 0.08 # Default standing height
 
 legs:
   leg_rf: {x: 0.12, y: -0.08, z: 0, angle: -0.785}  # Right Front (-45 deg)
