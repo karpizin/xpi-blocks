@@ -26,6 +26,7 @@ class GaitEngine:
         self.contacts = {name: False for name in self.leg_names}
         self.contact_heights = {name: 0.0 for name in self.leg_names}
         self.last_leg_phases = {name: 0.0 for name in self.leg_names}
+        self.current_leg_phases = {name: 0.0 for name in self.leg_names} # Added for external access
         
         # Leg groups/offsets configuration
         self.gait_configs = {
@@ -75,11 +76,22 @@ class GaitEngine:
         ]
         return res
 
-    def register_contact(self, leg_name, current_z):
-        # ... (rest of method unchanged)
+    def register_contact(self, leg_name, current_z, leg_phase):
+        """
+        Called when a leg contact sensor triggers.
+        leg_phase: current phase of this specific leg (0.0 to 1.0)
+        """
+        config = self.gait_configs.get(self.gait_type, self.gait_configs[self.TRIPOD])
+        swing_dur = config['swing_duration']
+
         if leg_name in self.contacts:
-            self.contacts[leg_name] = True
-            self.contact_heights[leg_name] = current_z
+            # Only lock contact if:
+            # 1. We are in the second half of swing (descending)
+            # 2. OR we are in stance phase
+            if (leg_phase > (swing_dur * 0.5) and leg_phase < swing_dur) or (leg_phase >= swing_dur):
+                self.contacts[leg_name] = True
+                self.contact_heights[leg_name] = current_z
+
 
     def calculate_offsets(self, velocity, omega, dt):
         """
@@ -102,6 +114,7 @@ class GaitEngine:
         for leg_name in self.leg_names:
             phase_shift = config['offsets'].get(leg_name, 0.0)
             leg_phase = (self.phase + phase_shift) % 1.0
+            self.current_leg_phases[leg_name] = leg_phase # Save current phase
             
             # Detect new swing cycle to reset contact
             if leg_phase < self.last_leg_phases[leg_name]:

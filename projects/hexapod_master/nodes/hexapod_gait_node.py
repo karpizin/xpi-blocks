@@ -89,8 +89,10 @@ class HexapodGaitNode(Node):
         idx = int(msg.x)
         if 0 <= idx < 6:
             name = leg_names[idx]
-            # Register contact in the engine for Ground Search logic
-            self.gait.register_contact(name, msg.z)
+            # Get current phase for this leg from engine
+            leg_phase = self.gait.current_leg_phases.get(name, 0.0)
+            # Register contact in the engine with phase check
+            self.gait.register_contact(name, msg.z, leg_phase)
 
     def update_gait(self):
         now = time.time()
