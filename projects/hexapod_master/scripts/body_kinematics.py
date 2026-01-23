@@ -40,27 +40,27 @@ class BodyKinematics:
         leg_results = {}
 
         for name, origin in self.leg_origins.items():
-            # 1. Leg mount position in body coordinate system
-            p_origin = np.array([origin['x'], origin['y'], origin['z']])
+            # 1. Leg mount position in body coordinate system (fixed)
+            p_mount_body = np.array([origin['x'], origin['y'], origin['z']])
             
-            # 2. Foot position in the world (Neutral stance)
-            p_foot_world = p_origin + np.array([math.cos(origin['angle']) * self.neutral_reach, 
-                                               math.sin(origin['angle']) * self.neutral_reach, 
-                                               -self.default_height])
+            # 2. Neutral foot position in the world (Ground target)
+            # Calculated once or assumed fixed relative to ground
+            p_foot_world = p_mount_body + np.array([math.cos(origin['angle']) * self.neutral_reach, 
+                                                   math.sin(origin['angle']) * self.neutral_reach, 
+                                                   -self.default_height])
 
-            # 3. New mount position after body movement
-            p_origin_new = R_body @ p_origin + T_body
+            # 3. Transform world foot position into the CURRENT rotated/translated body frame
+            # Formula: p_rel_body = R_body^T * (p_foot_world - T_body) - p_mount_body
+            p_foot_rel_body = R_body.T @ (p_foot_world - T_body) - p_mount_body
             
-            # 4. Vector from new mount to foot (in world coordinate system relative to mount)
-            foot_rel = p_foot_world - p_origin_new
-            
-            # 5. Rotate this vector into the leg's local coordinate system
+            # 4. Rotate this vector into the leg's local coordinate system
+            # So the leg's X axis always points "away from the body" along its mount angle
             inv_angle = -origin['angle']
             R_leg = np.array([[math.cos(inv_angle), -math.sin(inv_angle), 0],
                              [math.sin(inv_angle), math.cos(inv_angle), 0],
                              [0, 0, 1]])
             
-            foot_local = R_leg @ foot_rel
+            foot_local = R_leg @ p_foot_rel_body
             
             leg_results[name] = {
                 'x': foot_local[0],
