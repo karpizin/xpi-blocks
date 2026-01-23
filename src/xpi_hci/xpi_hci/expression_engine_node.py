@@ -49,7 +49,7 @@ class ExpressionEngineNode(Node):
                 # Add aliases for animated versions if not in YAML
                 if "IDLE_ANIMATED" not in data: data["IDLE_ANIMATED"] = data["NEUTRAL"]
                 return data
-        except Exception as e:
+        except Exception:
             return {"NEUTRAL": [0, 0, 1.0, 0, 0, 0, 0, 0, 0]}
 
     def cb_set_expression(self, msg):
@@ -150,8 +150,10 @@ class ExpressionEngineNode(Node):
             draw.ellipse([mx-m_width//2, my-m_open//2, mx+m_width//2, my+m_open//2], fill=(255, 255, 255))
         else:
             bbox = [mx-m_width//2, my-abs(m_curve)-10, mx+m_width//2, my+abs(m_curve)+10]
-            if m_curve >= 0: draw.arc(bbox, start=0, end=180, fill=(255, 255, 255), width=6)
-            else: draw.arc(bbox, start=180, end=360, fill=(255, 255, 255), width=6)
+            if m_curve >= 0:
+                draw.arc(bbox, start=0, end=180, fill=(255, 255, 255), width=6)
+            else:
+                draw.arc(bbox, start=180, end=360, fill=(255, 255, 255), width=6)
         return img
 
 def main(args=None):

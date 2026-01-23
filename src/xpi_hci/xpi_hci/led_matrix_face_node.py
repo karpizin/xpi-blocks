@@ -5,7 +5,6 @@ from sensor_msgs.msg import Image as ImageMsg
 from std_msgs.msg import UInt8MultiArray
 from cv_bridge import CvBridge
 import cv2
-import numpy as np
 
 class LEDMatrixFaceNode(Node):
     def __init__(self):
