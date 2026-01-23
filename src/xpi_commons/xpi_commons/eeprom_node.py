@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 import adafruit_24lc32 as adafruit_eeprom
 
 import rclpy

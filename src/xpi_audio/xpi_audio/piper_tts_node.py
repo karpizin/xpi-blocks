@@ -4,7 +4,6 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import subprocess
 import os
-import tempfile
 
 class PiperTtsNode(Node):
     """

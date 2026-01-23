@@ -2,7 +2,6 @@
 import asyncio
 import json
 import threading
-import logging
 
 import rclpy
 from rclpy.node import Node
@@ -11,7 +10,6 @@ from std_msgs.msg import String, Float32
 
 from bless import (
     BlessServer,
-    BlessGATTCharacteristic,
     GATTCharacteristicProperties,
     GATTAttributePermissions
 )

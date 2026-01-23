@@ -5,7 +5,6 @@ from std_msgs.msg import String
 import numpy as np
 import pyaudio
 import threading
-import queue
 import time
 from faster_whisper import WhisperModel
 

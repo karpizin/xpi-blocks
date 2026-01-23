@@ -73,7 +73,8 @@ class W25QxxNode(Node):
         self.get_logger().info(f"Detected Flash: {chip_name}, Manufacturer ID: 0x{mf_id:02X}")
 
     def _wait_not_busy(self):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         while True:
             resp = self.spi.xfer2([self.CMD_READ_STATUS_REG1, 0x00])
             status = resp[1]
@@ -82,7 +83,8 @@ class W25QxxNode(Node):
             time.sleep(0.001)
 
     def _write_enable(self):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         self.spi.xfer2([self.CMD_WRITE_ENABLE])
 
     def read_data(self, address, length):
