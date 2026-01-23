@@ -3,7 +3,6 @@ from rclpy.node import Node
 from std_msgs.msg import Bool
 from gpiozero import MotionSensor, Device
 from gpiozero.pins.mock import MockFactory
-import time
 
 class PIRNode(Node):
     """

@@ -104,10 +104,14 @@ class MPU6050Node(Node):
         return 16384.0
 
     def _get_gyro_scale(self, fsr):
-        if fsr == 0: return 131.0 # +/- 250 dps
-        if fsr == 1: return 65.5  # +/- 500 dps
-        if fsr == 2: return 32.8  # +/- 1000 dps
-        if fsr == 3: return 16.4  # +/- 2000 dps
+        if fsr == 0:
+            return 131.0 # +/- 250 dps
+        if fsr == 1:
+            return 65.5  # +/- 500 dps
+        if fsr == 2:
+            return 32.8  # +/- 1000 dps
+        if fsr == 3:
+            return 16.4  # +/- 2000 dps
         self.get_logger().warn(f"Invalid Gyro FSR: {fsr}. Defaulting to 250 dps.")
         return 131.0
 

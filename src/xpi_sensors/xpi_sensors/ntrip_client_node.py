@@ -59,7 +59,8 @@ class NtripClientNode(Node):
 
                 while rclpy.ok():
                     data = sock.recv(2048)
-                    if not data: break
+                    if not data:
+                        break
                     
                     # Publish as hex string for topic safety
                     msg = String()

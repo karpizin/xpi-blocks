@@ -6,7 +6,7 @@ import math
 
 # Try to import the hardware library
 try:
-    from mpu9250_jmdev.registers import *
+    from mpu9250_jmdev.registers import AK8963_ADDRESS, MPU9050_ADDRESS_68
     from mpu9250_jmdev.mpu_9250 import MPU9250
     HAS_HARDWARE = True
 except ImportError:
