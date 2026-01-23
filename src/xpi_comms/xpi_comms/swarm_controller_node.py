@@ -51,7 +51,8 @@ class SwarmControllerNode(Node):
 
     def _calculate_distance(self, lat1, lon1, lat2, lon2):
         """Calculates distance between two points in meters using Haversine formula."""
-        if None in [lat1, lon1, lat2, lon2]: return 1000.0
+        if None in [lat1, lon1, lat2, lon2]:
+            return 1000.0
         R = 6371000 # Earth radius in meters
         phi1, phi2 = math.radians(lat1), math.radians(lat2)
         dphi = math.radians(lat2 - lat1)

@@ -4,7 +4,7 @@ import threading
 import serial
 import rclpy
 from rclpy.node import Node
-from rclpy.parameter import ParameterDescriptor, ParameterType
+from rclpy.parameter import ParameterDescriptor
 
 from std_msgs.msg import String, UInt8MultiArray
 

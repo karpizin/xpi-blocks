@@ -38,7 +38,7 @@ class ExpressionEngineNode(Node):
         
         # Timer (30 FPS for smoother animation)
         self.timer = self.create_timer(1.0/30.0, self.timer_callback)
-        self.get_logger().info(f"Animated Expression Engine Ready")
+        self.get_logger().info("Animated Expression Engine Ready")
 
     def load_emotions(self):
         try:
@@ -47,7 +47,8 @@ class ExpressionEngineNode(Node):
             with open(yaml_path, 'r') as f:
                 data = yaml.safe_load(f)
                 # Add aliases for animated versions if not in YAML
-                if "IDLE_ANIMATED" not in data: data["IDLE_ANIMATED"] = data["NEUTRAL"]
+                if "IDLE_ANIMATED" not in data:
+                    data["IDLE_ANIMATED"] = data["NEUTRAL"]
                 return data
         except Exception:
             return {"NEUTRAL": [0, 0, 1.0, 0, 0, 0, 0, 0, 0]}
