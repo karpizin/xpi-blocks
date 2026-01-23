@@ -7,6 +7,13 @@ dimensions:
 
 default_height: 0.08 # Default standing height
 
+# Manipulator Dimensions (in meters)
+arm:
+  mount_point: {x: 0.08, y: 0.0, z: 0.015} # Mounted on top-front
+  l1: 0.04 # Base height
+  l2: 0.10 # Main arm
+  l3: 0.10 # Forearm
+
 legs:
   leg_rf: {x: 0.12, y: -0.08, z: 0, angle: -0.785}  # Right Front (-45 deg)
   leg_rm: {x: 0.0,  y: -0.10, z: 0, angle: -1.571}  # Right Middle (-90 deg)

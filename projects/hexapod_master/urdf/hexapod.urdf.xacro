@@ -141,4 +141,44 @@
   <xacro:leg prefix="lm" x="0.0"   y="0.10"  yaw="1.571"/>
   <xacro:leg prefix="lb" x="-0.12" y="0.08"  yaw="2.356"/>
 
+  <!-- Manipulator Arm -->
+  <xacro:property name="arm_x" value="0.08" />
+  <xacro:property name="arm_z" value="0.015" />
+  <xacro:property name="al1" value="0.04" />
+  <xacro:property name="al2" value="0.10" />
+  <xacro:property name="al3" value="0.10" />
+
+  <!-- Arm Base -->
+  <joint name="arm_base_joint" type="revolute">
+    <parent link="base_link"/><child link="arm_base_link"/>
+    <origin xyz="${arm_x} 0 ${arm_z}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/><limit lower="-3.14" upper="3.14" effort="5" velocity="1.0"/>
+  </joint>
+  <link name="arm_base_link">
+    <visual><geometry><cylinder radius="0.03" length="${al1}"/></geometry><material name="green"/></visual>
+    <xacro:box_inertia m="0.1" x="0.03" y="0.03" z="${al1}"/>
+  </link>
+
+  <!-- Arm Link 1 -->
+  <joint name="arm_joint_1" type="revolute">
+    <parent link="arm_base_link"/><child link="arm_link_1"/>
+    <origin xyz="0 0 ${al1/2}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/><limit lower="-1.57" upper="1.57" effort="5" velocity="1.0"/>
+  </joint>
+  <link name="arm_link_1">
+    <visual><origin xyz="0 0 ${al2/2}"/><geometry><box size="0.02 0.02 ${al2}"/></geometry><material name="dark_gray"/></visual>
+    <xacro:box_inertia m="0.1" x="0.02" y="0.02" z="${al2}"/>
+  </link>
+
+  <!-- Arm Link 2 -->
+  <joint name="arm_joint_2" type="revolute">
+    <parent link="arm_link_1"/><child link="arm_link_2"/>
+    <origin xyz="0 0 ${al2}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/><limit lower="-2.5" upper="2.5" effort="5" velocity="1.0"/>
+  </joint>
+  <link name="arm_link_2">
+    <visual><origin xyz="0 0 ${al3/2}"/><geometry><box size="0.015 0.015 ${al3}"/></geometry><material name="green"/></visual>
+    <xacro:box_inertia m="0.05" x="0.015" y="0.015" z="${al3}"/>
+  </link>
+
 </robot>
