@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int32, Bool
 from sensor_msgs.msg import BatteryState
 import smbus2
 

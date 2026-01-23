@@ -2,7 +2,7 @@
 import time
 import board
 import busio
-from adafruit_ina219 import INA219, ADCResolution, BusVoltageRange
+from adafruit_ina219 import INA219
 
 import rclpy
 from rclpy.node import Node
