@@ -49,7 +49,8 @@ class AHT20Node(Node):
         self.timer = self.create_timer(1.0 / self.publish_rate, self.timer_callback)
 
     def init_sensor(self):
-        if self.bus.mock_mode: return
+        if self.bus.mock_mode:
+            return
         
         # Calibration command
         self.bus.write_i2c_block_data(self.address, 0xBE, [0x08, 0x00])

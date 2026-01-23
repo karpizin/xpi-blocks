@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
-from sensor_msgs.msg import Temperature, Illuminance, FluidPressure, Range, RelativeHumidity
+from sensor_msgs.msg import Temperature, Illuminance, Range, RelativeHumidity
 import json
 import math
 import numpy as np

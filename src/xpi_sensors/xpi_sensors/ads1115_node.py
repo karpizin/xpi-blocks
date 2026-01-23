@@ -157,7 +157,6 @@ class ADS1115Node(Node):
         return self.MUX['0_GND'] # Default
 
     def timer_callback(self):
-        current_time = self.get_clock().now().to_msg()
         all_voltages = []
 
         for ch in self.channels:
