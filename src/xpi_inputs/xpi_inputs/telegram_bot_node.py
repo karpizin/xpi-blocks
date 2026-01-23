@@ -70,12 +70,18 @@ class TelegramBotNode(Node):
 
                 # Create Publisher
                 if topic not in self.pubs:
-                    if msg_type == 'Bool': cls = Bool
-                    elif msg_type == 'String': cls = String
-                    elif msg_type == 'Int32': cls = Int32
-                    elif msg_type == 'Float32': cls = Float32
-                    elif msg_type == 'Empty': cls = Empty
-                    else: continue
+                    if msg_type == 'Bool':
+                        cls = Bool
+                    elif msg_type == 'String':
+                        cls = String
+                    elif msg_type == 'Int32':
+                        cls = Int32
+                    elif msg_type == 'Float32':
+                        cls = Float32
+                    elif msg_type == 'Empty':
+                        cls = Empty
+                    else:
+                        continue
                     self.pubs[topic] = self.create_publisher(cls, topic, 10)
 
                 self.action_map[trigger] = {
@@ -117,7 +123,8 @@ class TelegramBotNode(Node):
         return True
 
     async def cmd_start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not await self.check_auth(update): return
+        if not await self.check_auth(update):
+            return
 
         # Build Keyboard
         # menu_layout param comes as list of strings? ROS params are tricky with nested lists.
@@ -137,7 +144,8 @@ class TelegramBotNode(Node):
         await update.message.reply_text("🤖 Bot Active. Control Panel:", reply_markup=reply_markup)
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not await self.check_auth(update): return
+        if not await self.check_auth(update):
+            return
 
         text = update.message.text
         
@@ -228,7 +236,6 @@ class TelegramBotNode(Node):
         # But we don't have easy access to the loop from here thread-safely without nest_asyncio or similar.
         # Simplest way: use `asyncio.run_coroutine_threadsafe`.
         if hasattr(self, 'bot_app') and self.allowed_users:
-            loop = self.bot_app.updater.bot._request.loop if hasattr(self.bot_app, 'updater') else None
             # Actually, just get the loop from the thread?
             # Or iterate users and send.
             pass
