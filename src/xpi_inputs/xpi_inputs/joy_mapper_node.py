@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool, Float32, Int32
 
@@ -88,7 +87,8 @@ class JoyMapperNode(Node):
         if not self.prev_buttons:
             self.prev_buttons = [0] * len(msg.buttons)
             # Init axis states defaults if not set (safe guard)
-            if not hasattr(self, 'axis_states'): self.axis_states = {}
+            if not hasattr(self, 'axis_states'):
+                self.axis_states = {}
 
         # --- 1. Drive Handling ---
         if self.drive_enabled:
@@ -100,8 +100,10 @@ class JoyMapperNode(Node):
 
             # Deadzone
             dz = self.get_parameter('deadzone').value
-            if abs(lin_val) < dz: lin_val = 0.0
-            if abs(ang_val) < dz: ang_val = 0.0
+            if abs(lin_val) < dz:
+                lin_val = 0.0
+            if abs(ang_val) < dz:
+                ang_val = 0.0
 
             # Scale
             twist.linear.x = lin_val * self.get_parameter('scale_linear').value
@@ -118,7 +120,8 @@ class JoyMapperNode(Node):
 
             # --- Buttons ---
             if 'btn' in b_type:
-                if idx >= len(msg.buttons): continue
+                if idx >= len(msg.buttons):
+                    continue
                 
                 current_state = msg.buttons[idx]
                 prev_state = self.prev_buttons[idx] if idx < len(self.prev_buttons) else 0
@@ -139,7 +142,8 @@ class JoyMapperNode(Node):
 
             # --- Axes ---
             elif 'axis' in b_type:
-                if idx >= len(msg.axes): continue
+                if idx >= len(msg.axes):
+                    continue
                 val = msg.axes[idx]
 
                 if b_type == 'axis':
@@ -157,7 +161,8 @@ class JoyMapperNode(Node):
                     # Publish only on change to avoid spam, or continuous?
                     # Switches on RC stay in position.
                     # Let's publish on change.
-                    if idx not in self.axis_states: self.axis_states[idx] = not new_state # Force update first time
+                    if idx not in self.axis_states:
+                        self.axis_states[idx] = not new_state # Force update first time
                     
                     if new_state != self.axis_states.get(idx):
                         self.axis_states[idx] = new_state

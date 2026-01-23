@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Bool, Float32, Int32
+from std_msgs.msg import Bool, Int32
 import math
 
 class RCInterpreterNode(Node):
@@ -81,11 +81,13 @@ class RCInterpreterNode(Node):
         Applies exponential curve to the input.
         y = x * (expo * x^2 + (1 - expo))
         """
-        if expo == 0: return value
+        if expo == 0:
+            return value
         return value * (expo * (value**2) + (1 - expo))
 
     def apply_deadzone(self, value, threshold):
-        if abs(value) < threshold: return 0.0
+        if abs(value) < threshold:
+            return 0.0
         # Re-scale to [0, 1] range after deadzone
         return (value - math.copysign(threshold, value)) / (1.0 - threshold)
 
@@ -118,7 +120,8 @@ class RCInterpreterNode(Node):
         # 4. Handle Switches
         for sw in self.switches:
             idx = sw['ch']
-            if idx >= len(msg.axes): continue
+            if idx >= len(msg.axes):
+                continue
             
             val = msg.axes[idx]
             new_state = (val > sw['thresh'])

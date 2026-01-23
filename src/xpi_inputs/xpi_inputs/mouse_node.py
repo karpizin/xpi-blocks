@@ -2,11 +2,8 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-import evdev
 from evdev import ecodes, InputDevice, list_devices
 import threading
-import time
-import math
 
 class MouseNode(Node):
     def __init__(self):
@@ -62,7 +59,7 @@ class MouseNode(Node):
         if self.dev_path:
             try:
                 return InputDevice(self.dev_path)
-            except:
+            except Exception:
                 return None
         
         # Auto-detect
@@ -90,11 +87,16 @@ class MouseNode(Node):
                         # Map to 0, 1, 2
                         val = 1 if event.value > 0 else 0 # 1=Press, 0=Release, 2=Repeat
                         
-                        if event.code == ecodes.BTN_LEFT:   self.buttons[0] = val
-                        elif event.code == ecodes.BTN_RIGHT: self.buttons[1] = val
-                        elif event.code == ecodes.BTN_MIDDLE: self.buttons[2] = val
-                        elif event.code == ecodes.BTN_SIDE:   self.buttons[3] = val
-                        elif event.code == ecodes.BTN_EXTRA:  self.buttons[4] = val
+                        if event.code == ecodes.BTN_LEFT:
+                            self.buttons[0] = val
+                        elif event.code == ecodes.BTN_RIGHT:
+                            self.buttons[1] = val
+                        elif event.code == ecodes.BTN_MIDDLE:
+                            self.buttons[2] = val
+                        elif event.code == ecodes.BTN_SIDE:
+                            self.buttons[3] = val
+                        elif event.code == ecodes.BTN_EXTRA:
+                            self.buttons[4] = val
 
         except Exception as e:
             self.get_logger().error(f"Device read error: {e}")
@@ -117,8 +119,10 @@ class MouseNode(Node):
                 self.rel_y *= (1.0 - self.decay)
                 
                 # Zero out if small
-                if abs(self.rel_x) < 0.1: self.rel_x = 0
-                if abs(self.rel_y) < 0.1: self.rel_y = 0
+                if abs(self.rel_x) < 0.1:
+                    self.rel_x = 0
+                if abs(self.rel_y) < 0.1:
+                    self.rel_y = 0
 
             elif self.mode == 'position':
                 # Accumulate indefinitely, clamped to -1.0 to 1.0
