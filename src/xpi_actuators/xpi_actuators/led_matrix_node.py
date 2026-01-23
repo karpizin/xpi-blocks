@@ -2,8 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Int8MultiArray
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-import os
-import time
+import logging
 
 try:
     from luma.core.interface.serial import spi, noop
@@ -133,7 +132,7 @@ class LEDMatrixNode(Node):
             self.display_bitmap_callback,
             qos_profile
         )
-        self.get_logger().info(f'LEDMatrix: Subscribing to display commands.')
+        self.get_logger().info('LEDMatrix: Subscribing to display commands.')
 
         # Initialize with empty/clear display
         self.device.clear()
@@ -168,7 +167,7 @@ class LEDMatrixNode(Node):
                 value = msg.data[pixel_index]
                 self.device.set_pixel(x, y, value) # Value 0 or 1
         self.device.show()
-        self.get_logger().debug(f"LEDMatrix: Displayed custom bitmap.")
+        self.get_logger().debug("LEDMatrix: Displayed custom bitmap.")
 
 
     def destroy_node(self):

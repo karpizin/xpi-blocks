@@ -152,8 +152,10 @@ class L298DriverNode(Node):
             self.motor_b_in2 = MockDigitalOutputDevice(self.motor_b_in2_pin)
             self.motor_b_pwm = MockPWMOutputDevice(self.motor_b_pwm_pin) if self.motor_b_pwm_pin else None
             self.pins.extend([self.motor_a_in1, self.motor_a_in2, self.motor_b_in1, self.motor_b_in2])
-            if self.motor_a_pwm: self.pins.append(self.motor_a_pwm)
-            if self.motor_b_pwm: self.pins.append(self.motor_b_pwm)
+            if self.motor_a_pwm:
+                self.pins.append(self.motor_a_pwm)
+            if self.motor_b_pwm:
+                self.pins.append(self.motor_b_pwm)
 
         self.motor_a_sub = self.create_subscription(Float32, '~/motor_a/cmd_speed', self.cmd_motor_a_speed_callback, 10)
         self.motor_b_sub = self.create_subscription(Float32, '~/motor_b/cmd_speed', self.cmd_motor_b_speed_callback, 10)
@@ -309,7 +311,8 @@ class L298DriverNode(Node):
         
         if self.driver_mode == 'stepper':
             self._stop_stepper()
-            if self.stepper_enable_device: self.stepper_enable_device.off()
+            if self.stepper_enable_device:
+                self.stepper_enable_device.off()
         elif self.driver_mode == 'dc_dual':
             self._set_dc_motor_speed(self.motor_a_in1, self.motor_a_in2, self.motor_a_pwm, 0)
             self._set_dc_motor_speed(self.motor_b_in1, self.motor_b_in2, self.motor_b_pwm, 0)

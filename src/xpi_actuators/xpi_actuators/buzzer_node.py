@@ -132,7 +132,8 @@ class BuzzerNode(Node):
                 
                 # Calculate time
                 play_time = (beat_duration * 4.0) / d
-                if dot: play_time *= 1.5
+                if dot:
+                    play_time *= 1.5
 
                 if freq > 0:
                     self.buzzer.play(Tone(freq))

@@ -5,7 +5,6 @@ from rclpy.node import Node
 from rclpy.parameter import ParameterDescriptor
 from std_msgs.msg import Float32
 from gpiozero import Servo
-from gpiozero.pins.factory import Factory
 
 class ESCDriverNode(Node):
     """

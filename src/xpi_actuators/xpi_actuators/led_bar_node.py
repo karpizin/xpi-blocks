@@ -1,10 +1,10 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import UInt8, Int8MultiArray
-from gpiozero import LED, LEDBarGraph, Device
+from gpiozero import LEDBarGraph, Device
 from gpiozero.pins.mock import MockFactory
 import os
-import math
+import logging
 
 class LEDBarNode(Node):
     """
