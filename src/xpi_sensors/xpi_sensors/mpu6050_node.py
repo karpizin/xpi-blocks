@@ -1,10 +1,8 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu, Temperature
-from geometry_msgs.msg import Quaternion, Vector3
 from xpi_commons.i2c_helper import get_smbus
 import time
-import struct
 import math
 
 class MPU6050Node(Node):
@@ -96,10 +94,14 @@ class MPU6050Node(Node):
         self.get_logger().info(f'MPU6050: Publishing IMU and Temperature at {self.publish_rate} Hz.')
 
     def _get_accel_scale(self, fsr):
-        if fsr == 0: return 16384.0 # +/- 2g
-        if fsr == 1: return 8192.0  # +/- 4g
-        if fsr == 2: return 4096.0  # +/- 8g
-        if fsr == 3: return 2048.0  # +/- 16g
+        if fsr == 0:
+            return 16384.0 # +/- 2g
+        if fsr == 1:
+            return 8192.0  # +/- 4g
+        if fsr == 2:
+            return 4096.0  # +/- 8g
+        if fsr == 3:
+            return 2048.0  # +/- 16g
         self.get_logger().warn(f"Invalid Accel FSR: {fsr}. Defaulting to 2g.")
         return 16384.0
 

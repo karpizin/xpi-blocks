@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import math
 import smbus2
 import rclpy
 from rclpy.node import Node

@@ -1,7 +1,6 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32, String
-from xpi_commons.i2c_helper import get_smbus
 import time
 
 class WindVaneDigitalNode(Node):

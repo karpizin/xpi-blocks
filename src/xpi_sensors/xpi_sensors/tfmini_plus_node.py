@@ -3,7 +3,6 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import Int32
 import serial
-import time
 
 class TFminiPlusNode(Node):
     """
