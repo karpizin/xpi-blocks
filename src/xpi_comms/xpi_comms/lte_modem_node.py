@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String, Float32, Int32
+from std_msgs.msg import String, Int32
 from sensor_msgs.msg import NavSatFix
 import serial
 import time
@@ -51,7 +51,8 @@ class LTEModemNode(Node):
 
     def _send_at(self, command, back="OK", timeout=1):
         """Helper to send AT command and wait for response"""
-        if not self.serial: return ""
+        if not self.serial:
+            return ""
         self.serial.write((command + "\r\n").encode())
         time.sleep(0.1)
         res = self.serial.read_all().decode(errors='ignore')
@@ -71,10 +72,12 @@ class LTEModemNode(Node):
 
     def _send_sms_callback(self, msg):
         """Expects format: 'PHONE_NUMBER:MESSAGE'"""
-        if not self.serial: return
+        if not self.serial:
+            return
         try:
             parts = msg.data.split(':', 1)
-            if len(parts) < 2: return
+            if len(parts) < 2:
+                return
             number, content = parts
             self.get_logger().info(f"Sending SMS to {number}...")
             self.serial.write(f'AT+CMGS virtual "{number}"\r'.encode())
@@ -85,7 +88,8 @@ class LTEModemNode(Node):
             self.get_logger().error(f"Error sending SMS: {e}")
 
     def timer_callback(self):
-        if not self.serial: return
+        if not self.serial:
+            return
 
         # 1. Signal Strength (AT+CSQ)
         # Returns +CSQ: <rssi>,<ber>
@@ -99,9 +103,12 @@ class LTEModemNode(Node):
         # 2. Network Type (AT+CNSMOD?)
         # Returns +CNSMOD: <mode>,<stat>
         res = self._send_at("AT+CNSMOD?")
-        if "4G" in res: self.network_pub.publish(String(data="4G/LTE"))
-        elif "3G" in res: self.network_pub.publish(String(data="3G"))
-        elif "2G" in res: self.network_pub.publish(String(data="2G/EDGE"))
+        if "4G" in res:
+            self.network_pub.publish(String(data="4G/LTE"))
+        elif "3G" in res:
+            self.network_pub.publish(String(data="3G"))
+        elif "2G" in res:
+            self.network_pub.publish(String(data="2G/EDGE"))
 
         # 3. GPS Position (AT+CGPSINFO)
         if self.gps_enabled:
@@ -121,20 +128,23 @@ class LTEModemNode(Node):
     def _parse_gps(self, raw):
         try:
             data = raw.replace("+CGPSINFO: ", "").split(",")
-            if len(data) < 4 or not data[0]: return
+            if len(data) < 4 or not data[0]:
+                return
             
             # Simple conversion from DDMM.MMMM to Decimal Degrees
             lat_raw = float(data[0])
             lat_deg = int(lat_raw / 100)
             lat_min = lat_raw - (lat_deg * 100)
             latitude = lat_deg + (lat_min / 60)
-            if data[1] == 'S': latitude *= -1
+            if data[1] == 'S':
+                latitude *= -1
 
             lon_raw = float(data[2])
             lon_deg = int(lon_raw / 100)
             lon_min = lon_raw - (lon_deg * 100)
             longitude = lon_deg + (lon_min / 60)
-            if data[3] == 'W': longitude *= -1
+            if data[3] == 'W':
+                longitude *= -1
 
             msg = NavSatFix()
             msg.header.stamp = self.get_clock().now().to_msg()

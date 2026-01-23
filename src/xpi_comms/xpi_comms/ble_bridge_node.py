@@ -68,7 +68,7 @@ class BLEBridgeNode(Node):
             try:
                 payload = json.dumps(self.telemetry_data)
                 # We need to schedule the update in the BLE asyncio loop
-                future = asyncio.run_coroutine_threadsafe(
+                asyncio.run_coroutine_threadsafe(
                     self.server.write_request(
                         CHAR_TELEMETRY_UUID,
                         payload.encode('utf-8')

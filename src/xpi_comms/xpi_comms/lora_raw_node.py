@@ -6,7 +6,7 @@ import threading
 
 # Try to import the hardware library
 try:
-    from pyLoRa import LoRa, BOARD
+    from pyLoRa import LoRa
     HAS_HARDWARE = True
 except ImportError:
     HAS_HARDWARE = False
@@ -107,8 +107,8 @@ class LoRaRawNode(Node):
                     self.rssi_pub.publish(rssi_msg)
                     
                     self.get_logger().info(f"Received Packet: {data_str} (RSSI: {rssi})")
-            except Exception as e:
-                # self.get_logger().error(f"LoRa RX error: {e}")
+            except Exception:
+                # self.get_logger().error(f"LoRa RX error")
                 pass
             time.sleep(0.01)
 
