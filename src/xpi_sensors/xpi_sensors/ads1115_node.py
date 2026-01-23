@@ -150,10 +150,14 @@ class ADS1115Node(Node):
         return value
 
     def _get_mux_for_channel(self, channel: int):
-        if channel == 0: return self.MUX['0_GND']
-        if channel == 1: return self.MUX['1_GND']
-        if channel == 2: return self.MUX['2_GND']
-        if channel == 3: return self.MUX['3_GND']
+        if channel == 0:
+            return self.MUX['0_GND']
+        if channel == 1:
+            return self.MUX['1_GND']
+        if channel == 2:
+            return self.MUX['2_GND']
+        if channel == 3:
+            return self.MUX['3_GND']
         return self.MUX['0_GND'] # Default
 
     def timer_callback(self):
