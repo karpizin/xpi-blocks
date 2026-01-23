@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 from adafruit_ina219 import INA219
 
 import rclpy

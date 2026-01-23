@@ -5,7 +5,6 @@ from std_srvs.srv import Trigger
 from gpiozero import DigitalInputDevice, DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory
 import time
-import threading
 
 class HX711Node(Node):
     """
@@ -91,13 +90,12 @@ class HX711Node(Node):
             raw_data = (raw_data << 1) | self.dout.value
             self.pd_sck.off()
 
-        # Set gain for next conversion (1, 2 or 3 pulses)
-        # 1 pulse: Gain 128 (Channel A)
-        # 2 pulses: Gain 32 (Channel B)
-        # 3 pulses: Gain 64 (Channel A)
+        # 3. 3 pulses: Gain 64 (Channel A)
         pulses = 1
-        if self.gain == 32: pulses = 2
-        elif self.gain == 64: pulses = 3
+        if self.gain == 32:
+            pulses = 2
+        elif self.gain == 64:
+            pulses = 3
         
         for _ in range(pulses):
             self.pd_sck.on()

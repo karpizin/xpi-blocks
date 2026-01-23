@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 import adafruit_htu21d
 
 import rclpy
