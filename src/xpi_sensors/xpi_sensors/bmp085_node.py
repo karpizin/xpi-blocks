@@ -141,7 +141,6 @@ class BMP085Node(Node):
         ac6 = self.calibration_params['ac6']
         b1 = self.calibration_params['b1']
         b2 = self.calibration_params['b2']
-        mb = self.calibration_params['mb']
         mc = self.calibration_params['mc']
         md = self.calibration_params['md']
 
@@ -202,7 +201,7 @@ class BMP085Node(Node):
                 temp_msg.temperature = temperature_c
                 press_msg.fluid_pressure = pressure_pa # Pascals
 
-                self.get_logger().debug(f'Real: T={temp_msg.temperature:.2f}C, P={press_pa/100:.2f}hPa')
+                self.get_logger().debug(f'Real: T={temp_msg.temperature:.2f}C, P={pressure_pa/100:.2f}hPa')
 
             except Exception as e:
                 self.get_logger().error(f'BMP085: Error reading sensor data: {e}')

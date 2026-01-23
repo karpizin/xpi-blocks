@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
-from geometry_msgs.msg import Vector3, Quaternion
+from geometry_msgs.msg import Vector3
 from std_msgs.msg import String
 import time
 import math
