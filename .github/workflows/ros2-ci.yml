@@ -15,6 +15,14 @@ jobs:
         run: pip install ruff
       - name: Run Ruff
         run: ruff check src/
+      - name: Check for Russian characters
+        run: |
+          # Pattern matches any Cyrillic characters. 
+          # We check src, blocks, docs and projects directories.
+          if grep -rP '[а-яА-ЯёЁ]' src/ blocks/ docs/ projects/ --exclude-dir=.git; then
+            echo "Error: Russian characters found in code or documentation. Please use English only."
+            exit 1
+          fi
 
   build-and-test:
     needs: linting
