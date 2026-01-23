@@ -13,11 +13,15 @@ class AudioLevelNode(Node):
         self.declare_parameter('sample_rate', 16000)
         self.declare_parameter('block_size', 1600) # 100ms blocks
         
-        device = self.get_parameter('device_index').value
-        if device == -1:
-            device = None
+                device = self.get_parameter('device_index').value
         
-        self.fs = self.get_parameter('sample_rate').value
+                if device == -1:
+        
+                    device = None
+        
+                
+        
+                self.fs = self.get_parameter('sample_rate').value
         self.block_size = self.get_parameter('block_size').value
 
         # Publishers

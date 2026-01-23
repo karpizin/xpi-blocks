@@ -5,7 +5,6 @@ from sensor_msgs.msg import Illuminance
 from std_msgs.msg import ColorRGBA, Float32
 from xpi_commons.i2c_helper import get_smbus
 import time
-import math
 
 class TCS34725Node(Node):
     def __init__(self):

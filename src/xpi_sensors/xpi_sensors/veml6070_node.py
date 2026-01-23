@@ -58,20 +58,21 @@ class VEML6070Node(Node):
         self.mock_time = time.monotonic()
 
     def init_sensor(self):
-        if self.bus.mock_mode: return
+        if self.bus.mock_mode:
+            return
         # Command byte: bit 1 is Reserved (1), bit 0 is SD (Shutdown)
-        # Integration time is in bits 2 and 3
-        cmd = (self.it_setting << 2) | 0x02
-        self.bus.write_byte(self.ADDR_COMMAND, cmd)
-        time.sleep(0.2)
-
-    def get_uv_risk_level(self, raw_value):
+# ... (intermediate code)
+    def get_uv_level(self, raw_value):
         # Based on Vishay's application note for 1T integration time
         # Values vary significantly based on integration time and external R_SET
-        if raw_value < 560: return "Low"
-        if raw_value < 1120: return "Moderate"
-        if raw_value < 1494: return "High"
-        if raw_value < 2054: return "Very High"
+        if raw_value < 560:
+            return "Low"
+        if raw_value < 1120:
+            return "Moderate"
+        if raw_value < 1494:
+            return "High"
+        if raw_value < 2054:
+            return "Very High"
         return "Extreme"
 
     def timer_callback(self):

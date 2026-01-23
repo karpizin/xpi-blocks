@@ -68,7 +68,80 @@ class SCD4xNode(Node):
             return
         
         # Stop periodic measurement first to ensure clean state
-# ... (intermediate code)
+        # Command 0x3F86
+        self.bus.write_i2c_block_data(self.address, 0x3F, [0x86])
+        time.sleep(0.5)
+        
+        # Start periodic measurement
+        # Command 0x21B1
+        self.bus.write_i2c_block_data(self.address, 0x21, [0xB1])
+        self.get_logger().info("SCD4x started periodic measurement mode.")
+
+    def read_sensor(self):
+        if self.bus.mock_mode:
+            t = (time.monotonic() - self.mock_time) % 60.0
+            co2 = 400 + 600 * math.sin(t * math.pi / 20.0) # 400-1000 ppm
+            temp = 22.0 + 2.0 * math.cos(t * math.pi / 15.0)
+            hum = 0.45 + 0.1 * math.sin(t * math.pi / 10.0)
+            return int(co2), temp, hum
+
+        # Read measurement
+        # Command 0xEC05
+        self.bus.write_i2c_block_data(self.address, 0xEC, [0x05])
+        time.sleep(0.01)
+        
+        # Read 9 bytes: CO2(2)+CRC(1), Temp(2)+CRC(1), Hum(2)+CRC(1)
+        data = self.bus.read_i2c_block_data(self.address, 0x00, 9)
+        
+        # CO2
+        if self.calculate_crc(data[0:2]) != data[2]:
+            raise Exception("SCD4x: CO2 CRC error")
+        co2 = (data[0] << 8) | data[1]
+
+        # Temp
+        if self.calculate_crc(data[3:5]) != data[5]:
+            raise Exception("SCD4x: Temp CRC error")
+        raw_temp = (data[3] << 8) | data[4]
+        temperature = -45.0 + 175.0 * (raw_temp / 65535.0)
+
+        # Hum
+        if self.calculate_crc(data[6:8]) != data[8]:
+            raise Exception("SCD4x: Hum CRC error")
+        raw_hum = (data[6] << 8) | data[7]
+        humidity = (raw_hum / 65535.0)
+
+        return co2, temperature, humidity
+
+    def timer_callback(self):
+        try:
+            co2, temp, hum = self.read_sensor()
+            
+            current_time = self.get_clock().now().to_msg()
+            
+            # CO2
+            co2_msg = Int32()
+            co2_msg.data = int(co2)
+            self.co2_pub.publish(co2_msg)
+
+            # Temp
+            temp_msg = Temperature()
+            temp_msg.header.stamp = current_time
+            temp_msg.header.frame_id = self.frame_id
+            temp_msg.temperature = float(temp)
+            self.temp_pub.publish(temp_msg)
+            
+            # Hum
+            hum_msg = RelativeHumidity()
+            hum_msg.header.stamp = current_time
+            hum_msg.header.frame_id = self.frame_id
+            hum_msg.relative_humidity = float(hum)
+            self.hum_pub.publish(hum_msg)
+            
+            self.get_logger().debug(f'SCD4x: CO2={co2}ppm, T={temp:.2f}C, H={hum*100:.1f}%')
+            
+        except Exception as e:
+            self.get_logger().error(f'SCD4x: Error reading sensor: {e}')
+
     def destroy_node(self):
         if not self.bus.mock_mode:
             # Stop periodic measurement on shutdown

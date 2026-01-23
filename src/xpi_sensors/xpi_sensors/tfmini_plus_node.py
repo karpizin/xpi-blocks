@@ -57,7 +57,8 @@ class TFminiPlusNode(Node):
                 if self.ser.read(1) == b'\x59':
                     # Header found, read remaining 7 bytes
                     data = self.ser.read(7)
-                    if len(data) < 7: break
+                    if len(data) < 7:
+                        break
                     
                     dist_l = data[0]
                     dist_h = data[1]

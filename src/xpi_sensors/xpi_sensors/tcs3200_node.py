@@ -4,7 +4,6 @@ from std_msgs.msg import ColorRGBA, Int32MultiArray
 from gpiozero import DigitalOutputDevice, DigitalInputDevice, Device
 from gpiozero.pins.mock import MockFactory
 import time
-import threading
 
 class TCS3200Node(Node):
     """

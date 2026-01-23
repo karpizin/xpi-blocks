@@ -31,9 +31,12 @@ class TFSerialNode(Node):
 
         # Configure max range based on model
         self.max_range = 40.0
-        if 'luna' in self.model: self.max_range = 8.0
-        elif 'mini' in self.model: self.max_range = 12.0
-        elif 'tf03' in self.model: self.max_range = 100.0
+        if 'luna' in self.model:
+            self.max_range = 8.0
+        elif 'mini' in self.model:
+            self.max_range = 12.0
+        elif 'tf03' in self.model:
+            self.max_range = 100.0
 
         # Hardware Setup
         if self.mock_mode:
@@ -64,7 +67,8 @@ class TFSerialNode(Node):
             if self.ser.read(1) == b'\x59':
                 if self.ser.read(1) == b'\x59':
                     data = self.ser.read(7)
-                    if len(data) < 7: break
+                    if len(data) < 7:
+                        break
                     
                     # Distance: bytes 2 and 3
                     distance = (data[1] << 8) | data[0]
