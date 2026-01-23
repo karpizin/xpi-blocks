@@ -7,11 +7,9 @@ from cv_bridge import CvBridge
 import cv2
 from PIL import Image as PILImage
 from PIL import ImageDraw, ImageFont
-import numpy as np
 import json
 
 import board
-import busio
 import digitalio
 from adafruit_rgb_display import st7789, st7735
 
@@ -84,7 +82,8 @@ class TFTDisplayNode(Node):
         self.get_logger().info("TFT Display Node Ready.")
 
     def _image_callback(self, msg):
-        if not self.display: return
+        if not self.display:
+            return
         try:
             # Convert ROS Image to OpenCV
             cv_img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
@@ -100,7 +99,8 @@ class TFTDisplayNode(Node):
 
     def _text_callback(self, msg):
         """Standard full-screen text output"""
-        if not self.display: return
+        if not self.display:
+            return
         try:
             # Create black image
             self.canvas = PILImage.new("RGB", (self.width, self.height), (0, 0, 0))
@@ -121,7 +121,8 @@ class TFTDisplayNode(Node):
         - {"command": "clear"}
         - {"command": "text", "text": "Hi", "x": 10, "y": 50, "color": [255,0,0]}
         """
-        if not self.display: return
+        if not self.display:
+            return
         try:
             cmd = json.loads(msg.data)
             action = cmd.get('command')

@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int32, String, Bool
+from std_msgs.msg import Int32, String
 import time
 
 # Try to import the hardware library

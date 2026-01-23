@@ -2,7 +2,6 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from xpi_commons.i2c_helper import get_smbus
-import math
 import time
 
 class PCA9685Node(Node):
@@ -89,7 +88,8 @@ class PCA9685Node(Node):
         Servo math (angle -> duty) should be done by the sender or a helper.
         """
         for i, val in enumerate(msg.data):
-            if i > 15: break
+            if i > 15:
+                break
             
             # Clamp 0.0 - 1.0
             val = max(0.0, min(1.0, val))

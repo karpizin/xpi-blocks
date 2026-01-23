@@ -53,7 +53,8 @@ class PCA9685MotorNode(Node):
         self.get_logger().info(f'PCA9685 Motor Driver initialized at 0x{self.address:02X}')
 
     def _init_pca9685(self):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         try:
             self.bus.write_byte_data(self.address, self.MODE1, 0x00)
             prescale = int(25000000.0 / (4096.0 * self.freq) - 1 + 0.5)
@@ -67,7 +68,8 @@ class PCA9685MotorNode(Node):
             self.get_logger().error(f'Failed to init PCA9685: {e}')
 
     def _set_pwm(self, channel, on, off):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         reg_base = self.LED0_ON_L + (4 * channel)
         self.bus.write_byte_data(self.address, reg_base, on & 0xFF)
         self.bus.write_byte_data(self.address, reg_base + 1, on >> 8)

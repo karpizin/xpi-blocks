@@ -4,7 +4,6 @@ from std_msgs.msg import Float32
 from gpiozero import PWMOutputDevice, DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory
 import os
-import math
 
 class TB6612DriverNode(Node):
     """

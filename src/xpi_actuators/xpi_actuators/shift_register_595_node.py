@@ -3,7 +3,6 @@ from rclpy.node import Node
 from std_msgs.msg import Int32
 from gpiozero import DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory
-import time
 
 class ShiftRegister595Node(Node):
     """

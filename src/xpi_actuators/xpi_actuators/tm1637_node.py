@@ -2,8 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, UInt8
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-import os
-import time
+import logging
 
 try:
     import tm1637
