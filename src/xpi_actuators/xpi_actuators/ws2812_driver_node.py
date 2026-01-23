@@ -2,7 +2,6 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA, String, Float32
 from rclpy.parameter import ParameterDescriptor
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import time
 from xpi_actuators.lib.led_effects import LedEffects
 

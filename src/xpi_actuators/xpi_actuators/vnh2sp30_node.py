@@ -5,7 +5,6 @@ from std_msgs.msg import Float32
 from gpiozero import PWMOutputDevice, DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory
 import os
-import time
 
 class VNH2SP30Node(Node):
     """
@@ -97,8 +96,10 @@ class VNH2SP30Node(Node):
     def destroy_node(self):
         self._set_motor(self.mot_a_pwm, self.mot_a_in1, self.mot_a_in2, 0)
         self._set_motor(self.mot_b_pwm, self.mot_b_in1, self.mot_b_in2, 0)
-        if self.mot_a_en: self.mot_a_en.off()
-        if self.mot_b_en: self.mot_b_en.off()
+        if self.mot_a_en:
+            self.mot_a_en.off()
+        if self.mot_b_en:
+            self.mot_b_en.off()
         super().destroy_node()
 
 def main(args=None):

@@ -45,6 +45,7 @@ class TM1637Node(Node):
         self.declare_parameter('brightness', 7)      # Brightness (0-7).
         self.declare_parameter('mock_hardware', False) # For testing without real hardware.
         self.declare_parameter('display_digits', 4)  # Number of digits on display (4 or 6).
+        self.declare_parameter('default_text', 'WAIT')
 
         # 2. Read Parameters
         self.clk_pin = self.get_parameter('clk_pin').value
@@ -52,6 +53,7 @@ class TM1637Node(Node):
         self.brightness = self.get_parameter('brightness').value
         self.mock_mode = self.get_parameter('mock_hardware').value
         self.display_digits = self.get_parameter('display_digits').value
+        self.default_text = self.get_parameter('default_text').value
 
         self.display = None
         if not self.mock_mode:
@@ -91,7 +93,7 @@ class TM1637Node(Node):
             self.set_brightness_callback,
             qos_profile
         )
-        self.get_logger().info(f'TM1637: Subscribing to display commands.')
+        self.get_logger().info('TM1637: Subscribing to display commands.')
 
         # Display initial text
         self.display_text_callback(String(data=self.default_text))
