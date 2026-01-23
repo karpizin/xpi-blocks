@@ -1,4 +1,5 @@
 import random
+from .base import wheel
 
 class ChaseEffectsMixin:
     def effect_color_wipe(self, color=(0, 0, 255), speed=20.0):

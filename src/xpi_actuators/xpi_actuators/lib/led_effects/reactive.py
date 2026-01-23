@@ -29,8 +29,10 @@ class ReactiveEffectsMixin:
             self.clear()
             dist = int(self.step)
             for i in range(dist):
-                if mid + i < self.num_pixels: self.set_pixel(mid + i, color)
-                if mid - i >= 0: self.set_pixel(mid - i, color)
+                if mid + i < self.num_pixels:
+                    self.set_pixel(mid + i, color)
+                if mid - i >= 0:
+                    self.set_pixel(mid - i, color)
             
             self.step += 2 * speed # Explosion speed
             if self.step > mid + 1:

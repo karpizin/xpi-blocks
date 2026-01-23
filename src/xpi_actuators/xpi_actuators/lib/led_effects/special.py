@@ -1,3 +1,17 @@
+        for i in range(self.num_pixels):
+            # Wave 1 (Blue)
+            w1 = math.sin(i * 0.5 + t)
+            if w1 > 0.8:
+                self.set_pixel(i, (0, 0, 255))
+            
+            # Wave 2 (Red)
+            w2 = math.sin(i * 0.5 + t + math.pi)
+            if w2 > 0.8:
+                self.set_pixel(i, (255, 0, 0))
+
+    def effect_radar(self, color=(0, 255, 0), speed=10.0):
+# ... (intermediate - NO SHORTCUTS)
+# Replacing whole file content to be safe.
 import random
 import math
 import time
@@ -26,11 +40,13 @@ class SpecialEffectsMixin:
         for i in range(self.num_pixels):
             # Wave 1 (Blue)
             w1 = math.sin(i * 0.5 + t)
-            if w1 > 0.8: self.set_pixel(i, (0, 0, 255))
+            if w1 > 0.8:
+                self.set_pixel(i, (0, 0, 255))
             
             # Wave 2 (Red)
             w2 = math.sin(i * 0.5 + t + math.pi)
-            if w2 > 0.8: self.set_pixel(i, (255, 0, 0))
+            if w2 > 0.8:
+                self.set_pixel(i, (255, 0, 0))
 
     def effect_radar(self, color=(0, 255, 0), speed=10.0):
         # Sweeping beam with tail
@@ -44,9 +60,12 @@ class SpecialEffectsMixin:
         for i in range(self.num_pixels):
             val = random.randint(0, 255)
             # Thresholding for contrast
-            if val > 200: self.set_pixel(i, (255, 255, 255))
-            elif val > 100: self.set_pixel(i, (100, 100, 100))
-            else: self.set_pixel(i, (0, 0, 0))
+            if val > 200:
+                self.set_pixel(i, (255, 255, 255))
+            elif val > 100:
+                self.set_pixel(i, (100, 100, 100))
+            else:
+                self.set_pixel(i, (0, 0, 0))
 
     def effect_heartbeat(self, color=(255, 0, 0), speed=1.0):
         # ECG P-QRS-T wave traveling
@@ -69,8 +88,10 @@ class SpecialEffectsMixin:
         t = int(time.time() * 5 * speed) % (len(pattern) * 2)
         idx = t // 2
         if t % 2 == 0 and idx < len(pattern):
-            if pattern[idx] > 0: self.fill(color)
-            else: self.clear()
+            if pattern[idx] > 0:
+                self.fill(color)
+            else:
+                self.clear()
         else:
             self.clear()
 
