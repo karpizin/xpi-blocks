@@ -110,13 +110,19 @@ class A4988DriverNode(Node):
             return
 
         ms_states = []
-        if setting == 1: ms_states = [False, False, False]
-        elif setting == 2: ms_states = [True, False, False]
-        elif setting == 4: ms_states = [False, True, False]
-        elif setting == 8: ms_states = [True, True, False]
-        elif setting == 16: ms_states = [True, True, True]
+        if setting == 1:
+            ms_states = [False, False, False]
+        elif setting == 2:
+            ms_states = [True, False, False]
+        elif setting == 4:
+            ms_states = [False, True, False]
+        elif setting == 8:
+            ms_states = [True, True, False]
+        elif setting == 16:
+            ms_states = [True, True, True]
         # For DRV8825:
-        elif setting == 32 and len(self.ms_devices) == 3: ms_states = [True, True, True] # MS0, MS1, MS2 for DRV8825
+        elif setting == 32 and len(self.ms_devices) == 3:
+            ms_states = [True, True, True] # MS0, MS1, MS2 for DRV8825
         else:
             self.get_logger().warn(f"Unsupported microstep setting: {setting}. Defaulting to 1 (full step).")
             ms_states = [False, False, False]
@@ -234,10 +240,14 @@ class A4988DriverNode(Node):
         if self.motor_thread and self.motor_thread.is_alive():
             self.motor_thread.join(timeout=1.0) # Wait for thread to finish
         self.disable_motor() # Ensure motor disabled
-        if self.step_device: self.step_device.close()
-        if self.dir_device: self.dir_device.close()
-        if self.enable_device: self.enable_device.close()
-        for device in self.ms_devices: device.close()
+        if self.step_device:
+            self.step_device.close()
+        if self.dir_device:
+            self.dir_device.close()
+        if self.enable_device:
+            self.enable_device.close()
+        for device in self.ms_devices:
+            device.close()
         self.get_logger().info('A4988: GPIOs released.')
         super().destroy_node()
 

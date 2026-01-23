@@ -71,7 +71,8 @@ class BuzzerNode(Node):
         try:
             # Format: name:settings:notes
             parts = rtttl_str.split(':')
-            if len(parts) < 3: return
+            if len(parts) < 3:
+                return
             
             name = parts[0]
             settings = parts[1].split(',')
@@ -83,15 +84,19 @@ class BuzzerNode(Node):
             bpm = 63
 
             for s in settings:
-                if s.startswith('d='): duration = int(s[2:])
-                if s.startswith('o='): octave = int(s[2:])
-                if s.startswith('b='): bpm = int(s[2:])
+                if s.startswith('d='):
+                    duration = int(s[2:])
+                if s.startswith('o='):
+                    octave = int(s[2:])
+                if s.startswith('b='):
+                    bpm = int(s[2:])
 
             beat_duration = 60.0 / bpm
             self.get_logger().info(f"Playing melody: {name}")
 
             for n in notes:
-                if self.stop_requested: break
+                if self.stop_requested:
+                    break
                 
                 # Parse note string (e.g., "8c#6")
                 n = n.strip().lower()
