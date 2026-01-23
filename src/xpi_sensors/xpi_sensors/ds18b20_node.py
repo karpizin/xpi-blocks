@@ -1,7 +1,6 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Temperature
-import os
 import glob
 import time
 
@@ -84,7 +83,8 @@ class DS18B20Node(Node):
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self.read_temp_raw()
-            if not lines: return None # handle if read fails again
+            if not lines:
+                return None # handle if read fails again
 
         equals_pos = lines[1].find('t=')
         if equals_pos != -1:

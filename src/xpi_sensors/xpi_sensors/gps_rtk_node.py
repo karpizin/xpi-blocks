@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import NavSatFix, NavSatStatus
-from std_msgs.msg import String, UInt8, Int32
+from std_msgs.msg import String, Int32
 from pyubx2 import UBXReader
 import serial
 import threading
@@ -51,7 +51,7 @@ class GpsRtkNode(Node):
             try:
                 data = bytes.fromhex(msg.data)
                 self.ser.write(data)
-            except:
+            except ValueError:
                 # If not hex, try raw
                 self.ser.write(msg.data.encode('utf-8'))
 
