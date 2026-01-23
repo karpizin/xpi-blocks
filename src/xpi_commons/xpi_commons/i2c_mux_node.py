@@ -4,7 +4,6 @@ from rclpy.node import Node
 from std_msgs.msg import Int32
 from example_interfaces.srv import SetInt32 # Using standard service for channel selection
 import smbus2
-import time
 
 class I2CMuxNode(Node):
     """

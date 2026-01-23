@@ -60,7 +60,6 @@ class W25QxxNode(Node):
         # Cmd 0x9F: returns [MF7-MF0], [ID15-ID8], [ID7-ID0]
         resp = self.spi.xfer2([self.CMD_READ_ID, 0x00, 0x00, 0x00])
         mf_id = resp[1]
-        mem_type = resp[2]
         capacity = resp[3]
 
         capacity_map = {
