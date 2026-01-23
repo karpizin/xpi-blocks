@@ -9,7 +9,6 @@ import cv2
 import numpy as np
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-import os
 
 class TelegramBotNode(Node):
     def __init__(self):
