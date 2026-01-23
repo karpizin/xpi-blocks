@@ -90,10 +90,14 @@ class WindVaneDigitalNode(Node):
                 
                 # Check status
                 status = self.bus.read_byte_data(self.AS5600_ADDR, self.REG_STATUS)
-                if status & 0x20: status_str = "Magnet OK"
-                elif status & 0x10: status_str = "Magnet Too Weak"
-                elif status & 0x08: status_str = "Magnet Too Strong"
-                else: status_str = "No Magnet"
+                if status & 0x20:
+                    status_str = "Magnet OK"
+                elif status & 0x10:
+                    status_str = "Magnet Too Weak"
+                elif status & 0x08:
+                    status_str = "Magnet Too Strong"
+                else:
+                    status_str = "No Magnet"
 
             # Publish
             msg_dir = Float32()
@@ -104,7 +108,6 @@ class WindVaneDigitalNode(Node):
             msg_card.data = self.get_cardinal(angle)
             self.card_pub.publish(msg_card)
 
-            msg_stat = String()
             msg_status = String()
             msg_status.data = status_str
             self.status_pub.publish(msg_status)

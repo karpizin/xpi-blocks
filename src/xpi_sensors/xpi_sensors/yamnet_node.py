@@ -20,7 +20,8 @@ class YamnetNode(Node):
         
         self.threshold = self.get_parameter('threshold').value
         device = self.get_parameter('device_index').value
-        if device == -1: device = None
+        if device == -1:
+            device = None
         
         # Model setup
         model_path = self.get_parameter('model_path').value
