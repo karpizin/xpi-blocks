@@ -7,6 +7,7 @@ def generate_launch_description():
     return LaunchDescription([
         # Arguments
         DeclareLaunchArgument('port', default_value='/dev/ttyUSB0'),
+        DeclareLaunchArgument('frequency', default_value='5', description='GPS Update Rate (Hz)'),
         DeclareLaunchArgument('ntrip_mount', default_value=''),
 
         # 1. RTK GPS Node
@@ -16,6 +17,7 @@ def generate_launch_description():
             name='gps_rtk',
             parameters=[{
                 'port': LaunchConfiguration('port'),
+                'frequency': LaunchConfiguration('frequency'),
                 'baudrate': 38400
             }],
             output='screen'
