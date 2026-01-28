@@ -103,6 +103,8 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Pac-Man**
 *   [x] **Conveyor Belt**
 *   [x] **Marquee** - Theater border effect.
+*   [x] **Candy Cane** - Rotating red/white stripes.
+*   [x] **Juggle** - 8 balls weaving.
 
 ### ✨ Group 4: Sparkles & Weather
 *   [x] **Sparkle** - Random white flashes.
@@ -116,19 +118,21 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Storm**
 *   [x] **Snowfall**
 *   [ ] **Drizzle**
-*   [ ] **Confetti**
+*   [x] **Confetti** - Random colored speckles.
 *   [ ] **Popcorn**
 *   [ ] **Explosion**
 *   [ ] **Flicker (Candle)**
 
 ### 🔥 Group 5: Physics & Fluids
 *   [x] **Fire** - Burning fire simulation.
+*   [x] **Fire 2012** - Realistic 1D fire algorithm.
 *   [x] **Blue Fire** - Blue flame.
 *   [x] **Ice Fire** - White/Cyan flame.
 *   [x] **Lava**
 *   [x] **Water** - Flowing sine waves.
 *   [ ] **Ripple**
 *   [x] **Plasma** - Morphing color blobs.
+*   [x] **Fire Plasma** - Green/Purple fire.
 *   [x] **Bubble** - Rising bubbles.
 *   [ ] **Bouncing Balls**
 *   [ ] **Multi-Ball**
@@ -140,6 +144,7 @@ The node includes a built-in library `xpi_actuators.lib.led_effects`.
 *   [x] **Calm Ocean** - Slow morphing blues.
 *   [x] **Sunny Forest** - Foliage with sunbeams.
 *   [x] **Aurora Borealis** - Dancing polar lights.
+*   [x] **Aurora Fast** - Dynamic solar storm.
 *   [x] **Zen Pulse** - Ultra-slow breathing.
 *   [x] **Morning Mist** - Drifting fog.
 *   [x] **Autumn Leaves** - Golden drift on red.

@@ -36,6 +36,7 @@ ros2 launch xpi_sensors gps_rtk.launch.py ntrip_mount:=YOUR_MOUNTPOINT
 | :--- | :--- | :--- | :--- |
 | `port` | string | `/dev/ttyUSB0` | Serial port path |
 | `baudrate` | int | `38400` | Baud rate (ZED-F9P default is 38400) |
+| `frequency` | int | `5` | Update Rate in Hz (set via UBX-CFG-RATE) |
 
 ### ntrip_client_node
 | Parameter | Type | Default | Description |
@@ -47,7 +48,8 @@ ros2 launch xpi_sensors gps_rtk.launch.py ntrip_mount:=YOUR_MOUNTPOINT
 ## 📡 ROS2 Interface
 
 ### Publishers
-*   `~/fix` (`sensor_msgs/NavSatFix`): High-precision position data.
+*   `~/fix` (`sensor_msgs/NavSatFix`): High-precision position data (with covariance).
+*   `~/vel` (`geometry_msgs/TwistWithCovarianceStamped`): Ground velocity and heading.
 *   `~/rtk_status` (`std_msgs/Int32`): 0=No Fix, 1=3D, 2=Float RTK, 3=Fixed RTK.
 
 ### Subscribers
