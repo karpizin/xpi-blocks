@@ -7,7 +7,7 @@ def generate_launch_description():
         Node(
             package='xpi_hci',
             executable='expression_engine',
-            name='expression_engine',
+            name='robot_face',
             output='screen'
         ),
         
@@ -15,7 +15,11 @@ def generate_launch_description():
         Node(
             package='xpi_hci',
             executable='led_matrix_face',
-            name='led_matrix_face',
-            parameters=[{'width': 16, 'height': 16}]
+            name='robot_face_matrix',
+            parameters=[{
+                'width': 16,
+                'height': 16,
+                'source_image_topic': '/robot_face/eyes_image',
+            }]
         )
     ])

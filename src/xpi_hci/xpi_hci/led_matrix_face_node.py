@@ -14,14 +14,16 @@ class LEDMatrixFaceNode(Node):
         # Parameters
         self.declare_parameter('width', 16)
         self.declare_parameter('height', 16)
+        self.declare_parameter('source_image_topic', '/robot_face/eyes_image')
         self.w = self.get_parameter('width').value
         self.h = self.get_parameter('height').value
+        source_image_topic = self.get_parameter('source_image_topic').value
         
         # Sub/Pub
-        self.sub = self.create_subscription(ImageMsg, '/expression_engine_node/eyes_image', self.image_callback, 10)
+        self.sub = self.create_subscription(ImageMsg, source_image_topic, self.image_callback, 10)
         self.pub = self.create_publisher(UInt8MultiArray, '~/matrix_raw', 10)
         
-        self.get_logger().info(f"LED Matrix Adapter Ready ({self.w}x{self.h})")
+        self.get_logger().info(f"LED Matrix Adapter Ready ({self.w}x{self.h}), source: {source_image_topic}")
 
     def image_callback(self, msg):
         # 1. Convert ROS Image to OpenCV

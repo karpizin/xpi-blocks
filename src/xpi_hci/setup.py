@@ -15,7 +15,7 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
     ],
-    install_requires=['setuptools', 'Pillow', 'numpy'],
+    install_requires=['setuptools', 'Pillow', 'numpy', 'PyYAML'],
     zip_safe=True,
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
