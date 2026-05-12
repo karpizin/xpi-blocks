@@ -2,6 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool, Float32, Int32
 
 class JoyMapperNode(Node):
@@ -17,6 +18,7 @@ class JoyMapperNode(Node):
         self.declare_parameter('scale_linear', 1.0)
         self.declare_parameter('scale_angular', 1.0)
         self.declare_parameter('deadzone', 0.05)
+        self.declare_parameter('input_topic', 'joy')
 
         # 2. Button/Axis Bindings
         # Format: List of strings "type:index:topic:msg_type:scale/toggle_state"
@@ -33,11 +35,17 @@ class JoyMapperNode(Node):
         self.publishers_map = {}
         self.toggle_states = {} # Keep track of toggle button states (False/True)
         self.prev_buttons = []  # To detect rising edge
+        self.axis_states = {}
 
         # --- Setup Drive Publisher ---
         if self.drive_enabled:
             self.pub_cmd_vel = self.create_publisher(Twist, 'cmd_vel', 10)
             self.get_logger().info("Drive mixing enabled (cmd_vel)")
+
+        # --- Subscribe to Joy input ---
+        input_topic = self.get_parameter('input_topic').value
+        self.create_subscription(Joy, input_topic, self.joy_callback, 10)
+        self.get_logger().info(f"Listening for Joy messages on '{input_topic}'")
 
         # --- Parse Bindings ---
         self.parsed_bindings = []
@@ -86,17 +94,21 @@ class JoyMapperNode(Node):
         # Init prev_buttons on first run
         if not self.prev_buttons:
             self.prev_buttons = [0] * len(msg.buttons)
-            # Init axis states defaults if not set (safe guard)
-            if not hasattr(self, 'axis_states'):
-                self.axis_states = {}
 
         # --- 1. Drive Handling ---
         if self.drive_enabled:
             twist = Twist()
             
             # Read Axes
-            lin_val = msg.axes[self.get_parameter('axis_linear').value]
-            ang_val = msg.axes[self.get_parameter('axis_angular').value]
+            linear_axis = self.get_parameter('axis_linear').value
+            angular_axis = self.get_parameter('axis_angular').value
+            if linear_axis >= len(msg.axes) or angular_axis >= len(msg.axes):
+                self.get_logger().warning('Configured drive axis index is out of range for incoming Joy message.')
+                self.prev_buttons = list(msg.buttons)
+                return
+
+            lin_val = msg.axes[linear_axis]
+            ang_val = msg.axes[angular_axis]
 
             # Deadzone
             dz = self.get_parameter('deadzone').value
@@ -172,7 +184,7 @@ class JoyMapperNode(Node):
                         self.get_logger().info(f"Axis Switch {item['topic']} -> {new_state}")
 
         # Update History
-        self.prev_buttons = msg.buttons
+        self.prev_buttons = list(msg.buttons)
 
 def main(args=None):
     rclpy.init(args=args)

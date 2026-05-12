@@ -1,4 +1,6 @@
-import os
+from pathlib import Path
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
@@ -8,9 +10,8 @@ import xacro
 
 def generate_launch_description():
     # 1. Paths
-    project_path = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master'
-    urdf_file = os.path.join(project_path, 'urdf', 'hexapod.urdf.xacro')
-    controllers_config = os.path.join(project_path, 'config', 'hexapod_controllers.yaml')
+    project_path = Path(__file__).resolve().parents[1]
+    urdf_file = project_path / 'urdf' / 'hexapod.urdf.xacro'
 
     # 2. Process URDF (using xacro even for plain URDF for future proofing)
     robot_description_raw = xacro.process_file(urdf_file).toxml()
@@ -26,11 +27,12 @@ def generate_launch_description():
 
     # Gazebo Launch
     # We include standard gazebo_ros launch and pass our world file
-    world_file = os.path.join(project_path, 'urdf', 'hexapod_terrain.world')
+    world_file = project_path / 'urdf' / 'hexapod_terrain.world'
     gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            '/opt/ros/humble/share/gazebo_ros/launch', 'gazebo.launch.py')]),
-        launch_arguments={'world': world_file}.items()
+        PythonLaunchDescriptionSource(
+            str(Path(get_package_share_directory('gazebo_ros')) / 'launch' / 'gazebo.launch.py')
+        ),
+        launch_arguments={'world': str(world_file)}.items()
     )
 
     # Spawn Robot

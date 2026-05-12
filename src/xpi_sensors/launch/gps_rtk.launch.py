@@ -1,7 +1,8 @@
 from launch import LaunchDescription
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
     return LaunchDescription([
@@ -32,7 +33,7 @@ def generate_launch_description():
                 'mountpoint': LaunchConfiguration('ntrip_mount'),
                 'host': 'rtk2go.com'
             }],
-            condition=lambda context: LaunchConfiguration('ntrip_mount').perform(context) != '',
+            condition=IfCondition(PythonExpression(["'", LaunchConfiguration('ntrip_mount'), "' != ''"])),
             output='screen'
         )
     ])

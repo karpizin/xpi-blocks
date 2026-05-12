@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import sys
 import os
+import sys
+from pathlib import Path
+
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
@@ -18,7 +20,7 @@ class HexapodBodyNode(Node):
         super().__init__('hexapod_body_node')
         
         # 1. Config Loading
-        config_path = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_config.yaml'
+        config_path = Path(__file__).resolve().parents[1] / 'config' / 'hexapod_config.yaml'
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
@@ -43,7 +45,7 @@ class HexapodBodyNode(Node):
         self.gait_offsets = {}
         for leg_name in self.config['legs'].keys():
             self.gait_offsets[leg_name] = [0.0, 0.0, 0.0]
-            self.create_subscription(Point, f'/hexapod/{name}/gait_offset', 
+            self.create_subscription(Point, f'/hexapod/{leg_name}/gait_offset',
                                      lambda msg, name=leg_name: self.gait_callback(msg, name), 10)
         
         self.create_subscription(Pose, '/hexapod/body_pose', self.pose_callback, 10)
