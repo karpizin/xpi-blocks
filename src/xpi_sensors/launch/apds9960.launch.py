@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='apds9960_node.py',
+            executable='apds9960_node',
             name='apds9960',
             output='screen',
             parameters=[{

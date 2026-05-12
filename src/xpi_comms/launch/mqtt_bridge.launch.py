@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_comms',
-            executable='mqtt_bridge_node.py',
+            executable='mqtt_bridge_node',
             name='mqtt_bridge',
             output='screen',
             parameters=[{

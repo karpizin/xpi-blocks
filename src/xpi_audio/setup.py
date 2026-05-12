@@ -23,6 +23,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'beat_detector_node = xpi_audio.beat_detector_node:main',
+            'piper_tts_node = xpi_audio.piper_tts_node:main',
+            'whisper_stt_node = xpi_audio.whisper_stt_node:main',
         ],
     },
 )

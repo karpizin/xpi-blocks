@@ -13,7 +13,7 @@ def generate_launch_description():
         # 1. RTK GPS Node
         Node(
             package='xpi_sensors',
-            executable='gps_rtk_node.py',
+            executable='gps_rtk_node',
             name='gps_rtk',
             parameters=[{
                 'port': LaunchConfiguration('port'),
@@ -26,7 +26,7 @@ def generate_launch_description():
         # 2. NTRIP Client (Only if mountpoint is provided)
         Node(
             package='xpi_sensors',
-            executable='ntrip_client_node.py',
+            executable='ntrip_client_node',
             name='ntrip_client',
             parameters=[{
                 'mountpoint': LaunchConfiguration('ntrip_mount'),

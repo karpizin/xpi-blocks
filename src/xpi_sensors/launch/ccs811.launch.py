@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='ccs811_node.py',
+            executable='ccs811_node',
             name='ccs811',
             output='screen',
             parameters=[{

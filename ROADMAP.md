@@ -21,11 +21,11 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ## ✅ Implemented
 
 ### Communication & Comms (Wireless & Wired)
-*   **Serial Terminal Interpreter** -> `xpi_comms/serial_node`
-*   **MQTT Bridge (Standardized Telemetry)** -> `xpi_comms/mqtt_bridge`
-*   **Websocket Streamer (Video/Data)** -> `xpi_comms/websocket_node`
-*   **LoRa Gateway Integration (SX1276)** -> `xpi_comms/lora_node`
-*   **CAN Bus Interface (MCP2515)** -> `xpi_comms/can_bus_node`
+*   **Serial Bridge (UART / Arduino / ESP32)** -> `xpi_comms/serial_bridge`
+*   **MQTT Bridge (Standardized Telemetry)** -> `xpi_comms/mqtt_bridge_node`
+*   **Web Virtual Joystick (Browser + WebSocket)** -> `xpi_inputs/web_joystick_node`
+*   **LoRa Raw Radio (SX1276/SX1278)** -> `xpi_comms/lora_raw_node`
+*   **CAN Bus Interface (MCP2515)** -> `xpi_comms/can_bridge_node`
 *   **RTK GPS Integration (u-blox ZED-F9P)** -> `xpi_sensors/gps_rtk_node`
 *   **NTRIP Client (RTCM Corrections)** -> `xpi_sensors/ntrip_client_node`
 
@@ -56,10 +56,10 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 *   **HX711 (Load Cell / Weight Sensor)** -> `xpi_sensors/hx711_node`
 
 ### Inputs (Human & RC)
-*   **Joystick / Gamepad (Standard USB/BT)** -> `xpi_inputs/joystick`
-*   **Keyboard-as-Gamepad** -> `xpi_inputs/keyboard`
+*   **Joystick / Gamepad (Standard USB/BT)** -> `joy_linux/joy_node` via `xpi_inputs/launch/joystick.launch.py`
+*   **Keyboard-as-Gamepad** -> `xpi_inputs/keyboard_to_joy_node`
 *   **Rotary Encoder (GPIO)** -> `xpi_inputs/rotary_encoder_node`
-*   **RC Receivers (SBUS, CRSF, PPM)** -> `xpi_inputs/rc_sbus`
+*   **RC Receivers (SBUS, CRSF, PPM)** -> `xpi_inputs/sbus_receiver_node`, `xpi_inputs/crsf_receiver_node`, `xpi_inputs/ppm_receiver_node`
 *   **Telegram Bot Control** -> `xpi_inputs/telegram_bot_node`
 *   **Gesture Control (MediaPipe)** -> `xpi_inputs/gesture_control_node`
 *   **Joy Mapper (Universal Input Translator)** -> `xpi_inputs/joy_mapper_node`
@@ -75,13 +75,13 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 *   **W25Qxx Flash (SPI)** -> `xpi_commons/w25qxx_node`
 
 ### Actuators & HCI
-*   **#7 PCA9685 (16-Ch PWM I2C)** -> `xpi_actuators/pca9685_node`
+*   **PCA9685 (16-Ch PWM I2C)** -> `xpi_actuators/pca9685_node`
 *   **WS2812B (NeoPixel) Effects Library** -> `xpi_actuators/ws2812_driver`
 *   **Status Indicator (USIS Standard)** -> `xpi_actuators/status_indicator_node`
 *   **LCD 1602 / OLED SSD1306 (I2C)** -> `xpi_actuators/lcd1602_node`
-*   **Stepper Drivers (A4988 / ULN2003)** -> `xpi_actuators/a4988_driver`
-*   **L298/L293 DC Motor Drivers** -> `xpi_actuators/l298_driver`
-*   **Direct GPIO Servo** -> `xpi_actuators/direct_servo`
+*   **Stepper Drivers (A4988 / DRV8825)** -> `xpi_actuators/a4988_driver_node`
+*   **L298/L293 DC Motor Drivers** -> `xpi_actuators/l298_driver_node`
+*   **Servo Controller (PCA9685)** -> `xpi_actuators/pca9685_node`
 *   **Buzzer / RTTTL Melodies** -> `xpi_actuators/buzzer_node`
 
 ### AI & LLM
@@ -95,7 +95,7 @@ For stable operation of XPI-Blocks, we recommend the following combinations:
 ## 🚧 High Priority (Next Up)
 *   **Victron VE.Direct Driver** - Support for high-end solar controllers.
 *   **MLX90640 Thermal Camera** - 32x24 pixel IR array.
-*   **RTK GPS Integration (u-blox ZED-F9P)** - Centimeter-level positioning.
+*   **3D / Depth Perception Expansion** - Next step after the current RTK and 2D LiDAR baseline.
 
 ## 📋 Backlog (Future Supported Sensors)
 *   **LTR-390** - UV Light Sensor.

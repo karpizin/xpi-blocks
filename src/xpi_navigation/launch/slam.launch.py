@@ -9,7 +9,7 @@ def generate_launch_description():
         # 1. LiDAR Driver (LD19)
         Node(
             package='xpi_sensors',
-            executable='/Users/slava/Documents/xpi-blocks/src/xpi_sensors/xpi_sensors/ld19_node.py',
+            executable='ld19_node',
             name='ld19_node',
             parameters=[{'port': '/dev/ttyUSB0'}],
             remappings=[('~/scan', '/scan')]
