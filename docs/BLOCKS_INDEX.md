@@ -12,7 +12,7 @@ This index provides direct links to the documentation for every implemented bloc
 ## 🎙️ Audio & Sound Intelligence
 *   **[Speech-to-Text (Whisper)](../src/xpi_audio/xpi_audio/whisper_stt_node.py)** - Local speech recognition using faster-whisper.
 *   **[Text-to-Speech (Piper)](../src/xpi_audio/xpi_audio/piper_tts_node.py)** - High-quality local neural voice output.
-*   **[Audio Beat Detector](../blocks/audio/beat_detector/README.md)** - Real-time musical beat tracking and rhythm analysis.
+*   **[Audio Beat Detector](../blocks/sensors/audio/beat_detector/README.md)** - Real-time musical beat tracking and rhythm analysis.
 *   **[ReSpeaker Mic Array v2.0](../blocks/sensors/audio/respeaker/README.md)** - 4-mic array with Direction of Arrival (DOA) and voice detection.
 *   **[Audio Level Monitor](../blocks/sensors/audio/analyzer/README.md)** - Real-time noise level (dB) and RMS monitoring.
 *   **[YAMNet Sound Classifier](../blocks/sensors/audio/yamnet/README.md)** - Local Edge AI classification of 500+ sound types (Siren, Bark, etc.).
@@ -108,10 +108,10 @@ This index provides direct links to the documentation for every implemented bloc
 *   **[BLE Beacon Ranging (RSSI)](../blocks/navigation/ble_beacons/README.md)** - Low-cost RSSI-based indoor ranging.
 
 ## 🔋 Power & Energy
-*   **[INA219 Power Monitor](../blocks/sensors/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
-*   **[MAX17048 Battery Gauge](../blocks/sensors/battery_max17048/README.md)** - Accurate LiPo fuel gauge (I2C).
-*   **[ACS712 Current Sensor](../blocks/sensors/acs712/README.md)** - Analog Hall-effect current sensor (via ADS1115).
-*   **[MAX471 Voltage/Current](../blocks/sensors/max471/README.md)** - Analog V/A sensor (via ADS1115).
+*   **[INA219 Power Monitor](../blocks/power/ina219/README.md)** - Voltage, Current, Power sensor (I2C).
+*   **[MAX17048 Battery Gauge](../blocks/power/max17048/README.md)** - Accurate LiPo fuel gauge (I2C).
+*   **[ACS712 Current Sensor](../blocks/power/acs712/README.md)** - Analog Hall-effect current sensor (via ADS1115).
+*   **[MAX471 Voltage/Current](../blocks/power/max471/README.md)** - Analog V/A sensor (via ADS1115).
 *   **[EPEver Tracer MPPT](../blocks/power/epever_mppt/README.md)** - Solar charge controller monitoring (Modbus RS-485).
 
 ## 💾 Storage & Memory

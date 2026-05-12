@@ -16,7 +16,7 @@ setup(
     maintainer='Viacheslav Karpizin',
     maintainer_email='viacheslav.karpizin@gmail.com',
     description='Common utilities and HAL for XPI blocks',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

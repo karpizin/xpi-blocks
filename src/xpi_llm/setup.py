@@ -19,7 +19,7 @@ setup(
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
     description='LLM/VLM integration for sensor analysis and smart control',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

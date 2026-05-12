@@ -5,7 +5,7 @@
   <version>0.1.0</version>
   <description>Output device blocks for XPI (Relays, LEDs, Motors)</description>
   <maintainer email="user@example.com">XPI Maintainer</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>

@@ -5,7 +5,7 @@
   <version>0.1.0</version>
   <description>Audio interface blocks for XPI (Voice, STT, TTS, Sounds)</description>
   <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
