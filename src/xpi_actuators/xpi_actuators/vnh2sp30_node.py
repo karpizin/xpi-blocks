@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import Float32
 from gpiozero import PWMOutputDevice, DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
@@ -23,13 +24,15 @@ class VNH2SP30Node(Node):
         self.declare_parameter('motor_a_pwm_pin', 12)
         self.declare_parameter('motor_a_in1_pin', 5)
         self.declare_parameter('motor_a_in2_pin', 6)
-        self.declare_parameter('motor_a_en_pin', None) # Optional Enable/DIAG pin
+        # Optional pins default to None; dynamic typing lets get_parameter() return None
+        # (a statically typed None parameter raises ParameterUninitializedException).
+        self.declare_parameter('motor_a_en_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional Enable/DIAG pin
         
         # Motor B
         self.declare_parameter('motor_b_pwm_pin', 13)
         self.declare_parameter('motor_b_in1_pin', 26)
         self.declare_parameter('motor_b_in2_pin', 19)
-        self.declare_parameter('motor_b_en_pin', None)
+        self.declare_parameter('motor_b_en_pin', None, ParameterDescriptor(dynamic_typing=True))
 
         self.declare_parameter('pwm_frequency', 20000) # VNH2SP30 supports up to 20kHz (ultrasonic)
         self.declare_parameter('mock_hardware', False)

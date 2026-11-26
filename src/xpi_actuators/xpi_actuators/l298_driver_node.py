@@ -1,5 +1,6 @@
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import Int32, Float32
 from gpiozero import DigitalOutputDevice, PWMOutputDevice, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
@@ -26,7 +27,9 @@ class L298DriverNode(Node):
         self.declare_parameter('stepper_in2_pin', 27) # GPIO BCM
         self.declare_parameter('stepper_in3_pin', 22) # GPIO BCM
         self.declare_parameter('stepper_in4_pin', 23) # GPIO BCM
-        self.declare_parameter('stepper_enable_pin', None) # Optional, for L298EN (active high)
+        # Optional pins default to None; dynamic typing lets get_parameter() return None
+        # (a statically typed None parameter raises ParameterUninitializedException).
+        self.declare_parameter('stepper_enable_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional, for L298EN (active high)
         self.declare_parameter('stepper_steps_per_revolution', 200) # For typical 1.8 degree stepper
         self.declare_parameter('stepper_step_delay_s', 0.005) # Minimum delay in seconds between steps
         self.declare_parameter('stepper_motor_max_rpm', 60) # For continuous speed calculation
@@ -34,11 +37,11 @@ class L298DriverNode(Node):
         # DC Dual Motor mode pins
         self.declare_parameter('motor_a_in1_pin', 17)
         self.declare_parameter('motor_a_in2_pin', 27)
-        self.declare_parameter('motor_a_pwm_pin', None) # Optional, if using L298EN for speed
+        self.declare_parameter('motor_a_pwm_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional, if using L298EN for speed
         
         self.declare_parameter('motor_b_in1_pin', 22)
         self.declare_parameter('motor_b_in2_pin', 23)
-        self.declare_parameter('motor_b_pwm_pin', None) # Optional
+        self.declare_parameter('motor_b_pwm_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional
         self.declare_parameter('dc_pwm_frequency', 1000) # Hz for DC motor speed
 
         self.declare_parameter('mock_hardware', False)

@@ -40,13 +40,13 @@ class GPIODigitalInputNode(Node):
             Device.pin_factory = MockFactory()
             
         self.input_devices = {}
-        self.publishers = {} # Publishers for individual pins
+        self.pin_publishers = {} # Publishers for individual pins
         self.multi_pin_publisher = None # Publisher for all pins in one message
 
         try:
             for pin in self.pins:
                 self.input_devices[pin] = InputDevice(pin, pull_up=self.pull_up, pull_down=self.pull_down)
-                self.publishers[pin] = self.create_publisher(Bool, f'~/pin_{pin}/state', 10)
+                self.pin_publishers[pin] = self.create_publisher(Bool, f'~/pin_{pin}/state', 10)
                 self.get_logger().info(f'DigitalInput: Initialized GPIO {pin} (pull_up={self.pull_up}, pull_down={self.pull_down}).')
             
             # Create a publisher for all pins combined
@@ -74,7 +74,7 @@ class GPIODigitalInputNode(Node):
             # Publish individual pin state
             msg = Bool()
             msg.data = state
-            self.publishers[pin].publish(msg)
+            self.pin_publishers[pin].publish(msg)
             
             all_pin_states.append(1 if state else 0)
 
