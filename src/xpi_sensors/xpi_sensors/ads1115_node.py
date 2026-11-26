@@ -103,6 +103,8 @@ class ADS1115Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
         
         self.v_ref = self.PGA[self.pga_setting][1] # Max voltage based on PGA
         self.lsb = self.v_ref / 32768.0 # LSB value (Volts per bit)
@@ -190,10 +192,16 @@ class ADS1115Node(Node):
                     time.sleep(1.0 / self.data_rate + 0.0001) # Small buffer
                     
                     # Read conversion status
-                    status = self.bus.read_word_data(self.address, self.REG_CONFIG)
-                    while not (status & self.OS_SINGLE): # Wait until OS bit is 1
-                         time.sleep(0.0001)
-                         status = self.bus.read_word_data(self.address, self.REG_CONFIG)
+                    # Config register is MSB first; OS bit (15) = 1 when the conversion is done.
+                    # Bounded wait so a missing/stuck chip cannot hang the timer callback forever.
+                    deadline = time.monotonic() + 0.1
+                    while True:
+                        hi, lo = self.bus.read_i2c_block_data(self.address, self.REG_CONFIG, 2)
+                        if ((hi << 8) | lo) & self.OS_SINGLE:
+                            break
+                        if time.monotonic() > deadline:
+                            raise TimeoutError('conversion did not complete within 100 ms')
+                        time.sleep(0.0001)
 
                     raw_value = self._read_conversion_result()
                     voltage = raw_value * self.lsb

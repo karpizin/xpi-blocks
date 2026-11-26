@@ -29,6 +29,8 @@ class SHT3xNode(Node):
 
         # Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
 
         try:
             self.get_logger().info(f'SHT3x attempt to initialize at 0x{self.address:02X} on bus {self.bus_id}.')

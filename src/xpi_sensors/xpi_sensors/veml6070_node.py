@@ -39,6 +39,8 @@ class VEML6070Node(Node):
 
         # Init I2C
         self.bus = get_smbus(bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
 
         try:
             self.init_sensor()
@@ -92,7 +94,7 @@ class VEML6070Node(Node):
             self.uv_pub.publish(msg_uv)
 
             msg_level = String()
-            msg_level.data = self.get_uv_risk_level(uv_raw)
+            msg_level.data = self.get_uv_level(uv_raw)
             self.level_pub.publish(msg_level)
 
             self.get_logger().debug(f"UV Raw: {uv_raw}, Level: {msg_level.data}")

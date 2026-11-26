@@ -64,6 +64,8 @@ class MPU6050Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
         
         # Scale factors (per LSB)
         self.accel_scale = self._get_accel_scale(self.accel_fsr_val)
@@ -161,7 +163,7 @@ class MPU6050Node(Node):
         temp_msg.header.stamp = imu_msg.header.stamp
         temp_msg.header.frame_id = self.frame_id
 
-        if self.bus.mock_mode: # Assuming mock_mode is an attribute of mock bus
+        if self.bus.mock_mode:
             self.mock_counter += 1
             # Simulate some motion
             imu_msg.linear_acceleration.x = self.mock_accel[0] * math.sin(self.mock_counter * 0.05) + 0.1
