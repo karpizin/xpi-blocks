@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
 from gpiozero import DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 
 class RelayNode(Node):
@@ -29,7 +29,7 @@ class RelayNode(Node):
         # 3. Initialize Hardware (with Mock support)
         if mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('Running in MOCK mode. No real GPIO will be toggled.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
         
         try:
             self.device = DigitalOutputDevice(

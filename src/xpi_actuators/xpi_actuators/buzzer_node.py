@@ -3,7 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import Bool, String
 from gpiozero import TonalBuzzer, Device
 from gpiozero.tones import Tone
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import time
 import threading
 
@@ -32,7 +32,7 @@ class BuzzerNode(Node):
         mock_mode = self.get_parameter('mock_hardware').value
 
         if mock_mode:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().warn('Buzzer: Running in MOCK mode.')
 
         # Hardware Setup

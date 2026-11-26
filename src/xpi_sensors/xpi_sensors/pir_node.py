@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
 from gpiozero import MotionSensor, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 
 class PIRNode(Node):
     """
@@ -23,7 +23,7 @@ class PIRNode(Node):
         mock_mode = self.get_parameter('mock_hardware').value
 
         if mock_mode:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().warn('PIR: Running in MOCK mode.')
 
         # Hardware Setup
