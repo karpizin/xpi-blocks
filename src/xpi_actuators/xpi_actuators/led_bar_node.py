@@ -34,9 +34,9 @@ class LEDBarNode(Node):
 
         self.led_bar = None
         try:
-            # gpiozero.LEDBarGraph requires a tuple of pins
+            # gpiozero.LEDBarGraph takes the pins as separate arguments: LEDBarGraph(5, 6, 13, ...)
             self.led_bar = LEDBarGraph(
-                self.pins,
+                *self.pins,
                 active_high=not self.invert_logic,
                 initial_value=self.initial_value / len(self.pins) # Convert number to normalized value
             )

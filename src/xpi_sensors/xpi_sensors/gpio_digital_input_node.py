@@ -45,7 +45,14 @@ class GPIODigitalInputNode(Node):
 
         try:
             for pin in self.pins:
-                self.input_devices[pin] = InputDevice(pin, pull_up=self.pull_up, pull_down=self.pull_down)
+                # gpiozero has no pull_down argument: pull_up=True -> pull-up, False -> pull-down,
+                # None -> floating (then active_state must be given)
+                if self.pull_up:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=True)
+                elif self.pull_down:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=False)
+                else:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=None, active_state=True)
                 self.pin_publishers[pin] = self.create_publisher(Bool, f'~/pin_{pin}/state', 10)
                 self.get_logger().info(f'DigitalInput: Initialized GPIO {pin} (pull_up={self.pull_up}, pull_down={self.pull_down}).')
             
