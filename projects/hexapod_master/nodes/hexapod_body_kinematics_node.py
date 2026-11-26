@@ -3,6 +3,8 @@ import os
 import sys
 from pathlib import Path
 
+import time
+
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
@@ -55,6 +57,7 @@ class HexapodBodyNode(Node):
         self.arm_joints = [0.0, 0.0, 0.0]
         
         # 5. Timer for smooth updates (50 Hz)
+        self._last_update = time.monotonic()
         self.create_timer(0.02, self.update_loop)
         
         self.get_logger().info('Hexapod Body & Arm Kinematics Node initialized.')
@@ -96,7 +99,10 @@ class HexapodBodyNode(Node):
 
     def update_loop(self):
         # 1. Get smoothed current pose
-        curr_pose = self.pose_interp.update()
+        now = time.monotonic()
+        dt = min(now - self._last_update, 0.1)  # clamp: a stalled loop must not jump the pose
+        self._last_update = now
+        curr_pose = self.pose_interp.update(dt)
         
         translation = curr_pose[0:3]
         rotation = curr_pose[3:6]

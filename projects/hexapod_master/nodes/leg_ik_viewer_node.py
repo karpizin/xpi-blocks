@@ -24,7 +24,7 @@ class LegIKViewerNode(Node):
         l2 = self.get_parameter('l2').value
         l3 = self.get_parameter('l3').value
         
-        self.ik = LegKinematics(l1, l2, l3)
+        self.ik = LegKinematics({'l1': l1, 'l2': l2, 'l3': l3})  # takes one dict of link lengths
         
         # 2. Publishers & Subscribers
         self.joint_pub = self.create_publisher(JointState, '/joint_states', 10)
