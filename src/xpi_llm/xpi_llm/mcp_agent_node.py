@@ -24,8 +24,10 @@ class MCPAgentNode(Node):
         self.declare_parameter('command_topic', '~/command')
         self.declare_parameter('response_topic', '~/response')
         # Motion safety: limits enforced in code, whatever the LLM asks for
-        self.declare_parameter('motor_a_topic', '/tb6612/motor_a/cmd_vel')
-        self.declare_parameter('motor_b_topic', '/tb6612/motor_b/cmd_vel')
+        # Defaults match tb6612.launch.py / smart_motor.launch.py, which name the driver 'motor_driver'.
+        # Running the driver with `ros2 run` instead? Use /tb6612_driver_node/motor_a/cmd_vel.
+        self.declare_parameter('motor_a_topic', '/motor_driver/motor_a/cmd_vel')
+        self.declare_parameter('motor_b_topic', '/motor_driver/motor_b/cmd_vel')
         self.declare_parameter('max_move_speed', 0.5)      # |speed| limit for move_robot (0..1)
         self.declare_parameter('max_move_duration', 5.0)   # s, upper bound for one move_robot call
         self.declare_parameter('move_keepalive_hz', 10.0)  # re-publish rate; motor drivers stop if commands stop

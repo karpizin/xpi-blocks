@@ -57,7 +57,7 @@ Drives both motors at the same speed for a limited time.
     `0.0` at the end, so it works with the motor drivers' command watchdog.
 
 **Motion parameters:**
-*   `motor_a_topic` / `motor_b_topic` (default: `/tb6612/motor_a/cmd_vel`, `/tb6612/motor_b/cmd_vel`): set these to match your driver's node name (e.g. `/tb6612_driver_node/motor_a/cmd_vel`).
+*   `motor_a_topic` / `motor_b_topic` (default: `/motor_driver/motor_a/cmd_vel`, `/motor_driver/motor_b/cmd_vel`): match `tb6612.launch.py`, which names the driver `motor_driver`. If you start the driver with `ros2 run xpi_actuators tb6612_driver_node`, use `/tb6612_driver_node/motor_a/cmd_vel` and `/tb6612_driver_node/motor_b/cmd_vel`.
 *   `max_move_speed` (default: `0.5`)
 *   `max_move_duration` (default: `5.0` s)
 *   `move_keepalive_hz` (default: `10.0`)
