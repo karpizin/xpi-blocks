@@ -10,28 +10,51 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Install Ruff
-        run: pip install ruff
+        # Pinned: rules are configured in ruff.toml, a new ruff must not change them silently
+        run: pip install ruff==0.16.9
       - name: Run Ruff
-        run: ruff check src/
+        run: ruff check src/ tests/
       - name: Check for Russian characters
         run: |
           # Pattern matches any Cyrillic characters. 
-          # We check src, blocks, docs and projects directories.
-          if grep -rP '[а-яА-ЯёЁ]' src/ blocks/ docs/ projects/ --exclude-dir=.git; then
+          # We check src, blocks, docs, projects and tests directories.
+          if grep -rP '[а-яА-ЯёЁ]' src/ blocks/ docs/ projects/ tests/ --exclude-dir=.git; then
             echo "Error: Russian characters found in code or documentation. Please use English only."
             exit 1
           fi
 
+  # Fast check without ROS: every node starts in mock mode against an rclpy stub
+  # (tests/ros_stub), shipped parameter files are accepted, hexapod math and gait tests.
+  smoke-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'  # ROS 2 Humble
+
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements.txt
+          # Optional libraries cover more nodes; one that fails to install only skips its nodes
+          grep -vE '^\s*(#|$)' tests/requirements-optional.txt | while read -r pkg; do
+            pip install "$pkg" || echo "::warning::could not install $pkg, its nodes will be skipped"
+          done
+
+      - name: Run smoke tests
+        run: python -m pytest tests/ projects/hexapod_master/test -rs
+
   build-and-test:
-    needs: linting
+    needs: [linting, smoke-test]
     runs-on: ubuntu-22.04
     permissions:
       contents: read
       packages: write # <--- Add this line
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Setup ROS 2
         uses: ros-tooling/setup-ros@v0.7
@@ -61,13 +84,15 @@ jobs:
           colcon test-result --verbose
       
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v4
 
       - name: Set up Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
 
+      # Images are published only from pushes to the listed branches, never from pull requests
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -75,7 +100,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
@@ -83,11 +108,11 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
