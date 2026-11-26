@@ -23,7 +23,9 @@ class A4988DriverNode(Node):
         # Optional pins default to None; dynamic typing lets get_parameter() return None
         # (a statically typed None parameter raises ParameterUninitializedException).
         self.declare_parameter('enable_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional, if used (active low)
-        self.declare_parameter('microstep_pins', []) # e.g., [22, 23, 24] for MS1, MS2, MS3
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('microstep_pins', [], ParameterDescriptor(dynamic_typing=True)) # e.g., [22, 23, 24] for MS1, MS2, MS3
         self.declare_parameter('microstep_setting', 1) # Full step (1) or 2, 4, 8, 16, 32...
         self.declare_parameter('steps_per_revolution_fullstep', 200) # For typical NEMA17 (1.8 deg/step)
         self.declare_parameter('mock_hardware', False)

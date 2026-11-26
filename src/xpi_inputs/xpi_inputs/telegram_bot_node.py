@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import String, Bool, Float32, Int32, Empty
 from sensor_msgs.msg import Image
 import threading
@@ -16,9 +17,11 @@ class TelegramBotNode(Node):
 
         # Parameters
         self.declare_parameter('token', '')
-        self.declare_parameter('allowed_users', []) # List of user IDs
-        self.declare_parameter('menu_layout', [])   # List of lists of strings
-        self.declare_parameter('actions', [])       # List of strings "TRIGGER:TOPIC:TYPE:VALUE"
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('allowed_users', [], ParameterDescriptor(dynamic_typing=True)) # List of user IDs
+        self.declare_parameter('menu_layout', [], ParameterDescriptor(dynamic_typing=True))   # List of lists of strings
+        self.declare_parameter('actions', [], ParameterDescriptor(dynamic_typing=True))       # List of strings "TRIGGER:TOPIC:TYPE:VALUE"
 
         self.token = self.get_parameter('token').value
         self.allowed_users = self.get_parameter('allowed_users').value

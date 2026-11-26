@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool, Int32
@@ -38,7 +39,9 @@ class RCInterpreterNode(Node):
         
         # 5. Switch Mapping (msg.buttons or high-index axes)
         # Format: "ch_index:topic:msg_type:threshold"
-        self.declare_parameter('switch_bindings', [])
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('switch_bindings', [], ParameterDescriptor(dynamic_typing=True))
 
         # --- Read Config ---
         self.input_topic = self.get_parameter('input_joy_topic').value

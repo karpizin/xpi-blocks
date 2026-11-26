@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool, Float32, Int32
@@ -27,7 +28,9 @@ class JoyMapperNode(Node):
         # "toggle_btn:0:light_switch:Bool"
         # "momentary_btn:1:horn:Bool"
         # "axis:5:gripper:Float32:180.0" (axis val * 180)
-        self.declare_parameter('bindings', [])
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('bindings', [], ParameterDescriptor(dynamic_typing=True))
 
         # --- State ---
         self.drive_enabled = self.get_parameter('enable_drive').value
