@@ -36,12 +36,16 @@ ros2 run xpi_actuators vnh2sp30_node
 *   `motor_a_in2_pin` (default: 6)
 *   `motor_a_en_pin` (Optional)
 *   `pwm_frequency` (default: 20000 Hz for silent operation)
+*   `cmd_timeout` (default: 0.5 s): stop a motor if commands stop arriving; `0` disables.
+*   `max_speed` (default: 1.0): absolute speed limit.
 
 ## 📡 Interface
 
 ### Subscribers
 *   `~/motor_a/cmd_speed` (`std_msgs/Float32`): -1.0 to 1.0.
 *   `~/motor_b/cmd_speed` (`std_msgs/Float32`): -1.0 to 1.0.
+
+Commands must be streamed (e.g. 10 Hz): the watchdog stops a motor after `cmd_timeout` without commands. `NaN`/`inf` mean stop.
 
 ### Current Monitoring
 To monitor current, use the **Analog Sensor Interpreter** block with an **ADS1115** connected to the CS (Current Sense) pin of the VNH2SP30.

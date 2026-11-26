@@ -2,10 +2,12 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int32, Float32
 from gpiozero import DigitalOutputDevice, PWMOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
 import threading
+
+from xpi_actuators.motor_safety import DEFAULT_CMD_TIMEOUT_S, CommandWatchdog, sanitize_speed
 
 class L298DriverNode(Node):
     """
@@ -40,6 +42,8 @@ class L298DriverNode(Node):
         self.declare_parameter('dc_pwm_frequency', 1000) # Hz for DC motor speed
 
         self.declare_parameter('mock_hardware', False)
+        self.declare_parameter('cmd_timeout', DEFAULT_CMD_TIMEOUT_S)  # s; stop a motor if no command arrives in time (0 = off)
+        self.declare_parameter('max_speed', 1.0)  # absolute speed limit applied to every command (0..1)
 
         # 2. Read Parameters
         self.driver_mode = self.get_parameter('driver_mode').value
@@ -48,12 +52,25 @@ class L298DriverNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('L298: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)  # PWM-capable mock pins
 
         self.pins = [] # Store all GPIO devices
         self.control_lock = threading.Lock()
         self.stop_event = threading.Event()
         self.motor_thread = None
+
+        # Dead-man switch: publishers must stream commands; a silent channel is stopped.
+        self.max_speed = sanitize_speed(self.get_parameter('max_speed').value)
+        self.watchdog = CommandWatchdog(self.get_parameter('cmd_timeout').value)
+        self._stop_channel = {
+            'motor_a': lambda: self._set_dc_motor_speed(self.motor_a_in1, self.motor_a_in2, self.motor_a_pwm, 0.0),
+            'motor_b': lambda: self._set_dc_motor_speed(self.motor_b_in1, self.motor_b_in2, self.motor_b_pwm, 0.0),
+            'stepper_speed': lambda: self._stop_stepper_speed(),
+        }
+        if self.watchdog.enabled:
+            self.create_timer(self.watchdog.check_period(), self._watchdog_tick)
+        else:
+            self.get_logger().warn('L298: cmd_timeout <= 0, command watchdog DISABLED.')
 
         if self.driver_mode == 'stepper':
             self._init_stepper_mode()
@@ -256,8 +273,14 @@ class L298DriverNode(Node):
             self.motor_thread = threading.Thread(target=self._stepper_control_thread)
             self.motor_thread.start()
 
+    def _stop_stepper_speed(self):
+        # Watchdog: drop continuous rotation; discrete ~/cmd_steps moves are not affected.
+        with self.control_lock:
+            self.current_speed_factor = 0.0
+
     def cmd_stepper_speed_callback(self, msg: Float32):
-        speed = max(-1.0, min(1.0, msg.data))
+        speed = sanitize_speed(msg.data, self.max_speed)
+        self.watchdog.feed('stepper_speed', speed)
         with self.control_lock:
             self.current_speed_factor = speed
             self.target_steps = 0
@@ -267,7 +290,7 @@ class L298DriverNode(Node):
             self.motor_thread.start()
 
     def _set_dc_motor_speed(self, in1_device, in2_device, pwm_device, speed: float):
-        speed = max(-1.0, min(1.0, speed))
+        speed = sanitize_speed(speed, self.max_speed)  # clamp; NaN/inf -> stop
 
         if self.mock_mode:
             self.get_logger().debug(f'L298 Mock DC: Setting motor speed to {speed}')
@@ -298,10 +321,20 @@ class L298DriverNode(Node):
                 in2_device.off()
 
     def cmd_motor_a_speed_callback(self, msg: Float32):
-        self._set_dc_motor_speed(self.motor_a_in1, self.motor_a_in2, self.motor_a_pwm, msg.data)
+        speed = sanitize_speed(msg.data, self.max_speed)
+        self.watchdog.feed('motor_a', speed)
+        self._set_dc_motor_speed(self.motor_a_in1, self.motor_a_in2, self.motor_a_pwm, speed)
 
     def cmd_motor_b_speed_callback(self, msg: Float32):
-        self._set_dc_motor_speed(self.motor_b_in1, self.motor_b_in2, self.motor_b_pwm, msg.data)
+        speed = sanitize_speed(msg.data, self.max_speed)
+        self.watchdog.feed('motor_b', speed)
+        self._set_dc_motor_speed(self.motor_b_in1, self.motor_b_in2, self.motor_b_pwm, speed)
+
+    def _watchdog_tick(self):
+        for channel in self.watchdog.expired():
+            self.get_logger().warn(
+                f'L298: no command on {channel} for {self.watchdog.timeout:.2f} s, stopping motor.')
+            self._stop_channel[channel]()
 
 
     def destroy_node(self):
