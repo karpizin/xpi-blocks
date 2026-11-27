@@ -54,9 +54,6 @@ PROGRAMMING_ERRORS = (AttributeError, NameError, TypeError, KeyError, IndexError
 
 # module -> reason. Keep short; link the fix when there is one.
 KNOWN_ISSUES = {
-    'xpi_comms.ble_bridge_node':
-        "uses BlessServer.connected / write_request, which bless does not have (is_connected() is a "
-        'coroutine, notifications go through update_value()); needs testing on BLE hardware',
     'xpi_inputs.ppm_receiver_node':
         'imports gpiozero.PulseInput, which does not exist; PPM decoding needs pigpio callbacks',
 }
