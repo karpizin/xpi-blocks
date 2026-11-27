@@ -24,6 +24,7 @@ pmw3901
 mpu9250-jmdev
 pyLoRa
 rpi_ws281x
+pigpio
 transforms3d
 meshtastic
 google-generativeai

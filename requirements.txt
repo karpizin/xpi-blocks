@@ -42,3 +42,4 @@ pyubx2
 piper-tts
 faster-whisper
 pyaudio
+pigpio

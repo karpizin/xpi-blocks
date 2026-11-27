@@ -54,8 +54,6 @@ PROGRAMMING_ERRORS = (AttributeError, NameError, TypeError, KeyError, IndexError
 
 # module -> reason. Keep short; link the fix when there is one.
 KNOWN_ISSUES = {
-    'xpi_inputs.ppm_receiver_node':
-        'imports gpiozero.PulseInput, which does not exist; PPM decoding needs pigpio callbacks',
 }
 
 # Nodes that have a mock mode and a timer but publish only on events/commands.

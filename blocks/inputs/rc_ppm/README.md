@@ -2,6 +2,16 @@
 
 This block provides a ROS2 driver for decoding PPM (Pulse Position Modulation) signals from an RC receiver connected to a single GPIO pin. It publishes decoded channel values as `sensor_msgs/Joy` messages.
 
+## 🧠 How it Works
+A PPM (CPPM) stream is a train of short, fixed-width pulses. The value of each channel is the
+**time between two consecutive pulse edges** (about 1000-2000 µs); a long gap (the sync gap,
+several ms) marks the start of the next frame. The node uses the **pigpio** daemon, which
+timestamps every edge with microsecond resolution in C, so decoding is not disturbed by Python
+scheduling jitter.
+
+> ⚠️ pigpio does **not** support the Raspberry Pi 5. Use a receiver with SBUS or CRSF output
+> (`rc_sbus`, `rc_crsf` blocks) on a Pi 5.
+
 ## 📦 Bill of Materials
 *   Raspberry Pi
 *   PPM-compatible RC Receiver
@@ -16,11 +26,17 @@ Connect your PPM receiver's PPM output to a GPIO pin on the Raspberry Pi.
 | GND             | GND          | Common Ground                     |
 | VCC             | 3.3V/5V      | Power for Receiver (check receiver spec!) |
 
-**Important Note on GPIO Pull-up/Pull-down:**
-PPM signals can be active high or active low. `gpiozero`'s `PulseInput` handles this well with `pull_up` / `pull_down` settings. By default, `gpiozero.PulseInput` uses a pull-up resistor. If your PPM signal is active low, you may need to adjust.
+**Signal level and polarity:** the Pi's GPIO is 3.3 V only; if your receiver outputs 5 V PPM, use
+a level shifter or a resistor divider. Most receivers send positive pulses (`edge:=rising`); for an
+inverted stream use `edge:=falling`. The internal pull-up is on by default (`pull_up`).
 
 ## 🚀 Quick Start
-1.  **Launch the PPM driver**:
+1.  **Install and start pigpio** (once):
+    ```bash
+    sudo apt-get install pigpio python3-pigpio   # or: pip install pigpio (client only)
+    sudo systemctl enable --now pigpiod
+    ```
+2.  **Launch the PPM driver**:
     ```bash
     ros2 launch xpi_inputs ppm.launch.py gpio_pin:=17
     ```
@@ -37,10 +53,19 @@ PPM signals can be active high or active low. `gpiozero`'s `PulseInput` handles 
 *   `publish_rate` (float, default: `50.0`): Frequency to publish `Joy` messages.
 *   `mock_hardware` (bool, default: `false`): Run in mock mode for testing.
 *   `num_channels` (int, default: `8`): Number of channels expected in the PPM frame.
-*   `frame_timeout_us` (int, default: `5000`): Microseconds. A pulse width greater than this indicates the end of a PPM frame.
-*   `min_pulse_us` (int, default: `900`): Microseconds. Minimum expected pulse width for a channel.
-*   `max_pulse_us` (int, default: `2100`): Microseconds. Maximum expected pulse width for a channel.
-*   `center_pulse_us` (int, default: `1500`): Microseconds. Pulse width for the center position of a channel.
+*   `frame_timeout_us` (int, default: `3000`): Microseconds. An interval between edges at least this long is the sync gap that starts a frame.
+*   `min_pulse_us` (int, default: `900`): Microseconds. Shortest valid channel interval (edge to edge).
+*   `max_pulse_us` (int, default: `2100`): Microseconds. Longest valid channel interval (edge to edge).
+*   `center_pulse_us` (int, default: `1500`): Microseconds. Interval that maps to `0.0`.
+*   `edge` (string, default: `rising`): Edge that starts each pulse, `rising` or `falling`.
+*   `pull_up` (bool, default: `true`): Enable the internal pull-up resistor.
+*   `signal_timeout` (float, default: `0.25`): Seconds without a complete frame before the signal counts as lost.
+
+### Signal loss
+When no complete frame arrives for `signal_timeout` seconds (transmitter off, out of range, cable
+unplugged) the node **stops publishing** and logs a warning; the command watchdogs of the motor
+drivers (`cmd_timeout`) then stop the motors. A frame with a glitch (an interval outside
+`min_pulse_us`..`max_pulse_us`) or the wrong number of channels is dropped as a whole.
 
 ## ✅ Verification
 1.  Launch the driver with your PPM receiver connected and powered on.
@@ -53,7 +78,9 @@ PPM signals can be active high or active low. `gpiozero`'s `PulseInput` handles 
 ## ⚠️ Troubleshooting
 *   **No data / erratic data?**
     *   Double-check GPIO wiring.
-    *   Verify PPM signal characteristics (active high/low) and adjust `gpiozero.PulseInput` configuration if needed.
+    *   Is the daemon running? `pigs t` prints the current tick; the node logs an error if it cannot connect.
+    *   Try `edge:=falling` for an inverted PPM stream.
+    *   Check `num_channels`: frames with another channel count are dropped.
     *   Adjust `min_pulse_us`, `max_pulse_us`, `center_pulse_us`, `frame_timeout_us` to match your specific receiver.
 *   **Permissions error?**
-    *   Add your user to the `gpio` group: `sudo usermod -a -G gpio $USER`. Log out and back in.
+    *   GPIO access goes through `pigpiod` (runs as root), so the node itself needs no GPIO permissions.
