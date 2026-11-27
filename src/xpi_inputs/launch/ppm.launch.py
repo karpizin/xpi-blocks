@@ -27,18 +27,18 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'frame_timeout_us',
-            default_value='5000',
-            description='Microseconds, pulse width threshold for end of frame'
+            default_value='3000',
+            description='Microseconds; an interval between edges this long is the sync gap that starts a frame'
         ),
         DeclareLaunchArgument(
             'min_pulse_us',
             default_value='900',
-            description='Microseconds, typical minimum pulse width'
+            description='Microseconds, shortest valid channel interval (edge to edge)'
         ),
         DeclareLaunchArgument(
             'max_pulse_us',
             default_value='2100',
-            description='Microseconds, typical maximum pulse width'
+            description='Microseconds, longest valid channel interval (edge to edge)'
         ),
         DeclareLaunchArgument(
             'center_pulse_us',

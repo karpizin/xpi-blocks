@@ -2,8 +2,10 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
 from gpiozero import PWMOutputDevice, DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
+
+from xpi_actuators.motor_safety import DEFAULT_CMD_TIMEOUT_S, CommandWatchdog, sanitize_speed
 
 class TB6612DriverNode(Node):
     """
@@ -26,6 +28,8 @@ class TB6612DriverNode(Node):
 
         self.declare_parameter('pwm_frequency', 1000)  # Hz
         self.declare_parameter('mock_hardware', False)
+        self.declare_parameter('cmd_timeout', DEFAULT_CMD_TIMEOUT_S)  # s; stop a motor if no command arrives in time (0 = off)
+        self.declare_parameter('max_speed', 1.0)  # absolute speed limit applied to every command (0..1)
 
         # 2. Read Parameters
         # Motor A
@@ -43,7 +47,7 @@ class TB6612DriverNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('TB6612: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)  # PWM-capable mock pins
 
         # 3. Hardware Init
         try:
@@ -67,6 +71,18 @@ class TB6612DriverNode(Node):
             self.motor_b_in1 = MockOutputDevice()
             self.motor_b_in2 = MockOutputDevice()
             
+        # Dead-man switch: publishers must stream commands; a silent channel is stopped.
+        self.max_speed = sanitize_speed(self.get_parameter('max_speed').value)
+        self.watchdog = CommandWatchdog(self.get_parameter('cmd_timeout').value)
+        self._stop_channel = {
+            'motor_a': lambda: self._set_motor_speed(self.motor_a_pwm, self.motor_a_in1, self.motor_a_in2, 0.0),
+            'motor_b': lambda: self._set_motor_speed(self.motor_b_pwm, self.motor_b_in1, self.motor_b_in2, 0.0),
+        }
+        if self.watchdog.enabled:
+            self.create_timer(self.watchdog.check_period(), self._watchdog_tick)
+        else:
+            self.get_logger().warn('TB6612: cmd_timeout <= 0, command watchdog DISABLED.')
+
         # 4. Subscribers
         self.sub_motor_a = self.create_subscription(
             Float32,
@@ -87,7 +103,7 @@ class TB6612DriverNode(Node):
         Sets the speed and direction of a single motor.
         speed: -1.0 (full reverse) to 1.0 (full forward), 0.0 (stop)
         """
-        speed = max(-1.0, min(1.0, speed)) # Clamp speed to -1.0 to 1.0
+        speed = sanitize_speed(speed, self.max_speed)  # clamp; NaN/inf -> stop
 
         if self.mock_mode:
             self.get_logger().debug(f'TB6612 Mock: Setting motor speed to {speed}')
@@ -110,10 +126,20 @@ class TB6612DriverNode(Node):
             pwm_device.value = 0
 
     def motor_a_callback(self, msg: Float32):
-        self._set_motor_speed(self.motor_a_pwm, self.motor_a_in1, self.motor_a_in2, msg.data)
+        speed = sanitize_speed(msg.data, self.max_speed)
+        self.watchdog.feed('motor_a', speed)
+        self._set_motor_speed(self.motor_a_pwm, self.motor_a_in1, self.motor_a_in2, speed)
 
     def motor_b_callback(self, msg: Float32):
-        self._set_motor_speed(self.motor_b_pwm, self.motor_b_in1, self.motor_b_in2, msg.data)
+        speed = sanitize_speed(msg.data, self.max_speed)
+        self.watchdog.feed('motor_b', speed)
+        self._set_motor_speed(self.motor_b_pwm, self.motor_b_in1, self.motor_b_in2, speed)
+
+    def _watchdog_tick(self):
+        for channel in self.watchdog.expired():
+            self.get_logger().warn(
+                f'TB6612: no command on {channel} for {self.watchdog.timeout:.2f} s, stopping motor.')
+            self._stop_channel[channel]()
 
     def destroy_node(self):
         # Stop motors on shutdown

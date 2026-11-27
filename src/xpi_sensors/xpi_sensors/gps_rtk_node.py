@@ -55,7 +55,8 @@ class GpsRtkNode(Node):
 
     def configure_rate(self, rate_hz):
         """Sends UBX-CFG-RATE to set the update frequency."""
-        if rate_hz <= 0: return
+        if rate_hz <= 0:
+            return
         meas_rate_ms = int(1000 / rate_hz)
         
         # CFG-RATE: msgClass=0x06, msgID=0x08

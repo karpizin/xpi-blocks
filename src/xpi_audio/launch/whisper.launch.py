@@ -10,7 +10,7 @@ def generate_launch_description():
 
         Node(
             package='xpi_audio',
-            executable='whisper_stt_node.py',
+            executable='whisper_stt_node',
             name='whisper_stt',
             parameters=[{
                 'model_size': LaunchConfiguration('model'),

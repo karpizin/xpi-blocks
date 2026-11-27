@@ -2,7 +2,7 @@
 import time
 import rclpy
 from rclpy.node import Node
-from rclpy.parameter import ParameterDescriptor
+from rcl_interfaces.msg import ParameterDescriptor  # not exported by rclpy.parameter
 from std_msgs.msg import Float32
 from gpiozero import Servo
 

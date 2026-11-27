@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='gps_node.py',
+            executable='gps_node',
             name='gps',
             output='screen',
             parameters=[{

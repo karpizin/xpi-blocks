@@ -1,11 +1,14 @@
-import os
+import sys
+from pathlib import Path
+
 from launch import LaunchDescription
+from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    # Path to URDF file (use absolute path for simplicity in this context)
-    urdf_file = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/urdf/leg.urdf'
+    project_dir = Path(__file__).resolve().parents[1]
+    urdf_file = project_dir / 'urdf' / 'leg.urdf'
+    viewer_script = project_dir / 'nodes' / 'leg_ik_viewer_node.py'
     
     with open(urdf_file, 'r') as infp:
         robot_desc = infp.read()
@@ -18,10 +21,8 @@ def generate_launch_description():
             output='screen',
             parameters=[{'robot_description': robot_desc}]
         ),
-        Node(
-            package='xpi_actuators', # Use an existing package for launch
-            executable='/Users/slava/Documents/xpi-blocks/projects/hexapod_master/nodes/leg_ik_viewer_node.py',
-            name='leg_ik_viewer',
+        ExecuteProcess(
+            cmd=[sys.executable, str(viewer_script), '--ros-args', '-r', '__node:=leg_ik_viewer'],
             output='screen'
         ),
         Node(

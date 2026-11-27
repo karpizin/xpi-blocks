@@ -3,7 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import Float32, Int32
 from std_srvs.srv import Trigger
 from gpiozero import DigitalInputDevice, DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import time
 
 class HX711Node(Node):
@@ -31,7 +31,7 @@ class HX711Node(Node):
         mock_mode = self.get_parameter('mock_hardware').value
 
         if mock_mode:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().warn('HX711: Running in MOCK mode.')
 
         # GPIO Setup

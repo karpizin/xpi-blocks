@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 import os
 from glob import glob
 
@@ -7,7 +7,8 @@ package_name = 'xpi_actuators'
 setup(
     name=package_name,
     version='0.1.0',
-    packages=[package_name],
+    # find_packages: also install subpackages (xpi_actuators.lib, .lib.led_effects)
+    packages=find_packages(exclude=['test', 'test.*']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -20,12 +21,20 @@ setup(
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
     description='Output device blocks for XPI',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'a4988_driver_node = xpi_actuators.a4988_driver_node:main',
+            'buzzer_node = xpi_actuators.buzzer_node:main',
+            'esc_driver = xpi_actuators.esc_driver_node:main',
+            'esc_driver_node = xpi_actuators.esc_driver_node:main',
+            'l298_driver_node = xpi_actuators.l298_driver_node:main',
+            'lcd1602_node = xpi_actuators.lcd1602_node:main',
             'led_bar = xpi_actuators.led_bar_node:main',
+            'led_bar_node = xpi_actuators.led_bar_node:main',
             'led_matrix = xpi_actuators.led_matrix_node:main',
+            'led_matrix_node = xpi_actuators.led_matrix_node:main',
             'mcp23017_node = xpi_actuators.mcp23017_node:main',
             'mcp4725_node = xpi_actuators.mcp4725_node:main',
             'pca9685_node = xpi_actuators.pca9685_node:main',
@@ -33,14 +42,18 @@ setup(
             'relay_node = xpi_actuators.relay_node:main',
             'ssd1306_node = xpi_actuators.ssd1306_node:main',
             'tm1637 = xpi_actuators.tm1637_node:main',
+            'tm1637_node = xpi_actuators.tm1637_node:main',
             'unipolar_stepper = xpi_actuators.unipolar_stepper_node:main',
+            'unipolar_stepper_node = xpi_actuators.unipolar_stepper_node:main',
             'ws2812_driver = xpi_actuators.ws2812_driver_node:main',
+            'ws2812_driver_node = xpi_actuators.ws2812_driver_node:main',
             'tb6612_driver = xpi_actuators.tb6612_driver_node:main',
+            'tb6612_driver_node = xpi_actuators.tb6612_driver_node:main',
             'vnh2sp30_node = xpi_actuators.vnh2sp30_node:main',
             'tft_display_node = xpi_actuators.tft_display_node:main',
-            'buzzer_node = xpi_actuators.buzzer_node:main',
             'shift_register_595 = xpi_actuators.shift_register_595_node:main',
             'mcp23017 = xpi_actuators.mcp23017_node:main',
+            'status_indicator_node = xpi_actuators.status_indicator_node:main',
         ],
     },
 )

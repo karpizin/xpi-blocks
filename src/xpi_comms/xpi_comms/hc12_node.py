@@ -4,7 +4,7 @@ from std_msgs.msg import String
 import serial
 import time
 from gpiozero import OutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 
 class HC12Node(Node):
     def __init__(self):
@@ -22,7 +22,7 @@ class HC12Node(Node):
         use_mock = self.get_parameter('use_mock').value
 
         if use_mock:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().info("Using Mock GPIO for SET pin")
 
         # Hardware Setup

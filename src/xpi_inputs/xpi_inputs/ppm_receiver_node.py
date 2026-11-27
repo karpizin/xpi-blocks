@@ -1,156 +1,158 @@
+import math
+import threading
+import time
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-from gpiozero import PulseInput, Device
-from gpiozero.pins.mock import MockFactory
-import os
-import math
-import time
+
+from xpi_inputs.ppm_decoder import PpmDecoder
+
+try:
+    import pigpio
+except ImportError:  # mock mode still works without it
+    pigpio = None
+
 
 class PpmReceiverNode(Node):
     """
-    ROS2 Node for receiving PPM (Pulse Position Modulation) data via a single GPIO pin.
-    Publishes decoded channel values as sensor_msgs/Joy.
+    ROS2 Node for receiving PPM (CPPM) data on a single GPIO pin via pigpio.
+    Publishes decoded channel values (-1.0..1.0) as sensor_msgs/Joy on ~/joy.
+
+    pigpio timestamps every edge in its daemon with microsecond resolution, which is what
+    PPM decoding needs (Python-level edge timing is too jittery). Requires the daemon:
+    ``sudo pigpiod`` (or ``sudo systemctl enable --now pigpiod``). pigpio does not support
+    the Raspberry Pi 5.
+
+    When no complete frame arrives for signal_timeout seconds (receiver off, out of range,
+    cable unplugged) the node stops publishing, so downstream command watchdogs stop the robot.
     """
 
     def __init__(self):
         super().__init__('ppm_receiver_node')
 
         # 1. Declare Parameters
-        self.declare_parameter('gpio_pin', 17) # Default GPIO pin for PPM input
-        self.declare_parameter('publish_rate', 50.0) # Hz
-        self.declare_parameter('mock_hardware', False) # For testing without real GPIO
-        
+        self.declare_parameter('gpio_pin', 17)  # BCM pin for the PPM input
+        self.declare_parameter('publish_rate', 50.0)  # Hz
+        self.declare_parameter('mock_hardware', False)  # For testing without real GPIO
+
         # PPM specific parameters
         self.declare_parameter('num_channels', 8)
-        self.declare_parameter('frame_timeout_us', 5000) # Microseconds, time between frames
-        self.declare_parameter('min_pulse_us', 900)   # Microseconds, typical min pulse width
-        self.declare_parameter('max_pulse_us', 2100)  # Microseconds, typical max pulse width
-        self.declare_parameter('center_pulse_us', 1500) # Microseconds, typical center pulse width
+        self.declare_parameter('frame_timeout_us', 3000)  # sync gap: an interval this long starts a frame
+        self.declare_parameter('min_pulse_us', 900)   # shortest valid channel interval
+        self.declare_parameter('max_pulse_us', 2100)  # longest valid channel interval
+        self.declare_parameter('center_pulse_us', 1500)  # interval that maps to 0.0
+        self.declare_parameter('edge', 'rising')  # edge that starts each pulse: 'rising' or 'falling'
+        self.declare_parameter('pull_up', True)  # enable the internal pull-up on the pin
+        self.declare_parameter('signal_timeout', 0.25)  # s without a frame = signal lost
 
         # 2. Read Parameters
         self.gpio_pin = self.get_parameter('gpio_pin').value
         self.publish_rate = self.get_parameter('publish_rate').value
         self.mock_mode = self.get_parameter('mock_hardware').value
         self.num_channels = self.get_parameter('num_channels').value
-        self.frame_timeout_us = self.get_parameter('frame_timeout_us').value
-        self.min_pulse_us = self.get_parameter('min_pulse_us').value
-        self.max_pulse_us = self.get_parameter('max_pulse_us').value
-        self.center_pulse_us = self.get_parameter('center_pulse_us').value
+        self.signal_timeout = float(self.get_parameter('signal_timeout').value)
+        edge = str(self.get_parameter('edge').value).lower()
 
-        # Initialize mock factory if needed
-        if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
+        self.decoder = PpmDecoder(
+            num_channels=self.num_channels,
+            sync_gap_us=self.get_parameter('frame_timeout_us').value,
+            min_pulse_us=self.get_parameter('min_pulse_us').value,
+            max_pulse_us=self.get_parameter('max_pulse_us').value,
+            center_pulse_us=self.get_parameter('center_pulse_us').value,
+        )
+        self._lock = threading.Lock()   # pigpio calls _on_edge from its own thread
+        self.decoded_channels = None    # last complete frame
+        self.last_frame_rx_time = 0.0
+        self.signal_ok = False
+        self.pi = None
+        self._edge_cb = None
+
+        # 3. Hardware: pigpio edge callback
+        if self.mock_mode:
             self.get_logger().warn('PPM: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+        elif edge not in ('rising', 'falling'):
+            self.get_logger().error(f"PPM: edge must be 'rising' or 'falling', got '{edge}'.")
+        else:
+            self._start_pigpio(edge, bool(self.get_parameter('pull_up').value))
 
-        self.pulse_input = None
-        self.last_pulse_start = 0.0 # seconds
-        self.pulse_widths = [] # List of pulse widths in us
-
-        try:
-            self.pulse_input = PulseInput(self.gpio_pin, pull_up=True) # PPM usually requires pull-up
-            self.pulse_input.when_activated = self._pulse_start
-            self.pulse_input.when_deactivated = self._pulse_end
-            self.get_logger().info(f'PPM: Initialized PulseInput on GPIO {self.gpio_pin}.')
-        except Exception as e:
-            self.get_logger().error(f'PPM: Failed to initialize PulseInput on GPIO {self.gpio_pin}: {e}')
-            self.mock_mode = True # Fallback to mock if real port fails
-
-        # 3. Publisher
+        # 4. Publisher and timer
         self.joy_publisher = self.create_publisher(Joy, '~/joy', 10)
-        
-        # 4. Timer for publishing (and mock data)
         self.timer = self.create_timer(1.0 / self.publish_rate, self.timer_callback)
+        self.mock_channel_val = 0.0  # For mock data simulation
 
-        self.decoded_channels = [0.0] * self.num_channels # Normalized values -1.0 to 1.0
-        self.last_frame_rx_time = time.monotonic()
-        self.mock_channel_val = 0.0 # For mock data simulation
-
-    def _pulse_start(self):
-        self.last_pulse_start = time.monotonic()
-
-    def _pulse_end(self):
-        if self.last_pulse_start == 0.0:
-            return # Ignore if we missed the start
-        
-        duration = (time.monotonic() - self.last_pulse_start) * 1_000_000 # in microseconds
-        
-        # Check for frame timeout (gap between frames)
-        if duration > self.frame_timeout_us and len(self.pulse_widths) > 0:
-            self.process_ppm_frame()
-            self.pulse_widths = [] # Reset for new frame
-        
-        # If it's a channel pulse
-        if self.min_pulse_us <= duration <= self.max_pulse_us:
-            self.pulse_widths.append(duration)
-        # else:
-            # self.get_logger().debug(f"PPM: Ignored pulse width {duration:.1f}us")
-
-    def process_ppm_frame(self):
-        """
-        Process the collected pulse widths as a full PPM frame.
-        """
-        if not self.pulse_widths:
+    def _start_pigpio(self, edge, pull_up):
+        if pigpio is None:
+            self.get_logger().error("PPM: the 'pigpio' Python package is not installed (pip install pigpio).")
             return
-
-        if len(self.pulse_widths) < self.num_channels:
-            self.get_logger().warn(f"PPM: Incomplete frame (expected {self.num_channels}, got {len(self.pulse_widths)}). Skipping.")
+        pi = pigpio.pi()
+        if not pi.connected:
+            self.get_logger().error('PPM: cannot connect to the pigpio daemon; start it with `sudo pigpiod`.')
             return
+        self.pi = pi
+        pi.set_mode(self.gpio_pin, pigpio.INPUT)
+        pi.set_pull_up_down(self.gpio_pin, pigpio.PUD_UP if pull_up else pigpio.PUD_OFF)
+        level = pigpio.RISING_EDGE if edge == 'rising' else pigpio.FALLING_EDGE
+        self._edge_cb = pi.callback(self.gpio_pin, level, self._on_edge)
+        self.get_logger().info(f'PPM: listening on GPIO {self.gpio_pin} ({edge} edges, pigpio).')
 
-        channels_raw = self.pulse_widths[:self.num_channels]
-        
-        # Normalize raw pulse widths to -1.0 to 1.0 range
-        norm_channels = []
-        for pulse_us in channels_raw:
-            # Scale from [min_pulse_us, max_pulse_us] to [-1.0, 1.0]
-            norm_val = (pulse_us - self.center_pulse_us) / \
-                       ((self.max_pulse_us - self.min_pulse_us) / 2.0)
-            norm_channels.append(max(-1.0, min(1.0, norm_val))) # Clamp to valid range
-        
-        self.decoded_channels = norm_channels
-        self.last_frame_rx_time = time.monotonic()
+    def _on_edge(self, gpio, level, tick):
+        """pigpio callback (pigpio thread): tick is the edge time in microseconds."""
+        if level == pigpio.TIMEOUT:
+            return
+        with self._lock:
+            frame = self.decoder.feed(tick)
+            if frame is not None:
+                self.decoded_channels = frame
+                self.last_frame_rx_time = time.monotonic()
 
     def timer_callback(self):
         if self.mock_mode:
             self.publish_mock_data()
             return
 
-        # Publish the most recently decoded frame
-        if (time.monotonic() - self.last_frame_rx_time) < (1.0 / self.publish_rate) and \
-           self.decoded_channels: # Only publish if we have fresh data
-            joy_msg = Joy()
-            joy_msg.header.stamp = self.get_clock().now().to_msg()
-            joy_msg.axes = self.decoded_channels
-            joy_msg.buttons = [] # PPM doesn't typically transmit button data directly
+        with self._lock:
+            channels = self.decoded_channels
+            age = time.monotonic() - self.last_frame_rx_time
 
-            self.joy_publisher.publish(joy_msg)
-        else:
-            self.get_logger().debug("PPM: No new frame to publish or old data.")
+        fresh = channels is not None and age < self.signal_timeout
+        if fresh != self.signal_ok:
+            self.signal_ok = fresh
+            if fresh:
+                self.get_logger().info('PPM: signal acquired.')
+            elif channels is not None:
+                self.get_logger().warn(f'PPM: no frame for {self.signal_timeout:.2f} s, signal lost.')
+        if not fresh:
+            return
+
+        joy_msg = Joy()
+        joy_msg.header.stamp = self.get_clock().now().to_msg()
+        joy_msg.axes = [float(v) for v in channels]
+        joy_msg.buttons = []  # PPM carries only channel values
+        self.joy_publisher.publish(joy_msg)
 
     def publish_mock_data(self):
         """ Publishes dummy Joy messages for mock mode. """
         current_time = time.monotonic()
-        if (current_time - self.last_frame_rx_time) < (1.0 / self.publish_rate):
-            return # Don't publish too fast
-            
         joy_msg = Joy()
         joy_msg.header.stamp = self.get_clock().now().to_msg()
         # Simulate moving stick
-        self.mock_channel_val = math.sin(current_time * math.pi / 2.0) # Sine wave between -1 and 1
+        self.mock_channel_val = math.sin(current_time * math.pi / 2.0)  # Sine wave between -1 and 1
         joy_msg.axes = [
             self.mock_channel_val,  # Channel 0
             -self.mock_channel_val,  # Channel 1
-        ] + [0.0] * (self.num_channels - 2) # Fill rest with 0s
+        ] + [0.0] * (self.num_channels - 2)  # Fill rest with 0s
         joy_msg.buttons = []
         self.joy_publisher.publish(joy_msg)
-        self.last_frame_rx_time = current_time
-
 
     def destroy_node(self):
-        if self.pulse_input:
-            self.pulse_input.close()
-            self.get_logger().info('PPM: Closed PulseInput.')
+        if self._edge_cb is not None:
+            self._edge_cb.cancel()
+        if self.pi is not None:
+            self.pi.stop()
+            self.get_logger().info('PPM: pigpio connection closed.')
         super().destroy_node()
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -162,6 +164,7 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

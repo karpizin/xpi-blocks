@@ -20,6 +20,7 @@ class LD19Node(Node):
         self.frame_id = self.get_parameter('frame_id').value
         
         # Serial setup
+        self.ser = None
         try:
             self.ser = serial.Serial(port, baud, timeout=0.1)
             self.get_logger().info(f'LD19: Connected to {port} at {baud}')
@@ -112,7 +113,9 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        node.ser.close()
+        if node.ser is not None:  # None when the serial port could not be opened
+            node.ser.close()
+        node.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':

@@ -1,16 +1,10 @@
-import unittest
-import rclpy
-from rclpy.node import Node
-from geometry_msgs.msg import Twist, Point
-import threading
 import time
-import os
-import sys
+import unittest
 
-# Add nodes and scripts paths
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'nodes'))
-
+import rclpy
+from geometry_msgs.msg import Point, Twist
 from hexapod_gait_node import HexapodGaitNode
+
 
 class TestGaitNode(unittest.TestCase):
     @classmethod
@@ -22,38 +16,22 @@ class TestGaitNode(unittest.TestCase):
         rclpy.shutdown()
 
     def test_node_publication(self):
-        """Test if HexapodGaitNode publishes gait offsets when receiving cmd_vel."""
+        """HexapodGaitNode publishes leg offsets after receiving cmd_vel."""
         node = HexapodGaitNode()
-        
-        # We need a subscriber to verify output
-        received_msgs = []
-        def sub_cb(msg):
-            received_msgs.append(msg)
-            
-        test_sub = node.create_subscription(Point, '/hexapod/rf/gait_offset', sub_cb, 10)
-        
-        # Create a publisher to trigger the node
+        received = []
+        node.create_subscription(Point, '/hexapod/rf/gait_offset', received.append, 10)
         vel_pub = node.create_publisher(Twist, '/cmd_vel', 10)
-        
-        # Spin node in a thread
-        executor = rclpy.executors.SingleThreadedExecutor()
-        executor.add_node(node)
-        thread = threading.Thread(target=executor.spin, daemon=True)
-        thread.start()
-        
-        # Publish velocity
+
         msg = Twist()
         msg.linear.x = 0.1
-        vel_pub.publish(msg)
-        
-        # Wait for messages to be processed
-        time.sleep(0.5)
-        
-        # Cleanup
+        deadline = time.monotonic() + 2.0
+        while not received and time.monotonic() < deadline:
+            vel_pub.publish(msg)
+            rclpy.spin_once(node, timeout_sec=0.05)
+
         node.destroy_node()
-        
-        # Verify
-        self.assertTrue(len(received_msgs) > 0, "No gait offset messages received!")
+        self.assertTrue(received, 'No gait offset messages received!')
+
 
 if __name__ == '__main__':
     unittest.main()

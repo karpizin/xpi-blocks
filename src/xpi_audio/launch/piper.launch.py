@@ -10,7 +10,7 @@ def generate_launch_description():
 
         Node(
             package='xpi_audio',
-            executable='piper_tts_node.py',
+            executable='piper_tts_node',
             name='piper_tts',
             parameters=[{
                 'model_path': LaunchConfiguration('model'),

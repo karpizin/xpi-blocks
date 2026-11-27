@@ -1,15 +1,17 @@
+from pathlib import Path
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Paths
-    config_file = '/Users/slava/Documents/xpi-blocks/src/xpi_navigation/config/mapper_params_online_async.yaml'
+    package_dir = Path(__file__).resolve().parents[1]
+    config_file = package_dir / 'config' / 'mapper_params_online_async.yaml'
     
     return LaunchDescription([
         # 1. LiDAR Driver (LD19)
         Node(
             package='xpi_sensors',
-            executable='/Users/slava/Documents/xpi-blocks/src/xpi_sensors/xpi_sensors/ld19_node.py',
+            executable='ld19_node',
             name='ld19_node',
             parameters=[{'port': '/dev/ttyUSB0'}],
             remappings=[('~/scan', '/scan')]
@@ -34,7 +36,7 @@ def generate_launch_description():
             executable='async_slam_toolbox_node',
             name='slam_toolbox',
             output='screen',
-            parameters=[config_file]
+            parameters=[str(config_file)]
         ),
         
         # 4. Rviz2 (Optional, for desktop)

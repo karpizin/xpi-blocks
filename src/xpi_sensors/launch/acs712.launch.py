@@ -18,7 +18,7 @@ def generate_launch_description():
         # 1. Start the ADC Driver (Reads raw voltage)
         Node(
             package='xpi_sensors',
-            executable='ads1115_node.py',
+            executable='ads1115_node',
             name='ads1115_adc',
             output='screen',
             parameters=[{
@@ -31,7 +31,7 @@ def generate_launch_description():
         # 2. Start the Interpreter (Converts Voltage -> Amps)
         Node(
             package='xpi_sensors',
-            executable='analog_sensor_interpreter_node.py',
+            executable='analog_sensor_interpreter_node',
             name='acs712_interpreter',
             output='screen',
             parameters=[{

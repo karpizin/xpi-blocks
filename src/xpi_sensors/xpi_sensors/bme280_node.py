@@ -88,11 +88,14 @@ class BME280Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
         
         self.calibration_params = {}
 
         try:
-            self.init_bme280()
+            if not mock_mode:
+                self.init_bme280()
             self.get_logger().info(f'BME280 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
             self.get_logger().error(f'Failed to initialize BME280: {e}. Falling back to mock.')
@@ -137,9 +140,15 @@ class BME280Node(Node):
         self.calibration_params['dig_H1'] = self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H1)
         self.calibration_params['dig_H2'] = self._read_signed_word_little_endian(self.BME280_REGISTER_DIG_H2)
         self.calibration_params['dig_H3'] = self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H3)
-        self.calibration_params['dig_H4'] = (self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H4) << 4) | (self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H5) & 0x0F)
-        self.calibration_params['dig_H5'] = (self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H6) << 4) | (self.bus.read_byte_data(self.address, self.BME280_REGISTER_DIG_H5) >> 4)
-        self.calibration_params['dig_H6'] = self._read_signed_byte(self.address, self.BME280_REGISTER_DIG_H7)
+        # dig_H4 / dig_H5 are signed 12-bit values packed across 0xE4..0xE6 (datasheet table 16)
+        e4 = self.bus.read_byte_data(self.address, 0xE4)
+        e5 = self.bus.read_byte_data(self.address, 0xE5)
+        e6 = self.bus.read_byte_data(self.address, 0xE6)
+        e4 = e4 - 256 if e4 > 127 else e4
+        e6 = e6 - 256 if e6 > 127 else e6
+        self.calibration_params['dig_H4'] = (e4 * 16) | (e5 & 0x0F)
+        self.calibration_params['dig_H5'] = (e6 * 16) | (e5 >> 4)
+        self.calibration_params['dig_H6'] = self._read_signed_byte(self.BME280_REGISTER_DIG_H6)  # 0xE7, signed char
 
     def _read_byte(self, reg):
         return self.bus.read_byte_data(self.address, reg)

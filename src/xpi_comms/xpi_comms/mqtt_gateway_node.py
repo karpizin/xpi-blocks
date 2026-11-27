@@ -1,5 +1,6 @@
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import String
 import paho.mqtt.client as mqtt
 import json
@@ -18,7 +19,9 @@ class MQTTGatewayNode(Node):
         self.declare_parameter('broker_address', 'localhost')
         self.declare_parameter('broker_port', 1883)
         self.declare_parameter('client_id', 'xpi_robot')
-        self.declare_parameter('topics_to_mqtt', []) # List of ROS topics to publish to MQTT
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('topics_to_mqtt', [], ParameterDescriptor(dynamic_typing=True)) # List of ROS topics to publish to MQTT
         self.declare_parameter('mqtt_prefix', 'xpi_robot/') # Prefix for all MQTT topics
 
         self.broker = self.get_parameter('broker_address').value

@@ -1,8 +1,9 @@
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import Int32, Float32
 from gpiozero import DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
 import threading
@@ -19,8 +20,12 @@ class A4988DriverNode(Node):
         # 1. Declare Parameters
         self.declare_parameter('step_pin', 17) # GPIO BCM
         self.declare_parameter('dir_pin', 27)  # GPIO BCM
-        self.declare_parameter('enable_pin', None) # Optional, if used (active low)
-        self.declare_parameter('microstep_pins', []) # e.g., [22, 23, 24] for MS1, MS2, MS3
+        # Optional pins default to None; dynamic typing lets get_parameter() return None
+        # (a statically typed None parameter raises ParameterUninitializedException).
+        self.declare_parameter('enable_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional, if used (active low)
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('microstep_pins', [], ParameterDescriptor(dynamic_typing=True)) # e.g., [22, 23, 24] for MS1, MS2, MS3
         self.declare_parameter('microstep_setting', 1) # Full step (1) or 2, 4, 8, 16, 32...
         self.declare_parameter('steps_per_revolution_fullstep', 200) # For typical NEMA17 (1.8 deg/step)
         self.declare_parameter('mock_hardware', False)
@@ -44,7 +49,7 @@ class A4988DriverNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('A4988: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         # 3. Hardware Init
         self.step_device = None

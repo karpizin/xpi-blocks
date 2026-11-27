@@ -1,15 +1,15 @@
 # Robot Face: Multi-Display Facial Expressions
 
-This block provides a versatile system for rendering robot facial expressions (primarily "eyes"). It supports 50+ emotional states and scales perfectly from 16x16 LED matrices to high-resolution LCDs.
+This block provides a versatile system for rendering robot facial expressions (primarily "eyes"). It supports 20+ emotional states and scales from 16x16 LED matrices to high-resolution LCDs.
 
 ## 🎭 Features
 *   **Procedural Rendering:** Eyes are drawn using geometry, allowing smooth transitions and infinite scaling.
-*   **50+ Emotions:** Defined via parameters (eye shape, lid tilt, pupil size).
+*   **20+ Emotions:** Defined via compact parameter vectors (eye shape, lid tilt, pupil size, brows, mouth).
 *   **Animation Support:** Smooth interpolation between states (e.g., Neutral -> Happy -> Blink).
-*   **Multi-Display Output:**
-    *   **High-Res:** Beautiful anti-aliased eyes for HDMI/DSI screens.
-    *   **OLED:** Sharp 1-bit eyes for SSD1306.
-    *   **LED Matrix:** 16x16 or 8x8 pixel-art style eyes.
+*   **Display Pipeline:**
+    *   **High-Res Render:** The engine publishes anti-aliased RGB face frames as `sensor_msgs/Image`.
+    *   **LED Matrix Adapter:** The package includes a generic adapter that resizes the face image for 16x16 or 8x8 displays.
+    *   **Other Displays:** OLED, TFT, or HDMI outputs can consume the published image stream directly or through a dedicated adapter node.
 
 ## 🚀 Usage
 
@@ -23,8 +23,12 @@ ros2 launch xpi_hci robot_face.launch.py
 ros2 topic pub /robot_face/set_expression std_msgs/msg/String "{data: 'ANGRY'}" -1
 ```
 
+### 3. Consume the Rendered Output
+*   High-resolution face frames are published on `/robot_face/eyes_image`
+*   The LED matrix adapter publishes resized grayscale values on `/robot_face_matrix/matrix_raw`
+
 ## ⚙️ Supported Emotions (Excerpt)
-`NEUTRAL`, `HAPPY`, `ANGRY`, `SAD`, `THINKING`, `SURPRISED`, `SLEEPY`, `WINK`, `EVIL`, `CURIOUS`, `CONFUSED`, and 40+ more.
+`NEUTRAL`, `HAPPY`, `ANGRY`, `SAD`, `THINKING`, `SURPRISED`, `SLEEPY`, `WINK`, `EVIL`, `CURIOUS`, `CONFUSED`, and more.
 
 ## 🛠 Tech Stack
 *   **Backend:** Python `Pillow` (PIL) for drawing.

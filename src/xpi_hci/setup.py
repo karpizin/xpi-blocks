@@ -15,12 +15,12 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
     ],
-    install_requires=['setuptools', 'Pillow', 'numpy'],
+    install_requires=['setuptools', 'Pillow', 'numpy', 'PyYAML'],
     zip_safe=True,
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
     description='Human-Computer Interaction blocks for XPI',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

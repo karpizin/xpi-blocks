@@ -16,7 +16,11 @@ This block enables you to control your robot using hand gestures captured by a c
 
 ### 1. Requirements
 *   **Camera:** USB Webcam or CSI Camera running a ROS2 node (e.g., `v4l2_camera`, `usb_cam`).
-*   **Dependencies:** `mediapipe`, `opencv-python`.
+*   **Dependencies:** `mediapipe` (`>=0.10.9,<0.10.30`), `opencv-python`.
+    *   The node uses the legacy `mp.solutions.hands` API, which MediaPipe removed in 0.10.30. On a Raspberry Pi (aarch64, Python 3.10) pip resolves this to 0.10.18, the last release with Pi wheels:
+        ```bash
+        pip install "mediapipe>=0.10.9,<0.10.30"
+        ```
 
 ### 2. Launch
 ```bash

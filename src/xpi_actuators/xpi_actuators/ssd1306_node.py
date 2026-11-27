@@ -182,9 +182,10 @@ class SSD1306Node(Node):
         if not self.oled_device:
             return
         self.oled_device.clear()
+        # luma's canvas() pushes the drawing to the display when the block exits;
+        # device.display() needs an image argument, so it must not be called bare here.
         with canvas(self.oled_device) as draw:
             draw.text((0, 0), text_to_display, fill="white", font=self.font)
-        self.oled_device.display() # Luma uses display() not show()
         self.get_logger().debug(f"OLED: Displayed text: '{text_to_display}'")
 
     def display_text_callback(self, msg: String):
@@ -215,8 +216,7 @@ class SSD1306Node(Node):
 
     def destroy_node(self):
         if self.oled_device:
-            self.oled_device.clear() # Clear display on shutdown
-            self.oled_device.display()
+            self.oled_device.clear()  # Clear display on shutdown (luma's clear() also refreshes it)
             self.get_logger().info('OLED: Display cleared.')
         super().destroy_node()
 

@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA, String, Float32
-from rclpy.parameter import ParameterDescriptor
+from rcl_interfaces.msg import ParameterDescriptor  # not exported by rclpy.parameter
 from xpi_actuators.lib.led_effects import LedEffects
 
 try:

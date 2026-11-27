@@ -1,10 +1,10 @@
-import os
+from pathlib import Path
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Path to the full URDF model
-    urdf_file = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/urdf/hexapod.urdf'
+    urdf_file = Path(__file__).resolve().parents[1] / 'urdf' / 'hexapod.urdf'
     
     with open(urdf_file, 'r') as infp:
         robot_desc = infp.read()

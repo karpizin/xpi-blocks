@@ -6,29 +6,49 @@ import logging
 
 try:
     import tm1637
-    # For mocking
 except ImportError:
-    class MockTM1637:
-        def __init__(self, clk, dio, brightness=7):
-            self.clk = clk
-            self.dio = dio
-            self.brightness = brightness
-            self.segments = [0] * 4 # Assuming 4-digit display
-            self.logger = logging.getLogger('MockTM1637')
-            self.logger.info(f"MockTM1637 initialized. CLK:{clk}, DIO:{dio}")
-        def write(self, segments, colon=False):
-            self.segments = segments
-            self.logger.info(f"MockTM1637: Displaying segments {segments}, colon: {colon}")
-        def numbers(self, num1, num2=None, colon=False):
-            self.logger.info(f"MockTM1637: Displaying numbers {num1}, {num2}, colon: {colon}")
-        def temperature(self, temp, colon=False):
-            self.logger.info(f"MockTM1637: Displaying temperature {temp}, colon: {colon}")
-        def hex(self, digits):
-            self.logger.info(f"MockTM1637: Displaying hex {digits}")
-        def brightness(self, brightness):
-            self.brightness = brightness
+    tm1637 = None  # real driver not installed; mock mode still works
+
+
+class MockTM1637:
+    """Stand-in display used in mock mode (and as a fallback when the real one fails)."""
+
+    def __init__(self, clk, dio, brightness=7):
+        self.clk = clk
+        self.dio = dio
+        self._brightness = brightness  # not `brightness`: that name is the method below
+        self.segments = [0] * 4  # Assuming 4-digit display
+        self.text = ''
+        self.logger = logging.getLogger('MockTM1637')
+        self.logger.info(f"MockTM1637 initialized. CLK:{clk}, DIO:{dio}")
+
+    def write(self, segments, colon=False):
+        self.segments = segments
+        self.logger.info(f"MockTM1637: Displaying segments {segments}, colon: {colon}")
+
+    def show(self, string, colon=False):
+        self.text = string
+        self.logger.info(f"MockTM1637: Showing '{string}', colon: {colon}")
+
+    def clear(self):
+        self.text = ''
+        self.segments = [0] * 4
+
+    def numbers(self, num1, num2=None, colon=False):
+        self.logger.info(f"MockTM1637: Displaying numbers {num1}, {num2}, colon: {colon}")
+
+    def temperature(self, temp, colon=False):
+        self.logger.info(f"MockTM1637: Displaying temperature {temp}, colon: {colon}")
+
+    def hex(self, digits):
+        self.logger.info(f"MockTM1637: Displaying hex {digits}")
+
+    def brightness(self, brightness=None):
+        if brightness is not None:
+            self._brightness = brightness
             self.logger.info(f"MockTM1637: Set brightness to {brightness}")
-    tm1637 = MockTM1637 # Assign mock class
+        return self._brightness
+
 
 class TM1637Node(Node):
     """
@@ -61,6 +81,8 @@ class TM1637Node(Node):
                 # Initialize TM1637 display
                 # Note: tm1637 library usually requires root access if using native GPIO.
                 # It can sometimes work without, depending on wiringPi/pigpio setup.
+                if tm1637 is None:
+                    raise ImportError('the tm1637 package is not installed')
                 self.display = tm1637.TM1637(
                     clk=self.clk_pin, 
                     dio=self.dio_pin, 
@@ -76,7 +98,7 @@ class TM1637Node(Node):
         
         if self.mock_mode:
             self.get_logger().warn('TM1637: Running in MOCK mode. No real display will be controlled.')
-            self.display = tm1637.TM1637(clk=self.clk_pin, dio=self.dio_pin, brightness=self.brightness)
+            self.display = MockTM1637(clk=self.clk_pin, dio=self.dio_pin, brightness=self.brightness)
 
         # 3. Subscribers
         qos_profile = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST)

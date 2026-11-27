@@ -19,7 +19,7 @@ def generate_launch_description():
         # 2. Swarm Controller Node
         Node(
             package='xpi_comms',
-            executable='swarm_controller',
+            executable='swarm_controller_node',
             name='swarm_controller',
             parameters=[{
                 'safe_distance': 10.0 # meters

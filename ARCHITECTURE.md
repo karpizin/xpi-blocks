@@ -7,14 +7,23 @@ We use a **Category-Based Package Structure** to minimize cross-dependencies. A 
 
 ```text
 src/
-├── xpi_interfaces/       # Custom .msg, .srv, .action files (kept minimal)
-├── xpi_commons/          # Shared utilities, HAL base classes, mock definitions
-├── xpi_inputs/           # Nodes for Joysticks, RC, Keyboards
-├── xpi_sensors/          # Nodes for LiDARs, IMUs, Cameras, Env sensors
-├── xpi_actuators/        # Nodes for Motors, Servos, Relays, Steppers
-├── xpi_llm/              # Nodes for LLM/VLM integration and Tool Calling
-└── xpi_navigation/       # SLAM and positioning algorithms
+├── xpi_commons/          # Shared utilities, HAL helpers, storage blocks
+├── xpi_inputs/           # Nodes for joysticks, RC, keyboards, web control
+├── xpi_sensors/          # Nodes for LiDARs, IMUs, GPS, environment sensors
+├── xpi_actuators/        # Nodes for motors, LEDs, displays, relays, steppers
+├── xpi_comms/            # Wired/wireless bridges: serial, CAN, LoRa, BLE, LTE
+├── xpi_audio/            # Speech, TTS, beat detection, audio-related nodes
+├── xpi_hci/              # Human-facing interaction and expression nodes
+├── xpi_llm/              # LLM/VLM integration and tool-calling nodes
+├── xpi_navigation/       # SLAM, ranging, indoor positioning algorithms
+├── xpi_vision/           # Vision tracking and perception nodes
+├── xpi_tools/            # CLI and terminal tooling
+└── xpi_projects/         # Integrated launchers and project-level composition
 ```
+
+At the moment the workspace intentionally relies mostly on standard ROS message
+packages. A dedicated `xpi_interfaces/` package can be added later if custom
+messages, services, or actions become necessary.
 
 ## 2. Node Design Standard
 We adopt a **Tiered Node Architecture** to cater to different complexity levels:

@@ -10,6 +10,8 @@ from fastapi.responses import HTMLResponse
 import os
 import json
 import logging
+import math
+import time
 
 # Disable Uvicorn logs to clear ROS2 console
 logging.getLogger("uvicorn").setLevel(logging.WARNING)
@@ -22,10 +24,19 @@ class WebJoystickNode(Node):
         self.declare_parameter('port', 8080)
         self.declare_parameter('scale_linear', 1.0)
         self.declare_parameter('scale_angular', 1.5)
-        
+        # Dead-man: if no message arrives for cmd_timeout seconds while moving, publish a stop.
+        # The page sends at 20 Hz, so 0.5 s means ~10 lost messages. 0 disables (not recommended).
+        self.declare_parameter('cmd_timeout', 0.5)
+
         self.port = self.get_parameter('port').value
         self.scale_lin = self.get_parameter('scale_linear').value
         self.scale_ang = self.get_parameter('scale_angular').value
+        self.cmd_timeout = float(self.get_parameter('cmd_timeout').value)
+
+        # Command state, shared between the web server thread and the ROS timer
+        self._state_lock = threading.Lock()
+        self._last_cmd_time = time.monotonic()
+        self._moving = False
 
         # Publishers
         self.pub_twist = self.create_publisher(Twist, 'cmd_vel', 10)
@@ -65,15 +76,32 @@ class WebJoystickNode(Node):
         @self.app.websocket("/ws")
         async def websocket_endpoint(websocket: WebSocket):
             await websocket.accept()
+            self.get_logger().info("Web joystick client connected")
             try:
                 while True:
                     data = await websocket.receive_text()
-                    cmd = json.loads(data)
+                    try:
+                        cmd = json.loads(data)
+                    except ValueError:
+                        cmd = None
+                    if not isinstance(cmd, dict):
+                        # Malformed input never keeps the robot moving
+                        self.get_logger().warn("Bad joystick message (expected a JSON object), stopping.")
+                        self.stop()
+                        continue
                     self.process_command(cmd)
             except WebSocketDisconnect:
                 pass
             except Exception as e:
                 self.get_logger().warn(f"WS Error: {e}")
+            finally:
+                # Connection lost or closed: stop right away instead of keeping the last command
+                self.stop("client disconnected")
+
+        if self.cmd_timeout > 0:
+            self.create_timer(min(0.1, self.cmd_timeout / 5.0), self._watchdog_tick)
+        else:
+            self.get_logger().warn("cmd_timeout <= 0: web joystick command watchdog DISABLED.")
 
         # Start Server Thread
         self.server_thread = threading.Thread(target=self.run_server, daemon=True)
@@ -84,11 +112,46 @@ class WebJoystickNode(Node):
     def run_server(self):
         uvicorn.run(self.app, host="0.0.0.0", port=self.port, log_level="warning")
 
-    def process_command(self, cmd):
-        # cmd = { lx: float, az: float }
-        lx = float(cmd.get('lx', 0.0))
-        az = float(cmd.get('az', 0.0))
+    @staticmethod
+    def _axis(value):
+        """Joystick axis from the page: finite float clamped to [-1, 1]; anything else -> 0."""
+        try:
+            v = float(value)
+        except (TypeError, ValueError):
+            return 0.0
+        if not math.isfinite(v):
+            return 0.0
+        return max(-1.0, min(1.0, v))
 
+    def process_command(self, cmd):
+        # cmd = { lx: float, az: float }, each in [-1, 1]
+        lx = self._axis(cmd.get('lx', 0.0))
+        az = self._axis(cmd.get('az', 0.0))
+        with self._state_lock:
+            self._last_cmd_time = time.monotonic()
+            self._moving = lx != 0.0 or az != 0.0
+        self._publish(lx, az)
+
+    def stop(self, reason=None):
+        """Publish a zero command. Logged only if the robot was being driven."""
+        with self._state_lock:
+            was_moving = self._moving
+            self._moving = False
+        if reason and was_moving:
+            self.get_logger().warn(f"Web joystick: {reason}, stopping robot.")
+        self._publish(0.0, 0.0)
+
+    def _watchdog_tick(self):
+        with self._state_lock:
+            stale = self._moving and time.monotonic() - self._last_cmd_time > self.cmd_timeout
+        if stale:
+            self.stop(f"no command for {self.cmd_timeout:.2f} s")
+
+    def destroy_node(self):
+        self.stop()
+        super().destroy_node()
+
+    def _publish(self, lx, az):
         # 1. Publish Twist (Direct Drive)
         msg_twist = Twist()
         msg_twist.linear.x = lx * self.scale_lin

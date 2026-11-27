@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
-import sys
 import os
+import sys
+from pathlib import Path
+
+import time
+
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Point, Pose, Quaternion
@@ -18,7 +22,7 @@ class HexapodBodyNode(Node):
         super().__init__('hexapod_body_node')
         
         # 1. Config Loading
-        config_path = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_config.yaml'
+        config_path = Path(__file__).resolve().parents[1] / 'config' / 'hexapod_config.yaml'
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
@@ -43,7 +47,7 @@ class HexapodBodyNode(Node):
         self.gait_offsets = {}
         for leg_name in self.config['legs'].keys():
             self.gait_offsets[leg_name] = [0.0, 0.0, 0.0]
-            self.create_subscription(Point, f'/hexapod/{name}/gait_offset', 
+            self.create_subscription(Point, f'/hexapod/{leg_name}/gait_offset',
                                      lambda msg, name=leg_name: self.gait_callback(msg, name), 10)
         
         self.create_subscription(Pose, '/hexapod/body_pose', self.pose_callback, 10)
@@ -53,6 +57,7 @@ class HexapodBodyNode(Node):
         self.arm_joints = [0.0, 0.0, 0.0]
         
         # 5. Timer for smooth updates (50 Hz)
+        self._last_update = time.monotonic()
         self.create_timer(0.02, self.update_loop)
         
         self.get_logger().info('Hexapod Body & Arm Kinematics Node initialized.')
@@ -94,7 +99,10 @@ class HexapodBodyNode(Node):
 
     def update_loop(self):
         # 1. Get smoothed current pose
-        curr_pose = self.pose_interp.update()
+        now = time.monotonic()
+        dt = min(now - self._last_update, 0.1)  # clamp: a stalled loop must not jump the pose
+        self._last_update = now
+        curr_pose = self.pose_interp.update(dt)
         
         translation = curr_pose[0:3]
         rotation = curr_pose[3:6]

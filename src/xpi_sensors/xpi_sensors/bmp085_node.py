@@ -60,6 +60,8 @@ class BMP085Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
+        mock_mode = self.bus.mock_mode
         
         self.calibration_params = {}
         self.delay_time = 0.004 + (0.003 * (1 << self.oss)) # Delay based on OSS

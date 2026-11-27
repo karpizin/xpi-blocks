@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
 from gpiozero import Button, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import time
 
 class RainGaugeNode(Node):
@@ -26,7 +26,7 @@ class RainGaugeNode(Node):
         use_mock = self.get_parameter('use_mock').value
 
         if use_mock:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().info("Using Mock GPIO for Rain Gauge")
 
         # State

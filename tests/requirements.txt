@@ -1,0 +1,12 @@
+# Needed to run tests/ and projects/*/test without ROS 2 (see tests/README.md)
+pytest
+numpy
+pyyaml
+smbus2
+gpiozero
+pyserial
+fastapi
+uvicorn
+httpx
+paho-mqtt
+Pillow

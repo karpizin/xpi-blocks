@@ -52,6 +52,21 @@
 
         connect();
 
+        // Send a stop before the page goes away or into the background
+        // (background tabs throttle timers; the server would otherwise stop us only after cmd_timeout).
+        function sendStop() {
+            axisLinear = 0.0;
+            axisAngular = 0.0;
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ lx: 0.0, az: 0.0 }));
+            }
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) sendStop();
+        });
+        window.addEventListener('pagehide', sendStop);
+        window.addEventListener('blur', sendStop);
+
         // Send updates periodically to avoid flooding
         setInterval(() => {
             if (ws && ws.readyState === WebSocket.OPEN) {

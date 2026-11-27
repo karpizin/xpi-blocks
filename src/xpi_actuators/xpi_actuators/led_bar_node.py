@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import UInt8, Int8MultiArray
 from gpiozero import LEDBarGraph, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import logging
 
@@ -30,13 +30,13 @@ class LEDBarNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('LEDBar: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         self.led_bar = None
         try:
-            # gpiozero.LEDBarGraph requires a tuple of pins
+            # gpiozero.LEDBarGraph takes the pins as separate arguments: LEDBarGraph(5, 6, 13, ...)
             self.led_bar = LEDBarGraph(
-                self.pins,
+                *self.pins,
                 active_high=not self.invert_logic,
                 initial_value=self.initial_value / len(self.pins) # Convert number to normalized value
             )

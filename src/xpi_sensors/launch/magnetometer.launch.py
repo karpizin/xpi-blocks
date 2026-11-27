@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='qmc5883l_node.py',
+            executable='qmc5883l_node',
             name='magnetometer',
             output='screen',
             parameters=[{

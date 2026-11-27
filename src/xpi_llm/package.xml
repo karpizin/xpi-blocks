@@ -5,7 +5,7 @@
   <version>0.1.0</version>
   <description>LLM/VLM integration for sensor analysis and smart control</description>
   <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>

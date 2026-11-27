@@ -1,0 +1,4594 @@
+{
+"action_msgs": {
+"msg": {
+"GoalInfo": {
+"constants": [],
+"fields": [
+[
+"unique_identifier_msgs/UUID",
+"goal_id",
+null
+],
+[
+"builtin_interfaces/Time",
+"stamp",
+null
+]
+]
+},
+"GoalStatus": {
+"constants": [
+[
+"int8",
+"STATUS_UNKNOWN",
+"0"
+],
+[
+"int8",
+"STATUS_ACCEPTED",
+"1"
+],
+[
+"int8",
+"STATUS_EXECUTING",
+"2"
+],
+[
+"int8",
+"STATUS_CANCELING",
+"3"
+],
+[
+"int8",
+"STATUS_SUCCEEDED",
+"4"
+],
+[
+"int8",
+"STATUS_CANCELED",
+"5"
+],
+[
+"int8",
+"STATUS_ABORTED",
+"6"
+]
+],
+"fields": [
+[
+"GoalInfo",
+"goal_info",
+null
+],
+[
+"int8",
+"status",
+null
+]
+]
+},
+"GoalStatusArray": {
+"constants": [],
+"fields": [
+[
+"GoalStatus[]",
+"status_list",
+null
+]
+]
+}
+},
+"srv": {
+"CancelGoal": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"GoalInfo",
+"goal_info",
+null
+]
+]
+},
+"Response": {
+"constants": [
+[
+"int8",
+"ERROR_NONE",
+"0"
+],
+[
+"int8",
+"ERROR_REJECTED",
+"1"
+],
+[
+"int8",
+"ERROR_UNKNOWN_GOAL_ID",
+"2"
+],
+[
+"int8",
+"ERROR_GOAL_TERMINATED",
+"3"
+]
+],
+"fields": [
+[
+"int8",
+"return_code",
+null
+],
+[
+"GoalInfo[]",
+"goals_canceling",
+null
+]
+]
+}
+}
+}
+},
+"builtin_interfaces": {
+"msg": {
+"Duration": {
+"constants": [],
+"fields": [
+[
+"int32",
+"sec",
+null
+],
+[
+"uint32",
+"nanosec",
+null
+]
+]
+},
+"Time": {
+"constants": [],
+"fields": [
+[
+"int32",
+"sec",
+null
+],
+[
+"uint32",
+"nanosec",
+null
+]
+]
+}
+}
+},
+"diagnostic_msgs": {
+"msg": {
+"DiagnosticArray": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"DiagnosticStatus[]",
+"status",
+null
+]
+]
+},
+"DiagnosticStatus": {
+"constants": [
+[
+"byte",
+"OK",
+"0"
+],
+[
+"byte",
+"WARN",
+"1"
+],
+[
+"byte",
+"ERROR",
+"2"
+],
+[
+"byte",
+"STALE",
+"3"
+]
+],
+"fields": [
+[
+"byte",
+"level",
+null
+],
+[
+"string",
+"name",
+null
+],
+[
+"string",
+"message",
+null
+],
+[
+"string",
+"hardware_id",
+null
+],
+[
+"KeyValue[]",
+"values",
+null
+]
+]
+},
+"KeyValue": {
+"constants": [],
+"fields": [
+[
+"string",
+"key",
+null
+],
+[
+"string",
+"value",
+null
+]
+]
+}
+},
+"srv": {
+"AddDiagnostics": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"string",
+"load_namespace",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"message",
+null
+]
+]
+}
+},
+"SelfTest": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"string",
+"id",
+null
+],
+[
+"byte",
+"passed",
+null
+],
+[
+"DiagnosticStatus[]",
+"status",
+null
+]
+]
+}
+}
+}
+},
+"example_interfaces": {
+"msg": {
+"Bool": {
+"constants": [],
+"fields": [
+[
+"bool",
+"data",
+null
+]
+]
+},
+"Byte": {
+"constants": [],
+"fields": [
+[
+"byte",
+"data",
+null
+]
+]
+},
+"ByteMultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"byte[]",
+"data",
+null
+]
+]
+},
+"Char": {
+"constants": [],
+"fields": [
+[
+"char",
+"data",
+null
+]
+]
+},
+"Empty": {
+"constants": [],
+"fields": []
+},
+"Float32": {
+"constants": [],
+"fields": [
+[
+"float32",
+"data",
+null
+]
+]
+},
+"Float32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"float32[]",
+"data",
+null
+]
+]
+},
+"Float64": {
+"constants": [],
+"fields": [
+[
+"float64",
+"data",
+null
+]
+]
+},
+"Float64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"float64[]",
+"data",
+null
+]
+]
+},
+"Int16": {
+"constants": [],
+"fields": [
+[
+"int16",
+"data",
+null
+]
+]
+},
+"Int16MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int16[]",
+"data",
+null
+]
+]
+},
+"Int32": {
+"constants": [],
+"fields": [
+[
+"int32",
+"data",
+null
+]
+]
+},
+"Int32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int32[]",
+"data",
+null
+]
+]
+},
+"Int64": {
+"constants": [],
+"fields": [
+[
+"int64",
+"data",
+null
+]
+]
+},
+"Int64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int64[]",
+"data",
+null
+]
+]
+},
+"Int8": {
+"constants": [],
+"fields": [
+[
+"int8",
+"data",
+null
+]
+]
+},
+"Int8MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int8[]",
+"data",
+null
+]
+]
+},
+"MultiArrayDimension": {
+"constants": [],
+"fields": [
+[
+"string",
+"label",
+null
+],
+[
+"uint32",
+"size",
+null
+],
+[
+"uint32",
+"stride",
+null
+]
+]
+},
+"MultiArrayLayout": {
+"constants": [],
+"fields": [
+[
+"MultiArrayDimension[]",
+"dim",
+null
+],
+[
+"uint32",
+"data_offset",
+null
+]
+]
+},
+"String": {
+"constants": [],
+"fields": [
+[
+"string",
+"data",
+null
+]
+]
+},
+"UInt16": {
+"constants": [],
+"fields": [
+[
+"uint16",
+"data",
+null
+]
+]
+},
+"UInt16MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint16[]",
+"data",
+null
+]
+]
+},
+"UInt32": {
+"constants": [],
+"fields": [
+[
+"uint32",
+"data",
+null
+]
+]
+},
+"UInt32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint32[]",
+"data",
+null
+]
+]
+},
+"UInt64": {
+"constants": [],
+"fields": [
+[
+"uint64",
+"data",
+null
+]
+]
+},
+"UInt64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint64[]",
+"data",
+null
+]
+]
+},
+"UInt8": {
+"constants": [],
+"fields": [
+[
+"uint8",
+"data",
+null
+]
+]
+},
+"UInt8MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint8[]",
+"data",
+null
+]
+]
+},
+"WString": {
+"constants": [],
+"fields": [
+[
+"wstring",
+"data",
+null
+]
+]
+}
+},
+"srv": {
+"AddTwoInts": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"int64",
+"a",
+null
+],
+[
+"int64",
+"b",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"int64",
+"sum",
+null
+]
+]
+}
+},
+"SetBool": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"bool",
+"data",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"message",
+null
+]
+]
+}
+},
+"Trigger": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"message",
+null
+]
+]
+}
+}
+}
+},
+"geometry_msgs": {
+"msg": {
+"Accel": {
+"constants": [],
+"fields": [
+[
+"Vector3",
+"linear",
+null
+],
+[
+"Vector3",
+"angular",
+null
+]
+]
+},
+"AccelStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Accel",
+"accel",
+null
+]
+]
+},
+"AccelWithCovariance": {
+"constants": [],
+"fields": [
+[
+"Accel",
+"accel",
+null
+],
+[
+"float64[36]",
+"covariance",
+null
+]
+]
+},
+"AccelWithCovarianceStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"AccelWithCovariance",
+"accel",
+null
+]
+]
+},
+"Inertia": {
+"constants": [],
+"fields": [
+[
+"float64",
+"m",
+null
+],
+[
+"geometry_msgs/Vector3",
+"com",
+null
+],
+[
+"float64",
+"ixx",
+null
+],
+[
+"float64",
+"ixy",
+null
+],
+[
+"float64",
+"ixz",
+null
+],
+[
+"float64",
+"iyy",
+null
+],
+[
+"float64",
+"iyz",
+null
+],
+[
+"float64",
+"izz",
+null
+]
+]
+},
+"InertiaStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Inertia",
+"inertia",
+null
+]
+]
+},
+"Point": {
+"constants": [],
+"fields": [
+[
+"float64",
+"x",
+null
+],
+[
+"float64",
+"y",
+null
+],
+[
+"float64",
+"z",
+null
+]
+]
+},
+"Point32": {
+"constants": [],
+"fields": [
+[
+"float32",
+"x",
+null
+],
+[
+"float32",
+"y",
+null
+],
+[
+"float32",
+"z",
+null
+]
+]
+},
+"PointStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Point",
+"point",
+null
+]
+]
+},
+"Polygon": {
+"constants": [],
+"fields": [
+[
+"Point32[]",
+"points",
+null
+]
+]
+},
+"PolygonInstance": {
+"constants": [],
+"fields": [
+[
+"geometry_msgs/Polygon",
+"polygon",
+null
+],
+[
+"int64",
+"id",
+null
+]
+]
+},
+"PolygonInstanceStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/PolygonInstance",
+"polygon",
+null
+]
+]
+},
+"PolygonStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Polygon",
+"polygon",
+null
+]
+]
+},
+"Pose": {
+"constants": [],
+"fields": [
+[
+"Point",
+"position",
+null
+],
+[
+"Quaternion",
+"orientation",
+null
+]
+]
+},
+"Pose2D": {
+"constants": [],
+"fields": [
+[
+"float64",
+"x",
+null
+],
+[
+"float64",
+"y",
+null
+],
+[
+"float64",
+"theta",
+null
+]
+]
+},
+"PoseArray": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Pose[]",
+"poses",
+null
+]
+]
+},
+"PoseStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Pose",
+"pose",
+null
+]
+]
+},
+"PoseWithCovariance": {
+"constants": [],
+"fields": [
+[
+"Pose",
+"pose",
+null
+],
+[
+"float64[36]",
+"covariance",
+null
+]
+]
+},
+"PoseWithCovarianceStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"PoseWithCovariance",
+"pose",
+null
+]
+]
+},
+"Quaternion": {
+"constants": [],
+"fields": [
+[
+"float64",
+"x",
+"0"
+],
+[
+"float64",
+"y",
+"0"
+],
+[
+"float64",
+"z",
+"0"
+],
+[
+"float64",
+"w",
+"1"
+]
+]
+},
+"QuaternionStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Quaternion",
+"quaternion",
+null
+]
+]
+},
+"Transform": {
+"constants": [],
+"fields": [
+[
+"Vector3",
+"translation",
+null
+],
+[
+"Quaternion",
+"rotation",
+null
+]
+]
+},
+"TransformStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"child_frame_id",
+null
+],
+[
+"Transform",
+"transform",
+null
+]
+]
+},
+"Twist": {
+"constants": [],
+"fields": [
+[
+"Vector3",
+"linear",
+null
+],
+[
+"Vector3",
+"angular",
+null
+]
+]
+},
+"TwistStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Twist",
+"twist",
+null
+]
+]
+},
+"TwistWithCovariance": {
+"constants": [],
+"fields": [
+[
+"Twist",
+"twist",
+null
+],
+[
+"float64[36]",
+"covariance",
+null
+]
+]
+},
+"TwistWithCovarianceStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"TwistWithCovariance",
+"twist",
+null
+]
+]
+},
+"Vector3": {
+"constants": [],
+"fields": [
+[
+"float64",
+"x",
+null
+],
+[
+"float64",
+"y",
+null
+],
+[
+"float64",
+"z",
+null
+]
+]
+},
+"Vector3Stamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Vector3",
+"vector",
+null
+]
+]
+},
+"VelocityStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"body_frame_id",
+null
+],
+[
+"string",
+"reference_frame_id",
+null
+],
+[
+"Twist",
+"velocity",
+null
+]
+]
+},
+"VelocityWithCovarianceStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"body_frame_id",
+null
+],
+[
+"string",
+"reference_frame_id",
+null
+],
+[
+"TwistWithCovariance",
+"velocity",
+null
+]
+]
+},
+"Wrench": {
+"constants": [],
+"fields": [
+[
+"Vector3",
+"force",
+null
+],
+[
+"Vector3",
+"torque",
+null
+]
+]
+},
+"WrenchStamped": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"Wrench",
+"wrench",
+null
+]
+]
+}
+}
+},
+"nav_msgs": {
+"msg": {
+"Goals": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/PoseStamped[]",
+"goals",
+null
+]
+]
+},
+"GridCells": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float32",
+"cell_width",
+null
+],
+[
+"float32",
+"cell_height",
+null
+],
+[
+"geometry_msgs/Point[]",
+"cells",
+null
+]
+]
+},
+"MapMetaData": {
+"constants": [],
+"fields": [
+[
+"builtin_interfaces/Time",
+"map_load_time",
+null
+],
+[
+"float32",
+"resolution",
+null
+],
+[
+"uint32",
+"width",
+null
+],
+[
+"uint32",
+"height",
+null
+],
+[
+"geometry_msgs/Pose",
+"origin",
+null
+]
+]
+},
+"OccupancyGrid": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"MapMetaData",
+"info",
+null
+],
+[
+"int8[]",
+"data",
+null
+]
+]
+},
+"Odometry": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"child_frame_id",
+null
+],
+[
+"geometry_msgs/PoseWithCovariance",
+"pose",
+null
+],
+[
+"geometry_msgs/TwistWithCovariance",
+"twist",
+null
+]
+]
+},
+"Path": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/PoseStamped[]",
+"poses",
+null
+]
+]
+}
+},
+"srv": {
+"GetMap": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"OccupancyGrid",
+"map",
+null
+]
+]
+}
+},
+"GetPlan": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"geometry_msgs/PoseStamped",
+"start",
+null
+],
+[
+"geometry_msgs/PoseStamped",
+"goal",
+null
+],
+[
+"float32",
+"tolerance",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"Path",
+"plan",
+null
+]
+]
+}
+},
+"LoadMap": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"string",
+"map_url",
+null
+]
+]
+},
+"Response": {
+"constants": [
+[
+"uint8",
+"RESULT_SUCCESS",
+"0"
+],
+[
+"uint8",
+"RESULT_MAP_DOES_NOT_EXIST",
+"1"
+],
+[
+"uint8",
+"RESULT_INVALID_MAP_DATA",
+"2"
+],
+[
+"uint8",
+"RESULT_INVALID_MAP_METADATA",
+"3"
+],
+[
+"uint8",
+"RESULT_UNDEFINED_FAILURE",
+"255"
+]
+],
+"fields": [
+[
+"nav_msgs/OccupancyGrid",
+"map",
+null
+],
+[
+"uint8",
+"result",
+null
+]
+]
+}
+},
+"SetMap": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"nav_msgs/OccupancyGrid",
+"map",
+null
+],
+[
+"geometry_msgs/PoseWithCovarianceStamped",
+"initial_pose",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+]
+]
+}
+}
+}
+},
+"rcl_interfaces": {
+"msg": {
+"FloatingPointRange": {
+"constants": [],
+"fields": [
+[
+"float64",
+"from_value",
+null
+],
+[
+"float64",
+"to_value",
+null
+],
+[
+"float64",
+"step",
+null
+]
+]
+},
+"IntegerRange": {
+"constants": [],
+"fields": [
+[
+"int64",
+"from_value",
+null
+],
+[
+"int64",
+"to_value",
+null
+],
+[
+"uint64",
+"step",
+null
+]
+]
+},
+"ListParametersResult": {
+"constants": [],
+"fields": [
+[
+"string[]",
+"names",
+null
+],
+[
+"string[]",
+"prefixes",
+null
+]
+]
+},
+"Log": {
+"constants": [
+[
+"byte",
+"DEBUG",
+"10"
+],
+[
+"byte",
+"INFO",
+"20"
+],
+[
+"byte",
+"WARN",
+"30"
+],
+[
+"byte",
+"ERROR",
+"40"
+],
+[
+"byte",
+"FATAL",
+"50"
+]
+],
+"fields": [
+[
+"builtin_interfaces/Time",
+"stamp",
+null
+],
+[
+"uint8",
+"level",
+null
+],
+[
+"string",
+"name",
+null
+],
+[
+"string",
+"msg",
+null
+],
+[
+"string",
+"file",
+null
+],
+[
+"string",
+"function",
+null
+],
+[
+"uint32",
+"line",
+null
+]
+]
+},
+"Parameter": {
+"constants": [],
+"fields": [
+[
+"string",
+"name",
+null
+],
+[
+"ParameterValue",
+"value",
+null
+]
+]
+},
+"ParameterDescriptor": {
+"constants": [],
+"fields": [
+[
+"string",
+"name",
+null
+],
+[
+"uint8",
+"type",
+null
+],
+[
+"string",
+"description",
+null
+],
+[
+"string",
+"additional_constraints",
+null
+],
+[
+"bool",
+"read_only",
+"false"
+],
+[
+"bool",
+"dynamic_typing",
+"false"
+],
+[
+"FloatingPointRange[<=1]",
+"floating_point_range",
+null
+],
+[
+"IntegerRange[<=1]",
+"integer_range",
+null
+]
+]
+},
+"ParameterEvent": {
+"constants": [],
+"fields": [
+[
+"builtin_interfaces/Time",
+"stamp",
+null
+],
+[
+"string",
+"node",
+null
+],
+[
+"Parameter[]",
+"new_parameters",
+null
+],
+[
+"Parameter[]",
+"changed_parameters",
+null
+],
+[
+"Parameter[]",
+"deleted_parameters",
+null
+]
+]
+},
+"ParameterEventDescriptors": {
+"constants": [],
+"fields": [
+[
+"ParameterDescriptor[]",
+"new_parameters",
+null
+],
+[
+"ParameterDescriptor[]",
+"changed_parameters",
+null
+],
+[
+"ParameterDescriptor[]",
+"deleted_parameters",
+null
+]
+]
+},
+"ParameterType": {
+"constants": [
+[
+"uint8",
+"PARAMETER_NOT_SET",
+"0"
+],
+[
+"uint8",
+"PARAMETER_BOOL",
+"1"
+],
+[
+"uint8",
+"PARAMETER_INTEGER",
+"2"
+],
+[
+"uint8",
+"PARAMETER_DOUBLE",
+"3"
+],
+[
+"uint8",
+"PARAMETER_STRING",
+"4"
+],
+[
+"uint8",
+"PARAMETER_BYTE_ARRAY",
+"5"
+],
+[
+"uint8",
+"PARAMETER_BOOL_ARRAY",
+"6"
+],
+[
+"uint8",
+"PARAMETER_INTEGER_ARRAY",
+"7"
+],
+[
+"uint8",
+"PARAMETER_DOUBLE_ARRAY",
+"8"
+],
+[
+"uint8",
+"PARAMETER_STRING_ARRAY",
+"9"
+]
+],
+"fields": []
+},
+"ParameterValue": {
+"constants": [],
+"fields": [
+[
+"uint8",
+"type",
+null
+],
+[
+"bool",
+"bool_value",
+null
+],
+[
+"int64",
+"integer_value",
+null
+],
+[
+"float64",
+"double_value",
+null
+],
+[
+"string",
+"string_value",
+null
+],
+[
+"byte[]",
+"byte_array_value",
+null
+],
+[
+"bool[]",
+"bool_array_value",
+null
+],
+[
+"int64[]",
+"integer_array_value",
+null
+],
+[
+"float64[]",
+"double_array_value",
+null
+],
+[
+"string[]",
+"string_array_value",
+null
+]
+]
+},
+"SetParametersResult": {
+"constants": [],
+"fields": [
+[
+"bool",
+"successful",
+null
+],
+[
+"string",
+"reason",
+null
+]
+]
+}
+},
+"srv": {
+"DescribeParameters": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"string[]",
+"names",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"ParameterDescriptor[]",
+"descriptors",
+null
+]
+]
+}
+},
+"GetParameterTypes": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"string[]",
+"names",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"uint8[]",
+"types",
+null
+]
+]
+}
+},
+"GetParameters": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"string[]",
+"names",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"ParameterValue[]",
+"values",
+null
+]
+]
+}
+},
+"ListParameters": {
+"Request": {
+"constants": [
+[
+"uint64",
+"DEPTH_RECURSIVE",
+"0"
+]
+],
+"fields": [
+[
+"string[]",
+"prefixes",
+null
+],
+[
+"uint64",
+"depth",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"ListParametersResult",
+"result",
+null
+]
+]
+}
+},
+"SetParameters": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"Parameter[]",
+"parameters",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"SetParametersResult[]",
+"results",
+null
+]
+]
+}
+},
+"SetParametersAtomically": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"Parameter[]",
+"parameters",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"SetParametersResult",
+"result",
+null
+]
+]
+}
+}
+}
+},
+"sensor_msgs": {
+"msg": {
+"BatteryState": {
+"constants": [
+[
+"uint8",
+"POWER_SUPPLY_STATUS_UNKNOWN",
+"0"
+],
+[
+"uint8",
+"POWER_SUPPLY_STATUS_CHARGING",
+"1"
+],
+[
+"uint8",
+"POWER_SUPPLY_STATUS_DISCHARGING",
+"2"
+],
+[
+"uint8",
+"POWER_SUPPLY_STATUS_NOT_CHARGING",
+"3"
+],
+[
+"uint8",
+"POWER_SUPPLY_STATUS_FULL",
+"4"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_UNKNOWN",
+"0"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_GOOD",
+"1"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_OVERHEAT",
+"2"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_DEAD",
+"3"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_OVERVOLTAGE",
+"4"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_UNSPEC_FAILURE",
+"5"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_COLD",
+"6"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE",
+"7"
+],
+[
+"uint8",
+"POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE",
+"8"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_UNKNOWN",
+"0"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_NIMH",
+"1"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_LION",
+"2"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_LIPO",
+"3"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_LIFE",
+"4"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_NICD",
+"5"
+],
+[
+"uint8",
+"POWER_SUPPLY_TECHNOLOGY_LIMN",
+"6"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float32",
+"voltage",
+null
+],
+[
+"float32",
+"temperature",
+null
+],
+[
+"float32",
+"current",
+null
+],
+[
+"float32",
+"charge",
+null
+],
+[
+"float32",
+"capacity",
+null
+],
+[
+"float32",
+"design_capacity",
+null
+],
+[
+"float32",
+"percentage",
+null
+],
+[
+"uint8",
+"power_supply_status",
+null
+],
+[
+"uint8",
+"power_supply_health",
+null
+],
+[
+"uint8",
+"power_supply_technology",
+null
+],
+[
+"bool",
+"present",
+null
+],
+[
+"float32[]",
+"cell_voltage",
+null
+],
+[
+"float32[]",
+"cell_temperature",
+null
+],
+[
+"string",
+"location",
+null
+],
+[
+"string",
+"serial_number",
+null
+]
+]
+},
+"CameraInfo": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"uint32",
+"height",
+null
+],
+[
+"uint32",
+"width",
+null
+],
+[
+"string",
+"distortion_model",
+null
+],
+[
+"float64[]",
+"d",
+null
+],
+[
+"float64[9]",
+"k",
+null
+],
+[
+"float64[9]",
+"r",
+null
+],
+[
+"float64[12]",
+"p",
+null
+],
+[
+"uint32",
+"binning_x",
+null
+],
+[
+"uint32",
+"binning_y",
+null
+],
+[
+"RegionOfInterest",
+"roi",
+null
+]
+]
+},
+"ChannelFloat32": {
+"constants": [],
+"fields": [
+[
+"string",
+"name",
+null
+],
+[
+"float32[]",
+"values",
+null
+]
+]
+},
+"CompressedImage": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"format",
+null
+],
+[
+"uint8[]",
+"data",
+null
+]
+]
+},
+"FluidPressure": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float64",
+"fluid_pressure",
+null
+],
+[
+"float64",
+"variance",
+null
+]
+]
+},
+"Illuminance": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float64",
+"illuminance",
+null
+],
+[
+"float64",
+"variance",
+null
+]
+]
+},
+"Image": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"uint32",
+"height",
+null
+],
+[
+"uint32",
+"width",
+null
+],
+[
+"string",
+"encoding",
+null
+],
+[
+"uint8",
+"is_bigendian",
+null
+],
+[
+"uint32",
+"step",
+null
+],
+[
+"uint8[]",
+"data",
+null
+]
+]
+},
+"Imu": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/Quaternion",
+"orientation",
+null
+],
+[
+"float64[9]",
+"orientation_covariance",
+null
+],
+[
+"geometry_msgs/Vector3",
+"angular_velocity",
+null
+],
+[
+"float64[9]",
+"angular_velocity_covariance",
+null
+],
+[
+"geometry_msgs/Vector3",
+"linear_acceleration",
+null
+],
+[
+"float64[9]",
+"linear_acceleration_covariance",
+null
+]
+]
+},
+"JointState": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string[]",
+"name",
+null
+],
+[
+"float64[]",
+"position",
+null
+],
+[
+"float64[]",
+"velocity",
+null
+],
+[
+"float64[]",
+"effort",
+null
+]
+]
+},
+"Joy": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float32[]",
+"axes",
+null
+],
+[
+"int32[]",
+"buttons",
+null
+]
+]
+},
+"JoyFeedback": {
+"constants": [
+[
+"uint8",
+"TYPE_LED",
+"0"
+],
+[
+"uint8",
+"TYPE_RUMBLE",
+"1"
+],
+[
+"uint8",
+"TYPE_BUZZER",
+"2"
+]
+],
+"fields": [
+[
+"uint8",
+"type",
+null
+],
+[
+"uint8",
+"id",
+null
+],
+[
+"float32",
+"intensity",
+null
+]
+]
+},
+"JoyFeedbackArray": {
+"constants": [],
+"fields": [
+[
+"JoyFeedback[]",
+"array",
+null
+]
+]
+},
+"LaserEcho": {
+"constants": [],
+"fields": [
+[
+"float32[]",
+"echoes",
+null
+]
+]
+},
+"LaserScan": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float32",
+"angle_min",
+null
+],
+[
+"float32",
+"angle_max",
+null
+],
+[
+"float32",
+"angle_increment",
+null
+],
+[
+"float32",
+"time_increment",
+null
+],
+[
+"float32",
+"scan_time",
+null
+],
+[
+"float32",
+"range_min",
+null
+],
+[
+"float32",
+"range_max",
+null
+],
+[
+"float32[]",
+"ranges",
+null
+],
+[
+"float32[]",
+"intensities",
+null
+]
+]
+},
+"MagneticField": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/Vector3",
+"magnetic_field",
+null
+],
+[
+"float64[9]",
+"magnetic_field_covariance",
+null
+]
+]
+},
+"MultiDOFJointState": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string[]",
+"joint_names",
+null
+],
+[
+"geometry_msgs/Transform[]",
+"transforms",
+null
+],
+[
+"geometry_msgs/Twist[]",
+"twist",
+null
+],
+[
+"geometry_msgs/Wrench[]",
+"wrench",
+null
+]
+]
+},
+"MultiEchoLaserScan": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float32",
+"angle_min",
+null
+],
+[
+"float32",
+"angle_max",
+null
+],
+[
+"float32",
+"angle_increment",
+null
+],
+[
+"float32",
+"time_increment",
+null
+],
+[
+"float32",
+"scan_time",
+null
+],
+[
+"float32",
+"range_min",
+null
+],
+[
+"float32",
+"range_max",
+null
+],
+[
+"LaserEcho[]",
+"ranges",
+null
+],
+[
+"LaserEcho[]",
+"intensities",
+null
+]
+]
+},
+"NavSatFix": {
+"constants": [
+[
+"uint8",
+"COVARIANCE_TYPE_UNKNOWN",
+"0"
+],
+[
+"uint8",
+"COVARIANCE_TYPE_APPROXIMATED",
+"1"
+],
+[
+"uint8",
+"COVARIANCE_TYPE_DIAGONAL_KNOWN",
+"2"
+],
+[
+"uint8",
+"COVARIANCE_TYPE_KNOWN",
+"3"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"NavSatStatus",
+"status",
+null
+],
+[
+"float64",
+"latitude",
+null
+],
+[
+"float64",
+"longitude",
+null
+],
+[
+"float64",
+"altitude",
+null
+],
+[
+"float64[9]",
+"position_covariance",
+null
+],
+[
+"uint8",
+"position_covariance_type",
+null
+]
+]
+},
+"NavSatStatus": {
+"constants": [
+[
+"int8",
+"STATUS_NO_FIX",
+"-1"
+],
+[
+"int8",
+"STATUS_FIX",
+"0"
+],
+[
+"int8",
+"STATUS_SBAS_FIX",
+"1"
+],
+[
+"int8",
+"STATUS_GBAS_FIX",
+"2"
+],
+[
+"uint16",
+"SERVICE_GPS",
+"1"
+],
+[
+"uint16",
+"SERVICE_GLONASS",
+"2"
+],
+[
+"uint16",
+"SERVICE_COMPASS",
+"4"
+],
+[
+"uint16",
+"SERVICE_GALILEO",
+"8"
+]
+],
+"fields": [
+[
+"int8",
+"status",
+null
+],
+[
+"uint16",
+"service",
+null
+]
+]
+},
+"PointCloud": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/Point32[]",
+"points",
+null
+],
+[
+"ChannelFloat32[]",
+"channels",
+null
+]
+]
+},
+"PointCloud2": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"uint32",
+"height",
+null
+],
+[
+"uint32",
+"width",
+null
+],
+[
+"PointField[]",
+"fields",
+null
+],
+[
+"bool",
+"is_bigendian",
+null
+],
+[
+"uint32",
+"point_step",
+null
+],
+[
+"uint32",
+"row_step",
+null
+],
+[
+"uint8[]",
+"data",
+null
+],
+[
+"bool",
+"is_dense",
+null
+]
+]
+},
+"PointField": {
+"constants": [
+[
+"uint8",
+"INT8",
+"1"
+],
+[
+"uint8",
+"UINT8",
+"2"
+],
+[
+"uint8",
+"INT16",
+"3"
+],
+[
+"uint8",
+"UINT16",
+"4"
+],
+[
+"uint8",
+"INT32",
+"5"
+],
+[
+"uint8",
+"UINT32",
+"6"
+],
+[
+"uint8",
+"FLOAT32",
+"7"
+],
+[
+"uint8",
+"FLOAT64",
+"8"
+]
+],
+"fields": [
+[
+"string",
+"name",
+null
+],
+[
+"uint32",
+"offset",
+null
+],
+[
+"uint8",
+"datatype",
+null
+],
+[
+"uint32",
+"count",
+null
+]
+]
+},
+"Range": {
+"constants": [
+[
+"uint8",
+"ULTRASOUND",
+"0"
+],
+[
+"uint8",
+"INFRARED",
+"1"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"uint8",
+"radiation_type",
+null
+],
+[
+"float32",
+"field_of_view",
+null
+],
+[
+"float32",
+"min_range",
+null
+],
+[
+"float32",
+"max_range",
+null
+],
+[
+"float32",
+"range",
+null
+]
+]
+},
+"RegionOfInterest": {
+"constants": [],
+"fields": [
+[
+"uint32",
+"x_offset",
+null
+],
+[
+"uint32",
+"y_offset",
+null
+],
+[
+"uint32",
+"height",
+null
+],
+[
+"uint32",
+"width",
+null
+],
+[
+"bool",
+"do_rectify",
+null
+]
+]
+},
+"RelativeHumidity": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float64",
+"relative_humidity",
+null
+],
+[
+"float64",
+"variance",
+null
+]
+]
+},
+"Temperature": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"float64",
+"temperature",
+null
+],
+[
+"float64",
+"variance",
+null
+]
+]
+},
+"TimeReference": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"builtin_interfaces/Time",
+"time_ref",
+null
+],
+[
+"string",
+"source",
+null
+]
+]
+}
+},
+"srv": {
+"SetCameraInfo": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"sensor_msgs/CameraInfo",
+"camera_info",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"status_message",
+null
+]
+]
+}
+}
+}
+},
+"shape_msgs": {
+"msg": {
+"Mesh": {
+"constants": [],
+"fields": [
+[
+"MeshTriangle[]",
+"triangles",
+null
+],
+[
+"geometry_msgs/Point[]",
+"vertices",
+null
+]
+]
+},
+"MeshTriangle": {
+"constants": [],
+"fields": [
+[
+"uint32[3]",
+"vertex_indices",
+null
+]
+]
+},
+"Plane": {
+"constants": [],
+"fields": [
+[
+"float64[4]",
+"coef",
+null
+]
+]
+},
+"SolidPrimitive": {
+"constants": [
+[
+"uint8",
+"BOX",
+"1"
+],
+[
+"uint8",
+"SPHERE",
+"2"
+],
+[
+"uint8",
+"CYLINDER",
+"3"
+],
+[
+"uint8",
+"CONE",
+"4"
+],
+[
+"uint8",
+"PRISM",
+"5"
+],
+[
+"uint8",
+"BOX_X",
+"0"
+],
+[
+"uint8",
+"BOX_Y",
+"1"
+],
+[
+"uint8",
+"BOX_Z",
+"2"
+],
+[
+"uint8",
+"SPHERE_RADIUS",
+"0"
+],
+[
+"uint8",
+"CYLINDER_HEIGHT",
+"0"
+],
+[
+"uint8",
+"CYLINDER_RADIUS",
+"1"
+],
+[
+"uint8",
+"CONE_HEIGHT",
+"0"
+],
+[
+"uint8",
+"CONE_RADIUS",
+"1"
+],
+[
+"uint8",
+"PRISM_HEIGHT",
+"0"
+]
+],
+"fields": [
+[
+"uint8",
+"type",
+null
+],
+[
+"float64[<=3]",
+"dimensions",
+null
+],
+[
+"geometry_msgs/Polygon",
+"polygon",
+null
+]
+]
+}
+}
+},
+"std_msgs": {
+"msg": {
+"Bool": {
+"constants": [],
+"fields": [
+[
+"bool",
+"data",
+null
+]
+]
+},
+"Byte": {
+"constants": [],
+"fields": [
+[
+"byte",
+"data",
+null
+]
+]
+},
+"ByteMultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"byte[]",
+"data",
+null
+]
+]
+},
+"Char": {
+"constants": [],
+"fields": [
+[
+"char",
+"data",
+null
+]
+]
+},
+"ColorRGBA": {
+"constants": [],
+"fields": [
+[
+"float32",
+"r",
+null
+],
+[
+"float32",
+"g",
+null
+],
+[
+"float32",
+"b",
+null
+],
+[
+"float32",
+"a",
+null
+]
+]
+},
+"Empty": {
+"constants": [],
+"fields": []
+},
+"Float32": {
+"constants": [],
+"fields": [
+[
+"float32",
+"data",
+null
+]
+]
+},
+"Float32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"float32[]",
+"data",
+null
+]
+]
+},
+"Float64": {
+"constants": [],
+"fields": [
+[
+"float64",
+"data",
+null
+]
+]
+},
+"Float64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"float64[]",
+"data",
+null
+]
+]
+},
+"Header": {
+"constants": [],
+"fields": [
+[
+"builtin_interfaces/Time",
+"stamp",
+null
+],
+[
+"string",
+"frame_id",
+null
+]
+]
+},
+"Int16": {
+"constants": [],
+"fields": [
+[
+"int16",
+"data",
+null
+]
+]
+},
+"Int16MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int16[]",
+"data",
+null
+]
+]
+},
+"Int32": {
+"constants": [],
+"fields": [
+[
+"int32",
+"data",
+null
+]
+]
+},
+"Int32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int32[]",
+"data",
+null
+]
+]
+},
+"Int64": {
+"constants": [],
+"fields": [
+[
+"int64",
+"data",
+null
+]
+]
+},
+"Int64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int64[]",
+"data",
+null
+]
+]
+},
+"Int8": {
+"constants": [],
+"fields": [
+[
+"int8",
+"data",
+null
+]
+]
+},
+"Int8MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"int8[]",
+"data",
+null
+]
+]
+},
+"MultiArrayDimension": {
+"constants": [],
+"fields": [
+[
+"string",
+"label",
+null
+],
+[
+"uint32",
+"size",
+null
+],
+[
+"uint32",
+"stride",
+null
+]
+]
+},
+"MultiArrayLayout": {
+"constants": [],
+"fields": [
+[
+"MultiArrayDimension[]",
+"dim",
+null
+],
+[
+"uint32",
+"data_offset",
+null
+]
+]
+},
+"String": {
+"constants": [],
+"fields": [
+[
+"string",
+"data",
+null
+]
+]
+},
+"UInt16": {
+"constants": [],
+"fields": [
+[
+"uint16",
+"data",
+null
+]
+]
+},
+"UInt16MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint16[]",
+"data",
+null
+]
+]
+},
+"UInt32": {
+"constants": [],
+"fields": [
+[
+"uint32",
+"data",
+null
+]
+]
+},
+"UInt32MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint32[]",
+"data",
+null
+]
+]
+},
+"UInt64": {
+"constants": [],
+"fields": [
+[
+"uint64",
+"data",
+null
+]
+]
+},
+"UInt64MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint64[]",
+"data",
+null
+]
+]
+},
+"UInt8": {
+"constants": [],
+"fields": [
+[
+"uint8",
+"data",
+null
+]
+]
+},
+"UInt8MultiArray": {
+"constants": [],
+"fields": [
+[
+"MultiArrayLayout",
+"layout",
+null
+],
+[
+"uint8[]",
+"data",
+null
+]
+]
+}
+}
+},
+"std_srvs": {
+"srv": {
+"Empty": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": []
+}
+},
+"SetBool": {
+"Request": {
+"constants": [],
+"fields": [
+[
+"bool",
+"data",
+null
+]
+]
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"message",
+null
+]
+]
+}
+},
+"Trigger": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"bool",
+"success",
+null
+],
+[
+"string",
+"message",
+null
+]
+]
+}
+}
+}
+},
+"trajectory_msgs": {
+"msg": {
+"JointTrajectory": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string[]",
+"joint_names",
+null
+],
+[
+"JointTrajectoryPoint[]",
+"points",
+null
+]
+]
+},
+"JointTrajectoryPoint": {
+"constants": [],
+"fields": [
+[
+"float64[]",
+"positions",
+null
+],
+[
+"float64[]",
+"velocities",
+null
+],
+[
+"float64[]",
+"accelerations",
+null
+],
+[
+"float64[]",
+"effort",
+null
+],
+[
+"builtin_interfaces/Duration",
+"time_from_start",
+null
+]
+]
+},
+"MultiDOFJointTrajectory": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string[]",
+"joint_names",
+null
+],
+[
+"MultiDOFJointTrajectoryPoint[]",
+"points",
+null
+]
+]
+},
+"MultiDOFJointTrajectoryPoint": {
+"constants": [],
+"fields": [
+[
+"geometry_msgs/Transform[]",
+"transforms",
+null
+],
+[
+"geometry_msgs/Twist[]",
+"velocities",
+null
+],
+[
+"geometry_msgs/Twist[]",
+"accelerations",
+null
+],
+[
+"builtin_interfaces/Duration",
+"time_from_start",
+null
+]
+]
+}
+}
+},
+"unique_identifier_msgs": {
+"msg": {
+"UUID": {
+"constants": [],
+"fields": [
+[
+"uint8[16]",
+"uuid",
+null
+]
+]
+}
+}
+},
+"visualization_msgs": {
+"msg": {
+"ImageMarker": {
+"constants": [
+[
+"int32",
+"CIRCLE",
+"0"
+],
+[
+"int32",
+"LINE_STRIP",
+"1"
+],
+[
+"int32",
+"LINE_LIST",
+"2"
+],
+[
+"int32",
+"POLYGON",
+"3"
+],
+[
+"int32",
+"POINTS",
+"4"
+],
+[
+"int32",
+"ADD",
+"0"
+],
+[
+"int32",
+"REMOVE",
+"1"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"ns",
+null
+],
+[
+"int32",
+"id",
+null
+],
+[
+"int32",
+"type",
+null
+],
+[
+"int32",
+"action",
+null
+],
+[
+"geometry_msgs/Point",
+"position",
+null
+],
+[
+"float32",
+"scale",
+null
+],
+[
+"std_msgs/ColorRGBA",
+"outline_color",
+null
+],
+[
+"uint8",
+"filled",
+null
+],
+[
+"std_msgs/ColorRGBA",
+"fill_color",
+null
+],
+[
+"builtin_interfaces/Duration",
+"lifetime",
+null
+],
+[
+"geometry_msgs/Point[]",
+"points",
+null
+],
+[
+"std_msgs/ColorRGBA[]",
+"outline_colors",
+null
+]
+]
+},
+"InteractiveMarker": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/Pose",
+"pose",
+null
+],
+[
+"string",
+"name",
+null
+],
+[
+"string",
+"description",
+null
+],
+[
+"float32",
+"scale",
+null
+],
+[
+"MenuEntry[]",
+"menu_entries",
+null
+],
+[
+"InteractiveMarkerControl[]",
+"controls",
+null
+]
+]
+},
+"InteractiveMarkerControl": {
+"constants": [
+[
+"uint8",
+"INHERIT",
+"0"
+],
+[
+"uint8",
+"FIXED",
+"1"
+],
+[
+"uint8",
+"VIEW_FACING",
+"2"
+],
+[
+"uint8",
+"NONE",
+"0"
+],
+[
+"uint8",
+"MENU",
+"1"
+],
+[
+"uint8",
+"BUTTON",
+"2"
+],
+[
+"uint8",
+"MOVE_AXIS",
+"3"
+],
+[
+"uint8",
+"MOVE_PLANE",
+"4"
+],
+[
+"uint8",
+"ROTATE_AXIS",
+"5"
+],
+[
+"uint8",
+"MOVE_ROTATE",
+"6"
+],
+[
+"uint8",
+"MOVE_3D",
+"7"
+],
+[
+"uint8",
+"ROTATE_3D",
+"8"
+],
+[
+"uint8",
+"MOVE_ROTATE_3D",
+"9"
+]
+],
+"fields": [
+[
+"string",
+"name",
+null
+],
+[
+"geometry_msgs/Quaternion",
+"orientation",
+null
+],
+[
+"uint8",
+"orientation_mode",
+null
+],
+[
+"uint8",
+"interaction_mode",
+null
+],
+[
+"bool",
+"always_visible",
+null
+],
+[
+"Marker[]",
+"markers",
+null
+],
+[
+"bool",
+"independent_marker_orientation",
+null
+],
+[
+"string",
+"description",
+null
+]
+]
+},
+"InteractiveMarkerFeedback": {
+"constants": [
+[
+"uint8",
+"KEEP_ALIVE",
+"0"
+],
+[
+"uint8",
+"POSE_UPDATE",
+"1"
+],
+[
+"uint8",
+"MENU_SELECT",
+"2"
+],
+[
+"uint8",
+"BUTTON_CLICK",
+"3"
+],
+[
+"uint8",
+"MOUSE_DOWN",
+"4"
+],
+[
+"uint8",
+"MOUSE_UP",
+"5"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"client_id",
+null
+],
+[
+"string",
+"marker_name",
+null
+],
+[
+"string",
+"control_name",
+null
+],
+[
+"uint8",
+"event_type",
+null
+],
+[
+"geometry_msgs/Pose",
+"pose",
+null
+],
+[
+"uint32",
+"menu_entry_id",
+null
+],
+[
+"geometry_msgs/Point",
+"mouse_point",
+null
+],
+[
+"bool",
+"mouse_point_valid",
+null
+]
+]
+},
+"InteractiveMarkerInit": {
+"constants": [],
+"fields": [
+[
+"string",
+"server_id",
+null
+],
+[
+"uint64",
+"seq_num",
+null
+],
+[
+"InteractiveMarker[]",
+"markers",
+null
+]
+]
+},
+"InteractiveMarkerPose": {
+"constants": [],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"geometry_msgs/Pose",
+"pose",
+null
+],
+[
+"string",
+"name",
+null
+]
+]
+},
+"InteractiveMarkerUpdate": {
+"constants": [
+[
+"uint8",
+"KEEP_ALIVE",
+"0"
+],
+[
+"uint8",
+"UPDATE",
+"1"
+]
+],
+"fields": [
+[
+"string",
+"server_id",
+null
+],
+[
+"uint64",
+"seq_num",
+null
+],
+[
+"uint8",
+"type",
+null
+],
+[
+"InteractiveMarker[]",
+"markers",
+null
+],
+[
+"InteractiveMarkerPose[]",
+"poses",
+null
+],
+[
+"string[]",
+"erases",
+null
+]
+]
+},
+"Marker": {
+"constants": [
+[
+"int32",
+"ARROW",
+"0"
+],
+[
+"int32",
+"CUBE",
+"1"
+],
+[
+"int32",
+"SPHERE",
+"2"
+],
+[
+"int32",
+"CYLINDER",
+"3"
+],
+[
+"int32",
+"LINE_STRIP",
+"4"
+],
+[
+"int32",
+"LINE_LIST",
+"5"
+],
+[
+"int32",
+"CUBE_LIST",
+"6"
+],
+[
+"int32",
+"SPHERE_LIST",
+"7"
+],
+[
+"int32",
+"POINTS",
+"8"
+],
+[
+"int32",
+"TEXT_VIEW_FACING",
+"9"
+],
+[
+"int32",
+"MESH_RESOURCE",
+"10"
+],
+[
+"int32",
+"TRIANGLE_LIST",
+"11"
+],
+[
+"int32",
+"ADD",
+"0"
+],
+[
+"int32",
+"MODIFY",
+"0"
+],
+[
+"int32",
+"DELETE",
+"2"
+],
+[
+"int32",
+"DELETEALL",
+"3"
+]
+],
+"fields": [
+[
+"std_msgs/Header",
+"header",
+null
+],
+[
+"string",
+"ns",
+null
+],
+[
+"int32",
+"id",
+null
+],
+[
+"int32",
+"type",
+null
+],
+[
+"int32",
+"action",
+null
+],
+[
+"geometry_msgs/Pose",
+"pose",
+null
+],
+[
+"geometry_msgs/Vector3",
+"scale",
+null
+],
+[
+"std_msgs/ColorRGBA",
+"color",
+null
+],
+[
+"builtin_interfaces/Duration",
+"lifetime",
+null
+],
+[
+"bool",
+"frame_locked",
+null
+],
+[
+"geometry_msgs/Point[]",
+"points",
+null
+],
+[
+"std_msgs/ColorRGBA[]",
+"colors",
+null
+],
+[
+"string",
+"texture_resource",
+null
+],
+[
+"sensor_msgs/CompressedImage",
+"texture",
+null
+],
+[
+"UVCoordinate[]",
+"uv_coordinates",
+null
+],
+[
+"string",
+"text",
+null
+],
+[
+"string",
+"mesh_resource",
+null
+],
+[
+"MeshFile",
+"mesh_file",
+null
+],
+[
+"bool",
+"mesh_use_embedded_materials",
+null
+]
+]
+},
+"MarkerArray": {
+"constants": [],
+"fields": [
+[
+"Marker[]",
+"markers",
+null
+]
+]
+},
+"MenuEntry": {
+"constants": [
+[
+"uint8",
+"FEEDBACK",
+"0"
+],
+[
+"uint8",
+"ROSRUN",
+"1"
+],
+[
+"uint8",
+"ROSLAUNCH",
+"2"
+]
+],
+"fields": [
+[
+"uint32",
+"id",
+null
+],
+[
+"uint32",
+"parent_id",
+null
+],
+[
+"string",
+"title",
+null
+],
+[
+"string",
+"command",
+null
+],
+[
+"uint8",
+"command_type",
+null
+]
+]
+},
+"MeshFile": {
+"constants": [],
+"fields": [
+[
+"string",
+"filename",
+null
+],
+[
+"uint8[]",
+"data",
+null
+]
+]
+},
+"UVCoordinate": {
+"constants": [],
+"fields": [
+[
+"float32",
+"u",
+null
+],
+[
+"float32",
+"v",
+null
+]
+]
+}
+},
+"srv": {
+"GetInteractiveMarkers": {
+"Request": {
+"constants": [],
+"fields": []
+},
+"Response": {
+"constants": [],
+"fields": [
+[
+"uint64",
+"sequence_number",
+null
+],
+[
+"InteractiveMarker[]",
+"markers",
+null
+]
+]
+}
+}
+}
+}
+}

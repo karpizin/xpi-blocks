@@ -47,6 +47,21 @@ Changes the visual effect of the WS2812B RGB LED strip.
 Wipes the screen to a solid color.
 *   **Arguments:** `color` (string, optional).
 
+### 6. `move_robot`
+Drives both motors at the same speed for a limited time.
+*   **Arguments:** `speed` (number, -1.0..1.0; `0` stops), `duration` (seconds, default `1.0`).
+*   **Limits are enforced in code**, whatever the model asks for: speed is clamped to
+    `max_move_speed`, duration to `0..max_move_duration`; non-finite numbers are rejected
+    and the robot is stopped. A new `move_robot` call replaces the one in progress.
+*   The agent re-publishes the speed at `move_keepalive_hz` for the whole move and sends
+    `0.0` at the end, so it works with the motor drivers' command watchdog.
+
+**Motion parameters:**
+*   `motor_a_topic` / `motor_b_topic` (default: `/motor_driver/motor_a/cmd_vel`, `/motor_driver/motor_b/cmd_vel`): match `tb6612.launch.py`, which names the driver `motor_driver`. If you start the driver with `ros2 run xpi_actuators tb6612_driver_node`, use `/tb6612_driver_node/motor_a/cmd_vel` and `/tb6612_driver_node/motor_b/cmd_vel`.
+*   `max_move_speed` (default: `0.5`)
+*   `max_move_duration` (default: `5.0` s)
+*   `move_keepalive_hz` (default: `10.0`)
+
 ---
 
 ## 🚀 Usage

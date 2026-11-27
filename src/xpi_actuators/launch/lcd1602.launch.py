@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_actuators',
-            executable='lcd1602_node.py',
+            executable='lcd1602_node',
             name='lcd1602',
             output='screen',
             parameters=[{

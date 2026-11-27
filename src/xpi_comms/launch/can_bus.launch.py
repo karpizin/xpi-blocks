@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_comms',
-            executable='can_bridge_node.py',
+            executable='can_bridge_node',
             name='can_bridge',
             output='screen',
             parameters=[{

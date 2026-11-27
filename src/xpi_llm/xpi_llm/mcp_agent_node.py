@@ -4,6 +4,7 @@ from std_msgs.msg import String, Bool, Float32, Int32
 from sensor_msgs.msg import Temperature, RelativeHumidity, Illuminance, BatteryState
 from xpi_llm.llm_clients import llm_client_factory
 import json
+import math
 import os
 import threading
 import time
@@ -22,6 +23,14 @@ class MCPAgentNode(Node):
         self.declare_parameter('api_key', '')
         self.declare_parameter('command_topic', '~/command')
         self.declare_parameter('response_topic', '~/response')
+        # Motion safety: limits enforced in code, whatever the LLM asks for
+        # Defaults match tb6612.launch.py / smart_motor.launch.py, which name the driver 'motor_driver'.
+        # Running the driver with `ros2 run` instead? Use /tb6612_driver_node/motor_a/cmd_vel.
+        self.declare_parameter('motor_a_topic', '/motor_driver/motor_a/cmd_vel')
+        self.declare_parameter('motor_b_topic', '/motor_driver/motor_b/cmd_vel')
+        self.declare_parameter('max_move_speed', 0.5)      # |speed| limit for move_robot (0..1)
+        self.declare_parameter('max_move_duration', 5.0)   # s, upper bound for one move_robot call
+        self.declare_parameter('move_keepalive_hz', 10.0)  # re-publish rate; motor drivers stop if commands stop
         
         self.llm_model = self.get_parameter('llm_model').value
         api_key = self.get_parameter('api_key').value or os.environ.get('GEMINI_API_KEY')
@@ -60,8 +69,13 @@ class MCPAgentNode(Node):
         self.relay_pub = self.create_publisher(Bool, '/relay_node/cmd', 10)
         self.display_pub = self.create_publisher(String, '/tft_display/draw_commands', 10)
         self.led_pub = self.create_publisher(Int32, '/ws2812/effect', 10)
-        self.motor_a_pub = self.create_publisher(Float32, '/tb6612/motor_a/cmd_vel', 10)
-        self.motor_b_pub = self.create_publisher(Float32, '/tb6612/motor_b/cmd_vel', 10)
+        self.motor_a_pub = self.create_publisher(Float32, self.get_parameter('motor_a_topic').value, 10)
+        self.motor_b_pub = self.create_publisher(Float32, self.get_parameter('motor_b_topic').value, 10)
+        self.max_move_speed = min(1.0, abs(float(self.get_parameter('max_move_speed').value)))
+        self.max_move_duration = max(0.0, float(self.get_parameter('max_move_duration').value))
+        self.move_period = 1.0 / max(1.0, float(self.get_parameter('move_keepalive_hz').value))
+        self._move_lock = threading.Lock()
+        self._move_cancel = None   # threading.Event of the move in progress
         self.dac_pub = self.create_publisher(Float32, '/mcp4725/cmd_voltage', 10)
         
         # VLM Trigger Tool
@@ -123,8 +137,8 @@ class MCPAgentNode(Node):
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "speed": {"type": "number", "description": "-1.0 to 1.0"},
-                            "duration": {"type": "number"}
+                            "speed": {"type": "number", "description": "-1.0 (reverse) to 1.0 (forward); 0 stops. Limited by the robot's max_move_speed."},
+                            "duration": {"type": "number", "description": "Seconds, 0 to max_move_duration (default 1.0)."}
                         },
                         "required": ["speed"]
                     }
@@ -200,19 +214,7 @@ class MCPAgentNode(Node):
             return f"Relay {args.get('relay_id', 0)} -> {args['state']}"
         
         if name == "move_robot":
-            speed = float(args["speed"])
-            duration = float(args.get("duration", 1.0))
-            msg = Float32(data=speed)
-            self.motor_a_pub.publish(msg)
-            self.motor_b_pub.publish(msg)
-            
-            def stop_later():
-                time.sleep(duration)
-                self.motor_a_pub.publish(Float32(data=0.0))
-                self.motor_b_pub.publish(Float32(data=0.0))
-            
-            threading.Thread(target=stop_later).start()
-            return f"Driving at {speed} for {duration}s"
+            return self._move_robot(args.get("speed"), args.get("duration", 1.0))
 
         if name == "set_led_effect":
             self.led_pub.publish(Int32(data=int(args["effect_id"])))
@@ -224,6 +226,76 @@ class MCPAgentNode(Node):
             return f"DAC output set to {voltage}V"
         
         return "Unknown tool"
+
+    # --- Motion (move_robot) -------------------------------------------------
+    @staticmethod
+    def _finite(value):
+        try:
+            v = float(value)
+        except (TypeError, ValueError):
+            return None
+        return v if math.isfinite(v) else None
+
+    def _publish_speed(self, speed):
+        msg = Float32(data=float(speed))
+        self.motor_a_pub.publish(msg)
+        self.motor_b_pub.publish(msg)
+
+    def _cancel_move(self):
+        with self._move_lock:
+            if self._move_cancel is not None:
+                self._move_cancel.set()
+                self._move_cancel = None
+
+    def _move_robot(self, speed, duration):
+        speed = self._finite(speed)
+        duration = self._finite(duration if duration is not None else 1.0)
+        if speed is None or duration is None:
+            self._cancel_move()
+            self._publish_speed(0.0)
+            return "Rejected move_robot: speed and duration must be finite numbers. Robot stopped."
+
+        req_speed, req_duration = speed, duration
+        speed = max(-self.max_move_speed, min(self.max_move_speed, speed))
+        duration = max(0.0, min(self.max_move_duration, duration))
+
+        # A new command always replaces the one in progress.
+        self._cancel_move()
+        if speed == 0.0 or duration == 0.0:
+            self._publish_speed(0.0)
+            return "Robot stopped."
+
+        cancel = threading.Event()
+        with self._move_lock:
+            self._move_cancel = cancel
+
+        def drive():
+            deadline = time.monotonic() + duration
+            try:
+                # Stream the command: motor drivers stop on their own if it stops arriving.
+                while not cancel.is_set() and time.monotonic() < deadline:
+                    self._publish_speed(speed)
+                    cancel.wait(min(self.move_period, max(0.0, deadline - time.monotonic())))
+            finally:
+                # Only the move that still owns the motors sends the stop.
+                with self._move_lock:
+                    owner = self._move_cancel is cancel
+                    if owner:
+                        self._move_cancel = None
+                if owner or not cancel.is_set():
+                    self._publish_speed(0.0)
+
+        threading.Thread(target=drive, daemon=True).start()
+        note = ""
+        if (req_speed, req_duration) != (speed, duration):
+            note = f" (requested {req_speed} for {req_duration}s, limited to max speed {self.max_move_speed}, max {self.max_move_duration}s)"
+        return f"Driving at {speed} for {duration}s{note}"
+
+    def destroy_node(self):
+        self._cancel_move()
+        self._publish_speed(0.0)
+        super().destroy_node()
+
 
 def main(args=None):
     rclpy.init(args=args)

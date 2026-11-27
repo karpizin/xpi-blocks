@@ -49,6 +49,7 @@ You can configure parameters in the launch file or via CLI.
 | `port` | `8080` | Web server port. |
 | `scale_linear` | `1.0` | Max linear speed (m/s) for `cmd_vel`. |
 | `scale_angular` | `1.5` | Max angular speed (rad/s) for `cmd_vel`. |
+| `cmd_timeout` | `0.5` | Seconds without a message (while moving) before a stop is published. `0` disables. |
 
 **Example (Changing port):**
 ```bash
@@ -111,3 +112,10 @@ colcon build --packages-select xpi_inputs
 source install/setup.bash
 ```
 *Note: The `index.html` is installed into the `share/xpi_inputs/web_static` directory during build.*
+
+## 🛑 Safety
+*   **Disconnect = stop.** When the WebSocket closes or drops, the node publishes a zero `cmd_vel` / `joy` immediately.
+*   **Silent connection = stop.** If the connection stays open but no message arrives for `cmd_timeout` seconds while the robot is moving, the node publishes a stop.
+*   **The page stops on leave.** Hiding the tab, switching apps or closing the page sends a zero command.
+*   **Input is sanitized.** `lx` / `az` are clamped to `[-1, 1]`; `NaN`, `Infinity`, non-numbers and malformed JSON are treated as stop.
+*   ⚠️ The server still listens on `0.0.0.0` **without authentication**; use it only on a trusted network.
