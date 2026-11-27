@@ -5,7 +5,9 @@ websockets
 python-telegram-bot
 opencv-python-headless
 numpy
-mediapipe
+# gesture_control uses the legacy mp.solutions API, removed in 0.10.30.
+# 0.10.18 is the last release with aarch64 (Raspberry Pi) wheels for Python 3.10.
+mediapipe>=0.10.9,<0.10.30
 apds9960
 Adafruit-Blinka
 adafruit-circuitpython-as7341
