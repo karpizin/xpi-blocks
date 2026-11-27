@@ -14,7 +14,12 @@ RUN apt-get update && apt-get install -y \
 
 # Install LLM and project dependencies via pip
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+# setuptools<80: colcon-core (ROS 2 Humble) requires it; a newer one is a broken dependency.
+# Known, checked conflict: mediapipe declares protobuf<5, while meshtastic and the Google
+# client libraries need protobuf 5. mp.solutions.hands (gesture_control) runs fine with
+# protobuf 5; forcing protobuf<5 would make pip downgrade meshtastic to 2.3 and mediapipe
+# to 0.10.9, so the conflict is accepted. Recheck it when changing any of these packages.
+RUN pip3 install --no-cache-dir --upgrade pip wheel "setuptools<80" && \
     pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir \
     openai \
