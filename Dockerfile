@@ -1,3 +1,9 @@
+# Stage with only the package manifests: its content changes only when a package.xml
+# changes, so the rosdep layer below stays cached when only code changes.
+FROM ros:humble-ros-base AS manifests
+COPY src /src
+RUN find /src -type f ! -name package.xml -delete && find /src -type d -empty -delete
+
 FROM ros:humble-ros-base
 
 # Prevent prompts during installation
@@ -28,14 +34,15 @@ RUN pip3 install --no-cache-dir --upgrade pip wheel "setuptools<80" && \
 # Setup workspace
 WORKDIR /xpi_ws
 
-# Copy the entire project
-COPY . .
-
-# Install ROS2 dependencies using rosdep
+# Install ROS2 dependencies using rosdep (from the package manifests only, see above)
+COPY --from=manifests /src ./src
 RUN apt-get update && \
     rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
+
+# Copy the entire project
+COPY . .
 
 # Build the workspace
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash && rm -rf build install log && colcon build --merge-install --event-handlers console_direct+"
