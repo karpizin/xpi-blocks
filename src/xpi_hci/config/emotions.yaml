@@ -1,56 +1,95 @@
-NEUTRAL: [5, 5, 1.0, 0, 0, 0, 0, 0, 0]
-IDLE: [5, 5, 1.0, 0, 0, 0, 0, 0, 0]
-IDLE_ANIMATED: [5, 5, 1.0, 0, 0, 0, 0, 0, 0]
-HAPPY: [12, 0, 0.95, -2, 0, -10, -4, 18, 0]
-JOYFUL: [8, 0, 1.0, -1, 0, -6, -3, 24, 0]
-LAUGHING: [18, 6, 0.9, -2, 0, -12, -4, 24, 18]
-ECSTATIC: [5, 0, 1.15, -6, 0, -8, -8, 20, 12]
-ANGRY: [10, 12, 0.85, -2, 0, 20, -6, -12, 0]
-FURIOUS: [8, 18, 0.8, -4, 0, 28, -10, -18, 0]
-SAD: [24, 10, 0.85, 5, 0, 10, 6, -18, 0]
-DEPRESSED: [34, 18, 0.75, 8, 0, 6, 10, -24, 0]
-THINKING: [10, 5, 0.9, 0, 0, 8, -2, 2, 0]
-CURIOUS: [6, 2, 0.92, -1, 10, -8, -1, 8, 0]
-CONFUSED: [8, 10, 0.88, 0, -8, 14, 6, -6, 0]
-SURPRISED: [-12, -12, 1.15, -6, 0, 0, -8, 0, 34]
-SHOCKED: [-18, -18, 1.2, -8, 0, 0, -10, 0, 44]
-SLEEPY: [42, 24, 0.72, 10, 0, -4, 8, -6, 0]
-TIRED: [30, 18, 0.78, 8, 0, -2, 6, -10, 0]
-RELAXED: [14, 6, 0.96, 2, 0, -4, 2, 8, 0]
-FOCUSED: [6, 6, 0.82, -1, 0, 12, -2, -2, 0]
-EVIL: [8, 14, 0.78, -3, 0, 22, -8, -8, 6]
-WINK:
-  lid_top_left: 75
-  lid_bottom_left: 34
-  lid_top_right: 8
-  lid_bottom_right: 2
-  pupil_scale_left: 0.55
-  pupil_scale_right: 0.98
-  y_offset: 0
+NEUTRAL: [12, 8, 1.00, 0, 0, 0, -2, 0, 0]
+IDLE: [12, 8, 1.00, 0, 0, 0, -2, 0, 0]
+IDLE_ANIMATED: [12, 8, 1.00, 0, 0, 0, -2, 0, 0]
+HAPPY: [16, 6, 1.02, -2, 0, -6, -4, 0, 0]
+JOYFUL: [14, 4, 1.04, -2, 0, -8, -5, 0, 0]
+LAUGHING: [10, 4, 1.06, -3, 0, -10, -5, 0, 0]
+ECSTATIC: [8, 2, 1.08, -5, 0, -10, -6, 0, 0]
+ANGRY: [10, 10, 0.94, -1, 0, 18, -4, 0, 0]
+FURIOUS: [8, 12, 0.92, -2, 0, 24, -6, 0, 0]
+SAD: [24, 14, 0.92, 4, 0, 8, 6, 0, 0]
+DEPRESSED: [30, 18, 0.88, 8, 0, 4, 10, 0, 0]
+THINKING:
+  lid_top_left: 12
+  lid_bottom_left: 8
+  lid_top_right: 14
+  lid_bottom_right: 8
+  pupil_scale_left: 0.98
+  pupil_scale_right: 0.94
+  y_offset: -1
   x_shift: 6
-  brow_tilt_left: -14
-  brow_tilt_right: -4
+  brow_tilt_left: 5
+  brow_tilt_right: -2
   brow_y_offset: -2
-  mouth_curve: 14
+  mouth_curve: 0
+  mouth_open: 0
+CURIOUS:
+  lid_top_left: 10
+  lid_bottom_left: 7
+  lid_top_right: 13
+  lid_bottom_right: 8
+  pupil_scale_left: 1.00
+  pupil_scale_right: 0.95
+  y_offset: -2
+  x_shift: 8
+  brow_tilt_left: -5
+  brow_tilt_right: 2
+  brow_y_offset: -2
+  mouth_curve: 0
+  mouth_open: 0
+CONFUSED:
+  lid_top_left: 15
+  lid_bottom_left: 10
+  lid_top_right: 10
+  lid_bottom_right: 13
+  pupil_scale_left: 0.95
+  pupil_scale_right: 0.92
+  y_offset: 1
+  x_shift: -6
+  brow_tilt_left: 10
+  brow_tilt_right: -3
+  brow_y_offset: 4
+  mouth_curve: 0
+  mouth_open: 0
+SURPRISED: [0, -2, 1.08, -6, 0, 0, -6, 0, 0]
+SHOCKED: [-4, -8, 1.10, -8, 0, 0, -8, 0, 0]
+SLEEPY: [34, 24, 0.86, 10, 0, -2, 8, 0, 0]
+TIRED: [28, 18, 0.88, 8, 0, -2, 6, 0, 0]
+RELAXED: [16, 8, 1.00, 2, 0, -4, 2, 0, 0]
+FOCUSED: [10, 8, 0.96, -2, 0, 10, -2, 0, 0]
+EVIL: [12, 10, 0.96, -2, 0, 16, -6, 0, 0]
+WINK:
+  lid_top_left: 84
+  lid_bottom_left: 44
+  lid_top_right: 10
+  lid_bottom_right: 4
+  pupil_scale_left: 0.72
+  pupil_scale_right: 1.00
+  y_offset: 0
+  x_shift: 5
+  brow_tilt_left: -8
+  brow_tilt_right: -2
+  brow_y_offset: -2
+  mouth_curve: 0
   mouth_open: 0
 WINK_RIGHT:
-  lid_top_left: 8
-  lid_bottom_left: 2
-  lid_top_right: 75
-  lid_bottom_right: 34
-  pupil_scale_left: 0.98
-  pupil_scale_right: 0.55
+  lid_top_left: 10
+  lid_bottom_left: 4
+  lid_top_right: 84
+  lid_bottom_right: 44
+  pupil_scale_left: 1.00
+  pupil_scale_right: 0.72
   y_offset: 0
-  x_shift: -6
-  brow_tilt_left: -4
-  brow_tilt_right: -14
+  x_shift: -5
+  brow_tilt_left: -2
+  brow_tilt_right: -8
   brow_y_offset: -2
-  mouth_curve: 14
+  mouth_curve: 0
   mouth_open: 0
-BLINK: [85, 85, 1.0, 0, 0, 0, 0, 0, 0]
-BORED: [26, 14, 0.8, 4, 0, 4, 5, -8, 0]
-CUTE: [16, 2, 1.1, 2, 0, -8, -4, 16, 0]
-PROUD: [4, 4, 0.96, -2, 0, -12, -6, 10, 0]
-EMBARRASSED: [18, 8, 0.86, 3, 0, -2, 2, 12, 0]
-EXCITED: [2, 0, 1.08, -3, 0, -10, -6, 18, 10]
-ALERT: [0, 0, 0.88, -4, 0, 10, -6, 0, 4]
+BLINK: [88, 88, 1.00, 0, 0, 0, 0, 0, 0]
+BORED: [26, 16, 0.90, 4, 0, 4, 5, 0, 0]
+CUTE: [18, 8, 1.04, 1, 0, -8, -4, 0, 0]
+PROUD: [10, 6, 1.00, -2, 0, -8, -6, 0, 0]
+EMBARRASSED: [18, 10, 0.94, 3, 0, -2, 2, 0, 0]
+EXCITED: [6, 2, 1.06, -3, 0, -8, -6, 0, 0]
+ALERT: [2, 0, 1.02, -4, 0, 10, -6, 0, 0]

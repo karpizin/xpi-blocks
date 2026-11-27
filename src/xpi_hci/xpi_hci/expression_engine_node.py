@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import math
+import random
 import time
 
 import numpy as np
@@ -12,17 +13,7 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 
 from .expression_model import (
-    BROW_TILT_LEFT,
-    BROW_TILT_RIGHT,
-    LID_BOTTOM_LEFT,
-    LID_BOTTOM_RIGHT,
-    LID_TOP_LEFT,
-    LID_TOP_RIGHT,
-    PUPIL_SCALE_LEFT,
-    PUPIL_SCALE_RIGHT,
-    X_SHIFT,
-    Y_OFFSET,
-    MOUTH_OPEN,
+    apply_animation_overlay,
     load_emotions_from_yaml,
     normalize_expression_spec,
     render_face_image,
@@ -45,9 +36,10 @@ class ExpressionEngineNode(Node):
         # Animation State
         self.start_time = time.time()
         self.last_blink_time = time.time()
-        self.blink_duration = 0.15 # seconds
+        self.blink_duration = 0.22 # seconds
         self.is_blinking = False
         self.blink_start = 0.0
+        self.next_blink_at = time.time() + random.uniform(2.8, 5.0)
         
         # Publishers/Subscribers
         self.image_pub = self.create_publisher(ImageMsg, '~/eyes_image', 10)
@@ -83,64 +75,30 @@ class ExpressionEngineNode(Node):
         self.current_params += (self.target_params - self.current_params) * self.transition_speed
         
         # 2. Apply Internal Animations based on emotion name
-        anim_params = self.current_params.copy()
-        
+        blink_level = 0.0
+
         # A. Auto-Blink Logic (Global for most emotions)
-        if not self.is_blinking and (time.time() - self.last_blink_time) > 4.0:
-            if np.random.random() > 0.95: # Random chance to blink
-                self.is_blinking = True
-                self.blink_start = time.time()
-        
+        now = time.time()
+        if not self.is_blinking and now >= self.next_blink_at and self.current_emotion_name not in {'WINK', 'WINK_RIGHT', 'BLINK'}:
+            self.is_blinking = True
+            self.blink_start = now
+
         if self.is_blinking:
-            dt = time.time() - self.blink_start
-            if dt < self.blink_duration:
-                anim_params[LID_TOP_LEFT] = 85
-                anim_params[LID_BOTTOM_LEFT] = 85
-                anim_params[LID_TOP_RIGHT] = 85
-                anim_params[LID_BOTTOM_RIGHT] = 85
+            dt = now - self.blink_start
+            progress = dt / self.blink_duration
+            if progress < 1.0:
+                blink_level = math.sin(progress * math.pi)
             else:
                 self.is_blinking = False
-                self.last_blink_time = time.time()
+                self.last_blink_time = now
+                self.next_blink_at = now + random.uniform(2.8, 5.4)
 
-        # B. Specific Emotion Animations
-        if "ANIMATED" in self.current_emotion_name or self.current_emotion_name in ["LAUGHING", "ECSTATIC", "THINKING", "WINK", "WINK_RIGHT"]:
-            
-            if "IDLE" in self.current_emotion_name or "NEUTRAL" in self.current_emotion_name:
-                # Breathing (slow sine on Y)
-                anim_params[Y_OFFSET] += math.sin(t * 1.5) * 3
-                # Subtle pupil pulse
-                pulse = 1.0 + math.sin(t * 0.5) * 0.05
-                anim_params[PUPIL_SCALE_LEFT] *= pulse
-                anim_params[PUPIL_SCALE_RIGHT] *= pulse
-                
-            elif "LAUGHING" in self.current_emotion_name:
-                # High frequency shake
-                anim_params[Y_OFFSET] += math.sin(t * 20) * 5
-                # Mouth pulse
-                anim_params[MOUTH_OPEN] += math.sin(t * 15) * 10
-                
-            elif "ECSTATIC" in self.current_emotion_name:
-                # Pupil "shining" (fast scale pulse)
-                pulse = 1.0 + math.sin(t * 10) * 0.15
-                anim_params[PUPIL_SCALE_LEFT] *= pulse
-                anim_params[PUPIL_SCALE_RIGHT] *= pulse
-                # Bouncing
-                anim_params[Y_OFFSET] += abs(math.sin(t * 8)) * -10
-                
-            elif "THINKING" in self.current_emotion_name:
-                # Eyes moving left-right
-                anim_params[X_SHIFT] += math.sin(t * 2) * 20
-
-            elif "WINK" in self.current_emotion_name:
-                # Keep the open eye lively during the wink pose
-                if self.current_emotion_name == "WINK_RIGHT":
-                    anim_params[PUPIL_SCALE_LEFT] *= (1.0 + math.sin(t * 6) * 0.04)
-                    anim_params[BROW_TILT_LEFT] -= math.sin(t * 4) * 2
-                    anim_params[BROW_TILT_RIGHT] += math.sin(t * 4) * 2
-                else:
-                    anim_params[PUPIL_SCALE_RIGHT] *= (1.0 + math.sin(t * 6) * 0.04)
-                    anim_params[BROW_TILT_LEFT] += math.sin(t * 4) * 2
-                    anim_params[BROW_TILT_RIGHT] -= math.sin(t * 4) * 2
+        anim_params = apply_animation_overlay(
+            self.current_params,
+            self.current_emotion_name,
+            t,
+            blink_level=blink_level,
+        )
 
         # 3. Render and Publish
         img = render_face_image(anim_params, canvas_size=self.canvas_size)
