@@ -54,9 +54,6 @@ PROGRAMMING_ERRORS = (AttributeError, NameError, TypeError, KeyError, IndexError
 
 # module -> reason. Keep short; link the fix when there is one.
 KNOWN_ISSUES = {
-    'xpi_commons.i2c_mux_node':
-        'imports example_interfaces/srv/SetInt32, which does not exist (Humble has AddTwoInts, '
-        'SetBool, Trigger); needs a custom service or an Int32 topic',
     'xpi_comms.ble_bridge_node':
         "uses BlessServer.connected / write_request, which bless does not have (is_connected() is a "
         'coroutine, notifications go through update_value()); needs testing on BLE hardware',

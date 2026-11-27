@@ -48,18 +48,23 @@ ros2 topic pub /i2c_mux_node/cmd std_msgs/msg/Int32 "{data: 3}" --once
 ros2 topic pub /i2c_mux_node/cmd std_msgs/msg/Int32 "{data: -1}" --once
 ```
 
-**Switch channel via Service:**
+**Check the active channel:**
 ```bash
-ros2 service call /i2c_mux_node/set_channel example_interfaces/srv/SetInt32 "{data: 5}"
+# Latched (transient local): shows the current channel right away, then every change
+ros2 topic echo --qos-durability transient_local /i2c_mux_node/current_channel
 ```
+After a failed switch (invalid index, I2C error) `current_channel` reports the channel that is
+still active, so a caller can confirm the switch before talking to a downstream sensor.
 
 ## 📡 Interface
 
 ### Subscribers
 *   `~/cmd` (`std_msgs/Int32`): Switch to channel 0-7. Use -1 to disconnect all.
 
-### Services
-*   `~/set_channel` (`example_interfaces/srv/SetInt32`): Change channel and get confirmation.
+### Publishers
+*   `~/current_channel` (`std_msgs/Int32`, transient local): the channel that is active after every
+    command (`-1` = all disabled). Replaces the former `~/set_channel` service, whose type
+    (`SetInt32`) does not exist in `example_interfaces`.
 
 ## ⚠️ Important Note
 After switching the channel via the multiplexer, you may need to wait a few milliseconds before communicating with the sensor on that channel to allow the bus to stabilize.
