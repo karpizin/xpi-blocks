@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-import sys
 import os
+import sys
+from pathlib import Path
+
 import rclpy
+from rcl_interfaces.msg import SetParametersResult
 from rclpy.node import Node
 from geometry_msgs.msg import Twist, Point
 import time
@@ -16,7 +19,7 @@ class HexapodGaitNode(Node):
         super().__init__('hexapod_gait_node')
         
         # 1. Load Config
-        config_path = '/Users/slava/Documents/xpi-blocks/projects/hexapod_master/config/hexapod_config.yaml'
+        config_path = Path(__file__).resolve().parents[1] / 'config' / 'hexapod_config.yaml'
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
         
@@ -74,7 +77,7 @@ class HexapodGaitNode(Node):
                 self.gait.step_height = param.value
             elif param.name == 'step_length':
                 self.gait.step_length = param.value
-        return rclpy.node.SetParametersResult(successful=True)
+        return SetParametersResult(successful=True)
 
     def cmd_callback(self, msg):
         self.current_vel = [msg.linear.x, msg.linear.y]
@@ -89,8 +92,10 @@ class HexapodGaitNode(Node):
         idx = int(msg.x)
         if 0 <= idx < 6:
             name = leg_names[idx]
-            # Register contact in the engine for Ground Search logic
-            self.gait.register_contact(name, msg.z)
+            # Get current phase for this leg from engine
+            leg_phase = self.gait.current_leg_phases.get(name, 0.0)
+            # Register contact in the engine with phase check
+            self.gait.register_contact(name, msg.z, leg_phase)
 
     def update_gait(self):
         now = time.time()

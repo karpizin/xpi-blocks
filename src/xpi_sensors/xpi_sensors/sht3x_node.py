@@ -4,6 +4,7 @@ from sensor_msgs.msg import Temperature, RelativeHumidity
 from xpi_commons.i2c_helper import get_smbus
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class SHT3xNode(Node):
     """
@@ -29,14 +30,16 @@ class SHT3xNode(Node):
 
         # Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
 
         try:
             self.get_logger().info(f'SHT3x attempt to initialize at 0x{self.address:02X} on bus {self.bus_id}.')
             # Reset/Wake up check could be added here
-            self.get_logger().info(f'SHT3x initialized.')
+            self.get_logger().info('SHT3x initialized.')
         except Exception as e:
-            self.get_logger().error(f'Failed to communicate with SHT3x: {e}. Falling back to mock.')
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'SHT3x', e)
+            self.get_logger().error(f'Failed to communicate with SHT3x: {e}.')
 
         if mock_mode:
             self.get_logger().warn('SHT3x: Running in MOCK mode.')

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import time
 from RPLCD.i2c import CharLCD
 import rclpy
 from rclpy.node import Node
@@ -48,7 +47,8 @@ class LCD1602Node(Node):
             self.lcd = None
 
     def cb_line1(self, msg):
-        if not self.lcd: return
+        if not self.lcd:
+            return
         try:
             # Pad or trim to fit
             text = msg.data[:self.cols].ljust(self.cols)
@@ -58,7 +58,8 @@ class LCD1602Node(Node):
             self.get_logger().warn(f"LCD Error: {e}")
 
     def cb_line2(self, msg):
-        if not self.lcd: return
+        if not self.lcd:
+            return
         try:
             text = msg.data[:self.cols].ljust(self.cols)
             self.lcd.cursor_pos = (1, 0)
@@ -67,7 +68,8 @@ class LCD1602Node(Node):
             self.get_logger().warn(f"LCD Error: {e}")
 
     def cb_write(self, msg):
-        if not self.lcd: return
+        if not self.lcd:
+            return
         try:
             self.lcd.clear()
             self.lcd.write_string(msg.data)
@@ -75,7 +77,8 @@ class LCD1602Node(Node):
             self.get_logger().warn(f"LCD Error: {e}")
 
     def cb_clear(self, msg):
-        if not self.lcd: return
+        if not self.lcd:
+            return
         try:
             self.lcd.clear()
         except Exception as e:

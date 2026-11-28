@@ -1,6 +1,4 @@
 import time
-import math
-import random
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
@@ -15,18 +13,24 @@ def wheel(pos):
 
 def hsv_to_rgb(h, s, v):
     """Convert HSV (0-1, 0-1, 0-1) to RGB (0-255, 0-255, 0-255)."""
-    if s == 0.0: return (int(v*255), int(v*255), int(v*255))
+    if s == 0.0:
+        return (int(v*255), int(v*255), int(v*255))
     i = int(h*6.0)
     f = (h*6.0) - i
     p, q, t = v*(1.0 - s), v*(1.0 - s*f), v*(1.0 - s*(1.0-f))
     p, q, t = int(p*255), int(q*255), int(t*255)
     v = int(v*255)
     i %= 6
-    if i == 0: return (v, t, p)
-    if i == 1: return (q, v, p)
-    if i == 2: return (p, v, t)
-    if i == 3: return (p, q, v)
-    if i == 4: return (t, p, v)
+    if i == 0:
+        return (v, t, p)
+    if i == 1:
+        return (q, v, p)
+    if i == 2:
+        return (p, v, t)
+    if i == 3:
+        return (p, q, v)
+    if i == 4:
+        return (t, p, v)
     return (v, p, q)
 
 class EffectBase:

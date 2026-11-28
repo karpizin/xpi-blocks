@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
-from sensor_msgs.msg import Temperature, Illuminance, FluidPressure, Range, RelativeHumidity
+from sensor_msgs.msg import Temperature, Illuminance, Range, RelativeHumidity
 import json
 import math
 import numpy as np
@@ -35,7 +35,7 @@ class AnalogSensorInterpreterNode(Node):
             self.sensor_configs = []
 
         self.last_voltages = {} # Stores last received voltage for each channel
-        self.publishers = {} # Stores publishers for interpreted sensor data
+        self.channel_publishers = {} # Stores publishers for interpreted sensor data
 
         # 3. Setup Subscriptions and Publishers based on config
         for config in self.sensor_configs:
@@ -57,26 +57,26 @@ class AnalogSensorInterpreterNode(Node):
 
             # Create publishers for interpreted data
             if sensor_type == 'thermistor':
-                self.publishers[channel] = self.create_publisher(Temperature, f'~/temperature_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Temperature, f'~/temperature_ch{channel}', 10)
             elif sensor_type == 'ldr':
-                self.publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
             elif sensor_type == 'temt6000' or sensor_type == 'guva_s12' or sensor_type == 'ml8511':
-                self.publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Illuminance, f'~/illuminance_ch{channel}', 10)
             elif sensor_type == 'acs712' or sensor_type == 'max471':
-                self.publishers[channel] = self.create_publisher(Float32, f'~/current_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Float32, f'~/current_ch{channel}', 10)
             elif sensor_type == 'voltage_divider':
-                self.publishers[channel] = self.create_publisher(Float32, f'~/voltage_divider_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Float32, f'~/voltage_divider_ch{channel}', 10)
             elif sensor_type == 'soil_moisture':
-                self.publishers[channel] = self.create_publisher(Float32, f'~/soil_moisture_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Float32, f'~/soil_moisture_ch{channel}', 10)
             elif sensor_type == 'hr202':
-                self.publishers[channel] = self.create_publisher(RelativeHumidity, f'~/humidity_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(RelativeHumidity, f'~/humidity_ch{channel}', 10)
             elif sensor_type == 'vibration' or sensor_type == 'noise_level':
-                self.publishers[channel] = self.create_publisher(Range, f'~/analog_range_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Range, f'~/analog_range_ch{channel}', 10)
             elif sensor_type == 'mq_gas':
-                self.publishers[channel] = self.create_publisher(Float32, f'~/gas_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Float32, f'~/gas_ch{channel}', 10)
             elif sensor_type in ['mics6814_co', 'mics6814_no2', 'mics6814_nh3']:
                 # Specific types for MICS-6814 channels
-                self.publishers[channel] = self.create_publisher(Float32, f'~/gas_{sensor_type.split("_")[1]}_ch{channel}', 10)
+                self.channel_publishers[channel] = self.create_publisher(Float32, f'~/gas_{sensor_type.split("_")[1]}_ch{channel}', 10)
             else:
                 self.get_logger().warn(f"Unsupported sensor type '{sensor_type}' for channel {channel}. No publisher created.")
 
@@ -94,10 +94,10 @@ class AnalogSensorInterpreterNode(Node):
             sensor_type = config.get('type')
             
             voltage = self.last_voltages.get(channel)
-            if voltage is None or channel not in self.publishers:
+            if voltage is None or channel not in self.channel_publishers:
                 continue
 
-            pub = self.publishers[channel]
+            pub = self.channel_publishers[channel]
             
             try:
                 if sensor_type == 'thermistor':

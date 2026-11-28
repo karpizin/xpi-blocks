@@ -16,6 +16,25 @@ The robot exposes a custom GATT Service with the following UUIDs:
     *   **Telemetry Characteristic (Notify/Read):** `51FF12BB-3ED8-46E5-B4F9-D64E2FEC021C`
         *   Subscribe to this to receive JSON status updates.
 
+## 🔒 Security and safety
+*   **Pairing is required** (`require_encryption`, default `true`): both characteristics need an
+    encrypted link, so a phone must pair (bond) with the robot before it can send commands or read
+    telemetry. Unpaired devices in range get an "insufficient encryption" error. Set
+    `require_encryption:=false` only for bench tests.
+*   **Stop on disconnect:** when the phone disconnects, a zero `/cmd_vel` is published at once.
+*   **Stop on silence:** a moving robot is stopped if no motion command arrives for `cmd_timeout`
+    seconds (default `0.5`). Stream commands while driving (the app should resend every ~100 ms).
+*   **Input is sanitized:** `lx`/`az` are clamped to `[-1, 1]`; `NaN`, `Infinity` and non-numbers
+    mean stop; writes that are not UTF-8 text or longer than 512 bytes are ignored.
+
+### Parameters
+| Parameter | Default | Description |
+| :--- | :--- | :--- |
+| `device_name` | `XPI-Robot` | Name advertised over Bluetooth. |
+| `require_encryption` | `true` | Require a paired, encrypted link for writes and reads. |
+| `cmd_timeout` | `0.5` | Seconds without a motion command before a moving robot is stopped. `0` disables. |
+| `telemetry_period` | `1.0` | Seconds between telemetry notifications. |
+
 ## 📦 Prerequisites
 *   Raspberry Pi 3B+, 4, 5, or Zero 2W (Built-in Bluetooth).
 *   **System Dependencies:**
@@ -48,7 +67,10 @@ Or run simply with `sudo` (not recommended for ROS2 generally, but often necessa
     *   **LightBlue** (iOS).
 2.  Scan for devices. Look for **"XPI-Robot"**.
 3.  Connect.
-4.  Open the Service `A074...`.
+4.  **Pair** when the phone asks (the first write or read triggers it; on Android you can also
+    choose *Bond* in nRF Connect). The robot side uses "Just Works" pairing via BlueZ; if pairing
+    fails, check `bluetoothctl` (`agent on`, `default-agent`, `pairable on`).
+5.  Open the Service `A074...`.
 
 ### Controlling the Robot
 Select the **Command Characteristic** (`...021B`) and write a JSON string (UTF-8):

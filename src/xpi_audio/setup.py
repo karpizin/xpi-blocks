@@ -6,7 +6,7 @@ package_name = 'xpi_audio'
 
 setup(
     name=package_name,
-    version='0.1.0',
+    version='0.2.0',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -19,10 +19,13 @@ setup(
     maintainer='Viacheslav Karpizin',
     maintainer_email='viacheslav.karpizin@gmail.com',
     description='Audio interface blocks for XPI',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'beat_detector_node = xpi_audio.beat_detector_node:main',
+            'piper_tts_node = xpi_audio.piper_tts_node:main',
+            'whisper_stt_node = xpi_audio.whisper_stt_node:main',
         ],
     },
 )

@@ -2,9 +2,10 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool, Int8MultiArray
 from gpiozero import InputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class GPIODigitalInputNode(Node):
     """
@@ -37,16 +38,23 @@ class GPIODigitalInputNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('DigitalInput: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             
         self.input_devices = {}
-        self.publishers = {} # Publishers for individual pins
+        self.pin_publishers = {} # Publishers for individual pins
         self.multi_pin_publisher = None # Publisher for all pins in one message
 
         try:
             for pin in self.pins:
-                self.input_devices[pin] = InputDevice(pin, pull_up=self.pull_up, pull_down=self.pull_down)
-                self.publishers[pin] = self.create_publisher(Bool, f'~/pin_{pin}/state', 10)
+                # gpiozero has no pull_down argument: pull_up=True -> pull-up, False -> pull-down,
+                # None -> floating (then active_state must be given)
+                if self.pull_up:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=True)
+                elif self.pull_down:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=False)
+                else:
+                    self.input_devices[pin] = InputDevice(pin, pull_up=None, active_state=True)
+                self.pin_publishers[pin] = self.create_publisher(Bool, f'~/pin_{pin}/state', 10)
                 self.get_logger().info(f'DigitalInput: Initialized GPIO {pin} (pull_up={self.pull_up}, pull_down={self.pull_down}).')
             
             # Create a publisher for all pins combined
@@ -54,8 +62,9 @@ class GPIODigitalInputNode(Node):
                 self.multi_pin_publisher = self.create_publisher(Int8MultiArray, '~/all_pins_state', 10)
 
         except Exception as e:
+            if not self.mock_mode:
+                hardware_unavailable(self, 'GPIO digital inputs', e)
             self.get_logger().error(f'DigitalInput: Failed to initialize GPIO pins: {e}')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
             # Create dummy devices for mock mode if not already done
             for pin in self.pins:
                 self.input_devices[pin] = MockInputDevice(pin)
@@ -74,7 +83,7 @@ class GPIODigitalInputNode(Node):
             # Publish individual pin state
             msg = Bool()
             msg.data = state
-            self.publishers[pin].publish(msg)
+            self.pin_publishers[pin].publish(msg)
             
             all_pin_states.append(1 if state else 0)
 

@@ -13,9 +13,10 @@ class GaitEngine:
     RIPPLE = 'ripple'
     AMBLE = 'amble'
 
-    def __init__(self, step_height=0.03, step_length=0.05, gait_type='tripod', leg_configs=None):
+    def __init__(self, step_height=0.03, step_length=0.05, gait_type='tripod', leg_configs=None, search_depth=0.05):
         self.step_height = step_height
         self.step_length = step_length
+        self.search_depth = search_depth
         self.gait_type = gait_type
         self.phase = 0.0 # 0.0 to 1.0 (Full cycle)
         self.leg_configs = leg_configs or {}
@@ -25,6 +26,7 @@ class GaitEngine:
         self.contacts = {name: False for name in self.leg_names}
         self.contact_heights = {name: 0.0 for name in self.leg_names}
         self.last_leg_phases = {name: 0.0 for name in self.leg_names}
+        self.current_leg_phases = {name: 0.0 for name in self.leg_names} # Added for external access
         
         # Leg groups/offsets configuration
         self.gait_configs = {
@@ -64,13 +66,32 @@ class GaitEngine:
         if gait_type in self.gait_configs:
             self.gait_type = gait_type
 
-    def register_contact(self, leg_name, current_z):
-        """Called when a leg contact sensor triggers."""
+    def calculate_bezier_point(self, t, p0, p1, p2, p3):
+        """Calculates a point on a cubic Bezier curve."""
+        t_inv = 1.0 - t
+        # Bezier formula: (1-t)^3*P0 + 3(1-t)^2*t*P1 + 3(1-t)*t^2*P2 + t^3*P3
+        res = [
+            (t_inv**3)*p0[i] + 3*(t_inv**2)*t*p1[i] + 3*t_inv*(t**2)*p2[i] + (t**3)*p3[i]
+            for i in range(3)
+        ]
+        return res
+
+    def register_contact(self, leg_name, current_z, leg_phase):
+        """
+        Called when a leg contact sensor triggers.
+        leg_phase: current phase of this specific leg (0.0 to 1.0)
+        """
+        config = self.gait_configs.get(self.gait_type, self.gait_configs[self.TRIPOD])
+        swing_dur = config['swing_duration']
+
         if leg_name in self.contacts:
-            # We only lock contact if the leg is in the second half of swing (descending)
-            # or if it's already in stance.
-            self.contacts[leg_name] = True
-            self.contact_heights[leg_name] = current_z
+            # Only lock contact if:
+            # 1. We are in the second half of swing (descending)
+            # 2. OR we are in stance phase
+            if (leg_phase > (swing_dur * 0.5) and leg_phase < swing_dur) or (leg_phase >= swing_dur):
+                self.contacts[leg_name] = True
+                self.contact_heights[leg_name] = current_z
+
 
     def calculate_offsets(self, velocity, omega, dt):
         """
@@ -93,6 +114,7 @@ class GaitEngine:
         for leg_name in self.leg_names:
             phase_shift = config['offsets'].get(leg_name, 0.0)
             leg_phase = (self.phase + phase_shift) % 1.0
+            self.current_leg_phases[leg_name] = leg_phase # Save current phase
             
             # Detect new swing cycle to reset contact
             if leg_phase < self.last_leg_phases[leg_name]:
@@ -100,6 +122,7 @@ class GaitEngine:
                 self.contact_heights[leg_name] = 0.0
             self.last_leg_phases[leg_name] = leg_phase
 
+            # FIX: Handle 'leg_' prefix from YAML config
             l_cfg = self.leg_configs.get(f'leg_{leg_name}', {'x': 0.1, 'y': 0.1})
             lx, ly = l_cfg['x'], l_cfg['y']
             
@@ -135,7 +158,7 @@ class GaitEngine:
                 dy = stride_y/2 - p * stride_y
                 # If leg hasn't hit ground yet, keep moving down (Search Mode)
                 if not self.contacts[leg_name]:
-                    dz = -0.02 * p # Gently probe deeper (2cm max search)
+                    dz = -self.search_depth * p # Gently probe deeper
                 else:
                     dz = self.contact_heights[leg_name]
                 

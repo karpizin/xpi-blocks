@@ -12,6 +12,8 @@ try:
 except (ImportError, NotImplementedError):
     HAS_DHT_LIB = False
 
+from xpi_commons.hardware import hardware_unavailable
+
 class DHTNode(Node):
     """
     ROS2 Node for DHT11 and DHT22 (AM2302) temperature and humidity sensors.
@@ -40,13 +42,17 @@ class DHTNode(Node):
 
         self.dht_device = None
 
-        if not self.mock_mode and HAS_DHT_LIB:
+        if not self.mock_mode and not HAS_DHT_LIB:
+            hardware_unavailable(
+                self, 'DHT sensor: the adafruit_dht library is not installed '
+                '(pip install adafruit-circuitpython-dht)')
+
+        if not self.mock_mode:
             try:
                 # Map integer pin to board object (e.g. 4 -> board.D4)
                 pin_attr = f'D{self.pin_num}'
                 if not hasattr(board, pin_attr):
-                    self.get_logger().error(f"Pin GPIO{self.pin_num} not found in board library.")
-                    return
+                    raise ValueError(f"pin GPIO{self.pin_num} not found in the board library")
                 
                 pin = getattr(board, pin_attr)
 
@@ -55,20 +61,14 @@ class DHTNode(Node):
                 elif self.sensor_type == 'DHT22' or self.sensor_type == 'AM2302':
                     self.dht_device = adafruit_dht.DHT22(pin)
                 else:
-                    self.get_logger().error(f"Unknown sensor type: {self.sensor_type}. Use DHT11 or DHT22.")
-                    return
+                    raise ValueError(f"unknown sensor type {self.sensor_type}, use DHT11 or DHT22")
                 
                 self.get_logger().info(f"Initialized {self.sensor_type} on GPIO{self.pin_num}")
 
             except Exception as e:
-                self.get_logger().error(f"Failed to init DHT sensor: {e}")
-                self.dht_device = None
+                hardware_unavailable(self, f'{self.sensor_type} on GPIO{self.pin_num}', e)
         else:
-            if not self.mock_mode:
-                self.get_logger().warn("adafruit_dht library not found. Falling back to MOCK mode.")
-            else:
-                self.get_logger().info("Running in MOCK mode.")
-            self.mock_mode = True
+            self.get_logger().warn("Running in MOCK mode.")
             self.mock_temp = 20.0
             self.mock_hum = 50.0
 

@@ -3,7 +3,6 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Illuminance
 from xpi_commons.i2c_helper import get_smbus
-import time
 
 class TSL2561Node(Node):
     def __init__(self):

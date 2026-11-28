@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 import adafruit_24lc32 as adafruit_eeprom
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import UInt8MultiArray, String
-from example_interfaces.srv import SetBool # We'll use a simple trigger for read all for now
+from std_msgs.msg import UInt8MultiArray
 
 class EEPROMNode(Node):
     """
@@ -59,7 +56,8 @@ class EEPROMNode(Node):
             self.get_logger().error(f"EEPROM Write Error: {e}")
 
     def read_block(self, addr, length):
-        if not self.eeprom: return None
+        if not self.eeprom:
+            return None
         try:
             return self.eeprom[addr:addr+length]
         except Exception as e:

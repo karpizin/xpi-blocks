@@ -7,14 +7,23 @@ We use a **Category-Based Package Structure** to minimize cross-dependencies. A 
 
 ```text
 src/
-├── xpi_interfaces/       # Custom .msg, .srv, .action files (kept minimal)
-├── xpi_commons/          # Shared utilities, HAL base classes, mock definitions
-├── xpi_inputs/           # Nodes for Joysticks, RC, Keyboards
-├── xpi_sensors/          # Nodes for LiDARs, IMUs, Cameras, Env sensors
-├── xpi_actuators/        # Nodes for Motors, Servos, Relays, Steppers
-├── xpi_llm/              # Nodes for LLM/VLM integration and Tool Calling
-└── xpi_navigation/       # SLAM and positioning algorithms
+├── xpi_commons/          # Shared utilities, HAL helpers, storage blocks
+├── xpi_inputs/           # Nodes for joysticks, RC, keyboards, web control
+├── xpi_sensors/          # Nodes for LiDARs, IMUs, GPS, environment sensors
+├── xpi_actuators/        # Nodes for motors, LEDs, displays, relays, steppers
+├── xpi_comms/            # Wired/wireless bridges: serial, CAN, LoRa, BLE, LTE
+├── xpi_audio/            # Speech, TTS, beat detection, audio-related nodes
+├── xpi_hci/              # Human-facing interaction and expression nodes
+├── xpi_llm/              # LLM/VLM integration and tool-calling nodes
+├── xpi_navigation/       # SLAM, ranging, indoor positioning algorithms
+├── xpi_vision/           # Vision tracking and perception nodes
+├── xpi_tools/            # CLI and terminal tooling
+└── xpi_projects/         # Integrated launchers and project-level composition
 ```
+
+At the moment the workspace intentionally relies mostly on standard ROS message
+packages. A dedicated `xpi_interfaces/` package can be added later if custom
+messages, services, or actions become necessary.
 
 ## 2. Node Design Standard
 We adopt a **Tiered Node Architecture** to cater to different complexity levels:
@@ -37,6 +46,12 @@ To ensure compatibility across Raspberry Pi generations (4, 5, Zero 2W) and allo
 *   **Libraries:** We standardize on **`gpiozero`** for GPIO and **`smbus2`** (via `xpi_commons`) for I2C.
     *   *Why?* `gpiozero` provides a clean, object-oriented API. `smbus2` offers robust I2C access. Both support mock factories.
 *   **Mocking:** All drivers must support `GPIOZERO_PIN_FACTORY=mock` for testing in CI/CD environments and on non-Pi hardware.
+*   **No silent fallback:** simulated data is published only when it is asked for with `mock_hardware:=true`.
+    If the hardware cannot be initialized without it, the node must fail with a clear error
+    (`xpi_commons.hardware.hardware_unavailable()`), never switch to mock on its own: simulated
+    readings look real, and everything downstream (an LLM agent included) would act on them. A
+    runtime read error stops publishing until the device is back; it does not switch to mock either.
+    `tests/test_no_silent_mock.py` checks this for every node with a `mock_hardware` parameter.
 
 ## 5. Topics & Interfaces
 *   **Standard Types:** Use `sensor_msgs`, `geometry_msgs`, `std_msgs` whenever possible.

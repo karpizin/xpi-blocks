@@ -3,7 +3,6 @@ from rclpy.node import Node
 from std_msgs.msg import Int32, Bool
 import usb.core
 import usb.util
-import time
 
 # ReSpeaker USB Vendor and Product ID
 VID = 0x2886

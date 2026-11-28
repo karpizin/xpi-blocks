@@ -1,10 +1,11 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import UInt8, Int8MultiArray
-from gpiozero import LED, LEDBarGraph, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero import LEDBarGraph, Device
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
-import math
+import logging
+from xpi_commons.hardware import hardware_unavailable
 
 class LEDBarNode(Node):
     """
@@ -30,20 +31,21 @@ class LEDBarNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('LEDBar: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         self.led_bar = None
         try:
-            # gpiozero.LEDBarGraph requires a tuple of pins
+            # gpiozero.LEDBarGraph takes the pins as separate arguments: LEDBarGraph(5, 6, 13, ...)
             self.led_bar = LEDBarGraph(
-                self.pins,
+                *self.pins,
                 active_high=not self.invert_logic,
                 initial_value=self.initial_value / len(self.pins) # Convert number to normalized value
             )
             self.get_logger().info(f'LEDBar: Initialized with {len(self.pins)} LEDs on GPIOs {self.pins}.')
         except Exception as e:
-            self.get_logger().error(f'LEDBar: Failed to initialize LEDBarGraph: {e}. Falling back to mock.')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
+            if not self.mock_mode:
+                hardware_unavailable(self, 'LED bar GPIO', e)
+            self.get_logger().error(f'LEDBar: Failed to initialize LEDBarGraph: {e}.')
             # Create a mock LEDBarGraph
             self.led_bar = MockLEDBarGraph(self.pins, active_high=not self.invert_logic, initial_value=self.initial_value / len(self.pins))
         

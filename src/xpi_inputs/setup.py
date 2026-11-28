@@ -6,7 +6,7 @@ package_name = 'xpi_inputs'
 
 setup(
     name=package_name,
-    version='0.1.0',
+    version='0.2.0',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -21,7 +21,7 @@ setup(
     maintainer='XPI Maintainer',
     maintainer_email='user@example.com',
     description='Input device blocks for XPI',
-    license='MIT',
+    license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

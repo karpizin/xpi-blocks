@@ -7,7 +7,7 @@ Unlike simple command executors, the MCP Agent is **context-aware**: it continuo
 ## 🧠 Features
 *   **Real-time Context:** Injects current temperature, CO2 levels, noise, and battery status into the system prompt.
 *   **Tool Orchestration:** Allows the LLM to autonomously decide when to use actuators (e.g., "It's too stuffy here, I'll turn on the fan").
-*   **Gemini 3.0 Integration:** Optimized for the latest multimodal models with high reasoning capabilities.
+*   **Any LLM backend:** `llm_client_type` = `gemini` (default; also Gemma 4 via `gemma-4-26b-a4b-it`), `ollama` (local Qwen 3.5, Gemma 4), `llamacpp`, `openai`, `qwen`, `openrouter`; `llm_model`, `api_key`, `llm_base_url`, `llm_think`. See [docs/LOCAL_LLM.md](../../../docs/LOCAL_LLM.md).
 
 ---
 
@@ -30,22 +30,39 @@ The LLM can invoke these functions based on the user's request or the current co
 Turns a physical relay ON or OFF. 
 *   **Use case:** Controlling fans, lights, or pumps.
 *   **Arguments:** `relay_id` (0-15), `state` (true/false).
+*   Relay `0` is `/relay_node/cmd`, relay `N` is `/relay_node_N/cmd`.
 
-### 2. `display_text`
-Writes a message to the robot's color TFT display.
-*   **Arguments:** `text` (string), `color` (string).
+### 2. `get_visual_update`
+Asks the VLM observer to describe the camera image (`/vlm_observer_node/trigger`).
+*   **Arguments:** `custom_prompt` (string, optional).
 
-### 3. `display_alert`
-Shows a high-priority warning on the screen with a red background.
-*   **Arguments:** `message` (string).
-
-### 4. `set_led_effect`
+### 3. `set_led_effect`
 Changes the visual effect of the WS2812B RGB LED strip.
 *   **Arguments:** `effect_id` (integer, 0-100).
 
-### 5. `clear_display`
-Wipes the screen to a solid color.
-*   **Arguments:** `color` (string, optional).
+### 4. `set_analog_voltage`
+Sets the MCP4725 DAC output (`/mcp4725/cmd_voltage`).
+*   **Arguments:** `voltage` (number, 0 to `max_dac_voltage`, default 3.3 V).
+
+**Every argument is validated in code** before anything is published: integers must be whole
+numbers in range (`3`, `3.0` and `"3"` are accepted), booleans must be `true`/`false`, numbers
+finite and in range. A rejected call does nothing; the reason goes to `~/response`. Commands are
+handled one at a time, in arrival order.
+
+### 5. `move_robot`
+Drives both motors at the same speed for a limited time.
+*   **Arguments:** `speed` (number, -1.0..1.0; `0` stops), `duration` (seconds, default `1.0`).
+*   **Limits are enforced in code**, whatever the model asks for: speed is clamped to
+    `max_move_speed`, duration to `0..max_move_duration`; non-finite numbers are rejected
+    and the robot is stopped. A new `move_robot` call replaces the one in progress.
+*   The agent re-publishes the speed at `move_keepalive_hz` for the whole move and sends
+    `0.0` at the end, so it works with the motor drivers' command watchdog.
+
+**Motion parameters:**
+*   `motor_a_topic` / `motor_b_topic` (default: `/motor_driver/motor_a/cmd_vel`, `/motor_driver/motor_b/cmd_vel`): match `tb6612.launch.py`, which names the driver `motor_driver`. If you start the driver with `ros2 run xpi_actuators tb6612_driver_node`, use `/tb6612_driver_node/motor_a/cmd_vel` and `/tb6612_driver_node/motor_b/cmd_vel`.
+*   `max_move_speed` (default: `0.5`)
+*   `max_move_duration` (default: `5.0` s)
+*   `move_keepalive_hz` (default: `10.0`)
 
 ---
 

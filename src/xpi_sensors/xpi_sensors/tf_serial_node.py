@@ -3,7 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import Int32, Float32
 import serial
-import time
+from xpi_commons.hardware import hardware_unavailable
 
 class TFSerialNode(Node):
     """
@@ -31,9 +31,12 @@ class TFSerialNode(Node):
 
         # Configure max range based on model
         self.max_range = 40.0
-        if 'luna' in self.model: self.max_range = 8.0
-        elif 'mini' in self.model: self.max_range = 12.0
-        elif 'tf03' in self.model: self.max_range = 100.0
+        if 'luna' in self.model:
+            self.max_range = 8.0
+        elif 'mini' in self.model:
+            self.max_range = 12.0
+        elif 'tf03' in self.model:
+            self.max_range = 100.0
 
         # Hardware Setup
         if self.mock_mode:
@@ -43,8 +46,9 @@ class TFSerialNode(Node):
                 self.ser = serial.Serial(port, baud, timeout=0.1)
                 self.get_logger().info(f'TF LiDAR ({self.model}) initialized on {port}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'TF LiDAR serial port', e)
                 self.get_logger().error(f'Failed to open serial port {port}: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.range_pub = self.create_publisher(Range, '~/range', 10)
@@ -64,7 +68,8 @@ class TFSerialNode(Node):
             if self.ser.read(1) == b'\x59':
                 if self.ser.read(1) == b'\x59':
                     data = self.ser.read(7)
-                    if len(data) < 7: break
+                    if len(data) < 7:
+                        break
                     
                     # Distance: bytes 2 and 3
                     distance = (data[1] << 8) | data[0]

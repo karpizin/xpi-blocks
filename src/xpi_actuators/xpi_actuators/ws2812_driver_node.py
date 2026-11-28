@@ -1,30 +1,35 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA, String, Float32
-from rclpy.parameter import ParameterDescriptor
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-import time
+import atexit
+
+from rcl_interfaces.msg import ParameterDescriptor  # not exported by rclpy.parameter
 from xpi_actuators.lib.led_effects import LedEffects
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     from rpi_ws281x import PixelStrip, Color
-except ImportError:
-    class Color:
-        def __init__(self, r, g, b, w=0):
+except ImportError:   # not installed, or not a Linux machine
+    PixelStrip = Color = None
+
+
+def discard_strip(strip):
+    """Free a PixelStrip whose begin() failed, without crashing the interpreter.
+
+    PixelStrip registers an atexit handler that calls ws2811_fini(). On a strip
+    that was never initialized (begin() failed: not a Raspberry Pi, unsupported
+    board, no access to /dev/mem) that call segfaults and takes the whole
+    Python process down at exit. Unregister it and free only the struct.
+    """
+    atexit.unregister(strip._cleanup)
+    leds, strip._leds, strip._channel = getattr(strip, '_leds', None), None, None
+    if leds is not None:
+        try:
+            import _rpi_ws281x as ws
+            ws.delete_ws2811_t(leds)
+        except Exception:  # noqa: BLE001 - freeing is best effort, we are failing anyway
             pass
-    class PixelStrip:
-        def __init__(self, num, pin, freq=800000, dma=10, invert=False, brightness=255, channel=0, strip_type=None):
-            pass
-        def begin(self):
-            pass
-        def setPixelColor(self, pixel, color):
-            pass
-        def show(self):
-            pass
-        def numPixels(self):
-            return 0
-        def getPixelColor(self, pixel):
-            return Color(0,0,0)
+
 
 class WS2812DriverNode(Node):
     """
@@ -73,22 +78,27 @@ class WS2812DriverNode(Node):
         # Initialize Hardware
         self.strip = None
         if not self.mock_mode:
+            if PixelStrip is None:
+                hardware_unavailable(
+                    self, 'WS2812 LED strip: the rpi_ws281x library is not installed '
+                    '(pip install rpi_ws281x)')
+            strip = PixelStrip(
+                self.led_count,
+                self.led_pin,
+                self.led_freq_hz,
+                self.led_dma,
+                self.led_invert,
+                self.led_brightness,
+                self.led_channel
+            )
             try:
-                self.strip = PixelStrip(
-                    self.led_count,
-                    self.led_pin,
-                    self.led_freq_hz,
-                    self.led_dma,
-                    self.led_invert,
-                    self.led_brightness,
-                    self.led_channel
-                )
-                self.strip.begin()
-                self.get_logger().info(f'WS2812: Initialized {self.led_count} LEDs on GPIO {self.led_pin}.')
+                strip.begin()
             except Exception as e:
-                self.get_logger().error(f'WS2812 Init Failed: {e}. Falling back to mock.')
-                self.mock_mode = True
-        
+                discard_strip(strip)
+                hardware_unavailable(self, f'WS2812 LED strip on GPIO {self.led_pin}', e)
+            self.strip = strip
+            self.get_logger().info(f'WS2812: Initialized {self.led_count} LEDs on GPIO {self.led_pin}.')
+
         if self.mock_mode:
             self.get_logger().warn('WS2812: Running in MOCK mode.')
 

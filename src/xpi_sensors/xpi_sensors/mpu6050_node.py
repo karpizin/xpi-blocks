@@ -1,11 +1,10 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu, Temperature
-from geometry_msgs.msg import Quaternion, Vector3
 from xpi_commons.i2c_helper import get_smbus
 import time
-import struct
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class MPU6050Node(Node):
     """
@@ -66,6 +65,7 @@ class MPU6050Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
         
         # Scale factors (per LSB)
         self.accel_scale = self._get_accel_scale(self.accel_fsr_val)
@@ -75,10 +75,9 @@ class MPU6050Node(Node):
             self.init_mpu6050()
             self.get_logger().info(f'MPU6050 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize MPU6050: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'MPU6050', e)
+            self.get_logger().error(f'Failed to initialize MPU6050: {e}.')
 
         if mock_mode:
             self.get_logger().warn('MPU6050: Running in MOCK mode. No real I2C data will be read.')
@@ -96,18 +95,26 @@ class MPU6050Node(Node):
         self.get_logger().info(f'MPU6050: Publishing IMU and Temperature at {self.publish_rate} Hz.')
 
     def _get_accel_scale(self, fsr):
-        if fsr == 0: return 16384.0 # +/- 2g
-        if fsr == 1: return 8192.0  # +/- 4g
-        if fsr == 2: return 4096.0  # +/- 8g
-        if fsr == 3: return 2048.0  # +/- 16g
+        if fsr == 0:
+            return 16384.0 # +/- 2g
+        if fsr == 1:
+            return 8192.0  # +/- 4g
+        if fsr == 2:
+            return 4096.0  # +/- 8g
+        if fsr == 3:
+            return 2048.0  # +/- 16g
         self.get_logger().warn(f"Invalid Accel FSR: {fsr}. Defaulting to 2g.")
         return 16384.0
 
     def _get_gyro_scale(self, fsr):
-        if fsr == 0: return 131.0 # +/- 250 dps
-        if fsr == 1: return 65.5  # +/- 500 dps
-        if fsr == 2: return 32.8  # +/- 1000 dps
-        if fsr == 3: return 16.4  # +/- 2000 dps
+        if fsr == 0:
+            return 131.0 # +/- 250 dps
+        if fsr == 1:
+            return 65.5  # +/- 500 dps
+        if fsr == 2:
+            return 32.8  # +/- 1000 dps
+        if fsr == 3:
+            return 16.4  # +/- 2000 dps
         self.get_logger().warn(f"Invalid Gyro FSR: {fsr}. Defaulting to 250 dps.")
         return 131.0
 
@@ -155,7 +162,7 @@ class MPU6050Node(Node):
         temp_msg.header.stamp = imu_msg.header.stamp
         temp_msg.header.frame_id = self.frame_id
 
-        if self.bus.mock_mode: # Assuming mock_mode is an attribute of mock bus
+        if self.bus.mock_mode:
             self.mock_counter += 1
             # Simulate some motion
             imu_msg.linear_acceleration.x = self.mock_accel[0] * math.sin(self.mock_counter * 0.05) + 0.1

@@ -5,6 +5,7 @@ from sensor_msgs.msg import Temperature, RelativeHumidity
 from xpi_commons.i2c_helper import get_smbus
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class SCD4xNode(Node):
     """
@@ -30,13 +31,15 @@ class SCD4xNode(Node):
 
         # Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
 
         try:
             self.init_sensor()
             self.get_logger().info(f'SCD4x initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize SCD4x: {e}. Falling back to mock.')
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'SCD4x', e)
+            self.get_logger().error(f'Failed to initialize SCD4x: {e}.')
 
         if mock_mode:
             self.get_logger().warn('SCD4x: Running in MOCK mode.')
@@ -64,7 +67,8 @@ class SCD4xNode(Node):
         return crc
 
     def init_sensor(self):
-        if self.bus.mock_mode: return
+        if self.bus.mock_mode:
+            return
         
         # Stop periodic measurement first to ensure clean state
         # Command 0x3F86
@@ -146,7 +150,8 @@ class SCD4xNode(Node):
             # Stop periodic measurement on shutdown
             try:
                 self.bus.write_i2c_block_data(self.address, 0x3F, [0x86])
-            except: pass
+            except Exception:
+                pass
         self.bus.close()
         super().destroy_node()
 

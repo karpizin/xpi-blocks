@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from geometry_msgs.msg import PoseWithCovarianceStamped, Point
+from geometry_msgs.msg import PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 import json
 import yaml

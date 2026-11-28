@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_inputs',
-            executable='rotary_encoder_node.py',
+            executable='rotary_encoder_node',
             name='left_encoder',
             output='screen',
             parameters=[{

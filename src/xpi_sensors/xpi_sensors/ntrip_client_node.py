@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+import base64
+import socket
+import threading
+import time
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-import socket
-import base64
-import threading
-import time
 
 class NtripClientNode(Node):
     """
@@ -27,6 +28,8 @@ class NtripClientNode(Node):
         self.mount = self.get_parameter('mountpoint').value
         self.user = self.get_parameter('user').value
         self.pw = self.get_parameter('password').value
+        self.reconnect_delay_s = 5.0
+        self._stop_event = threading.Event()
 
         # 2. Publisher
         self.corr_pub = self.create_publisher(String, '/rtk/corrections', 10)
@@ -41,11 +44,12 @@ class NtripClientNode(Node):
 
     def network_loop(self):
         """Maintains connection to the NTRIP caster."""
-        while rclpy.ok():
+        while rclpy.ok() and not self._stop_event.is_set():
+            sock = None
             try:
                 self.get_logger().info(f'Connecting to NTRIP Caster {self.host}:{self.port}...')
-                sock = socket.socket(socket.xml.parsers.expat.model.S_IFSOCK if hasattr(socket, 'S_IFSOCK') else socket.AF_INET, socket.SOCK_STREAM)
-                sock.connect((self.host, self.port))
+                sock = socket.create_connection((self.host, self.port), timeout=10.0)
+                sock.settimeout(10.0)
 
                 # HTTP GET Request for NTRIP
                 auth = base64.b64encode(f'{self.user}:{self.pw}'.encode()).decode()
@@ -57,19 +61,49 @@ class NtripClientNode(Node):
                 )
                 sock.sendall(headers.encode())
 
-                while rclpy.ok():
+                response_buffer = b''
+                while b'\r\n\r\n' not in response_buffer:
+                    chunk = sock.recv(1024)
+                    if not chunk:
+                        raise ConnectionError('NTRIP caster closed connection before sending headers.')
+                    response_buffer += chunk
+
+                header_bytes, payload = response_buffer.split(b'\r\n\r\n', 1)
+                header_text = header_bytes.decode(errors='replace')
+                if '200 OK' not in header_text and not header_text.startswith('ICY 200'):
+                    raise ConnectionError(f'Unexpected NTRIP response: {header_text.splitlines()[0]}')
+
+                if payload:
+                    msg = String()
+                    msg.data = payload.hex()
+                    self.corr_pub.publish(msg)
+
+                while rclpy.ok() and not self._stop_event.is_set():
                     data = sock.recv(2048)
-                    if not data: break
+                    if not data:
+                        break
                     
                     # Publish as hex string for topic safety
                     msg = String()
                     msg.data = data.hex()
                     self.corr_pub.publish(msg)
-                
-                sock.close()
+            except socket.timeout:
+                self.get_logger().warning(f'NTRIP socket timed out. Retrying in {self.reconnect_delay_s:.0f}s...')
             except Exception as e:
-                self.get_logger().warn(f'NTRIP Connection error: {e}. Retrying in 5s...')
-                time.sleep(5)
+                self.get_logger().warning(f'NTRIP connection error: {e}. Retrying in {self.reconnect_delay_s:.0f}s...')
+            finally:
+                if sock is not None:
+                    try:
+                        sock.close()
+                    except OSError:
+                        pass
+
+            if not self._stop_event.is_set():
+                time.sleep(self.reconnect_delay_s)
+
+    def destroy_node(self):
+        self._stop_event.set()
+        super().destroy_node()
 
 def main(args=None):
     rclpy.init(args=args)

@@ -1,11 +1,13 @@
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import Int32, Float32
 from gpiozero import DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
 import threading
+from xpi_commons.hardware import hardware_unavailable
 
 class A4988DriverNode(Node):
     """
@@ -19,8 +21,12 @@ class A4988DriverNode(Node):
         # 1. Declare Parameters
         self.declare_parameter('step_pin', 17) # GPIO BCM
         self.declare_parameter('dir_pin', 27)  # GPIO BCM
-        self.declare_parameter('enable_pin', None) # Optional, if used (active low)
-        self.declare_parameter('microstep_pins', []) # e.g., [22, 23, 24] for MS1, MS2, MS3
+        # Optional pins default to None; dynamic typing lets get_parameter() return None
+        # (a statically typed None parameter raises ParameterUninitializedException).
+        self.declare_parameter('enable_pin', None, ParameterDescriptor(dynamic_typing=True)) # Optional, if used (active low)
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('microstep_pins', [], ParameterDescriptor(dynamic_typing=True)) # e.g., [22, 23, 24] for MS1, MS2, MS3
         self.declare_parameter('microstep_setting', 1) # Full step (1) or 2, 4, 8, 16, 32...
         self.declare_parameter('steps_per_revolution_fullstep', 200) # For typical NEMA17 (1.8 deg/step)
         self.declare_parameter('mock_hardware', False)
@@ -44,7 +50,7 @@ class A4988DriverNode(Node):
         # Initialize mock factory if needed
         if self.mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('A4988: Running in MOCK mode. No real GPIO will be used.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         # 3. Hardware Init
         self.step_device = None
@@ -68,8 +74,9 @@ class A4988DriverNode(Node):
 
             self.disable_motor() # Ensure motor is off initially if enable pin is used
         except Exception as e:
-            self.get_logger().error(f'A4988: Failed to initialize GPIO: {e}. Falling back to mock.')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
+            if not self.mock_mode:
+                hardware_unavailable(self, 'A4988 stepper GPIO', e)
+            self.get_logger().error(f'A4988: Failed to initialize GPIO: {e}.')
             self.step_device = MockDigitalOutputDevice(self.step_pin)
             self.dir_device = MockDigitalOutputDevice(self.dir_pin)
             if self.enable_pin is not None:
@@ -110,13 +117,19 @@ class A4988DriverNode(Node):
             return
 
         ms_states = []
-        if setting == 1: ms_states = [False, False, False]
-        elif setting == 2: ms_states = [True, False, False]
-        elif setting == 4: ms_states = [False, True, False]
-        elif setting == 8: ms_states = [True, True, False]
-        elif setting == 16: ms_states = [True, True, True]
+        if setting == 1:
+            ms_states = [False, False, False]
+        elif setting == 2:
+            ms_states = [True, False, False]
+        elif setting == 4:
+            ms_states = [False, True, False]
+        elif setting == 8:
+            ms_states = [True, True, False]
+        elif setting == 16:
+            ms_states = [True, True, True]
         # For DRV8825:
-        elif setting == 32 and len(self.ms_devices) == 3: ms_states = [True, True, True] # MS0, MS1, MS2 for DRV8825
+        elif setting == 32 and len(self.ms_devices) == 3:
+            ms_states = [True, True, True] # MS0, MS1, MS2 for DRV8825
         else:
             self.get_logger().warn(f"Unsupported microstep setting: {setting}. Defaulting to 1 (full step).")
             ms_states = [False, False, False]
@@ -234,10 +247,14 @@ class A4988DriverNode(Node):
         if self.motor_thread and self.motor_thread.is_alive():
             self.motor_thread.join(timeout=1.0) # Wait for thread to finish
         self.disable_motor() # Ensure motor disabled
-        if self.step_device: self.step_device.close()
-        if self.dir_device: self.dir_device.close()
-        if self.enable_device: self.enable_device.close()
-        for device in self.ms_devices: device.close()
+        if self.step_device:
+            self.step_device.close()
+        if self.dir_device:
+            self.dir_device.close()
+        if self.enable_device:
+            self.enable_device.close()
+        for device in self.ms_devices:
+            device.close()
         self.get_logger().info('A4988: GPIOs released.')
         super().destroy_node()
 

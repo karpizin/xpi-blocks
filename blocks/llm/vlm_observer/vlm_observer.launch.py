@@ -13,8 +13,8 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'model',
-            default_value='gemini-1.5-flash',
-            description='Model name (e.g. gemini-1.5-flash, gpt-4o)'
+            default_value='gemini-3.6-flash',
+            description='Model name (e.g. gemini-3.6-flash, gpt-4o)'
         ),
         DeclareLaunchArgument(
             'interval',

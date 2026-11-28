@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-import time
 import threading
 import rclpy
 from rclpy.node import Node
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, DataTable, Label, Static
-from textual.containers import Container
+from textual.widgets import Header, Footer, DataTable
 
 # Supported message types
 from std_msgs.msg import Float32, Int32, String

@@ -8,9 +8,12 @@ class UtilityEffectsMixin:
         fill_up_to = int((percent / 100.0) * self.num_pixels)
         
         # Determine color based on percentage
-        if percent < 20: color = (255, 0, 0) # Red
-        elif percent < 50: color = (255, 255, 0) # Yellow
-        else: color = (0, 255, 0) # Green
+        if percent < 20:
+            color = (255, 0, 0) # Red
+        elif percent < 50:
+            color = (255, 255, 0) # Yellow
+        else:
+            color = (0, 255, 0) # Green
         
         self.clear()
         for i in range(fill_up_to):
@@ -28,14 +31,16 @@ class UtilityEffectsMixin:
     def effect_traffic_light(self):
         self.clear()
         third = self.num_pixels // 3
-        for i in range(third): self.set_pixel(i, (255, 0, 0)) # Red
-        for i in range(third, 2*third): self.set_pixel(i, (255, 255, 0)) # Yellow
-        for i in range(2*third, self.num_pixels): self.set_pixel(i, (0, 255, 0)) # Green
+        for i in range(third):
+            self.set_pixel(i, (255, 0, 0)) # Red
+        for i in range(third, 2*third):
+            self.set_pixel(i, (255, 255, 0)) # Yellow
+        for i in range(2*third, self.num_pixels):
+            self.set_pixel(i, (0, 255, 0)) # Green
 
     def effect_ambulance(self, speed=10.0):
         phase = int(time.time() * speed) % 2
         self.clear()
-        mid = self.num_pixels // 2
         color = (255, 0, 0) if phase == 0 else (255, 255, 255)
         for i in range(self.num_pixels):
             self.set_pixel(i, color)

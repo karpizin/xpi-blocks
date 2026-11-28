@@ -1,6 +1,3 @@
-import time
-import math
-
 class PaletteEffectsMixin:
     def _apply_palette(self, colors, speed):
         # colors: list of (r,g,b)

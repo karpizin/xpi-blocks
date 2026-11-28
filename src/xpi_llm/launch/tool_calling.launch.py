@@ -1,4 +1,3 @@
-import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
@@ -9,22 +8,33 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'llm_client_type',
             default_value='gemini',
-            description='Type of LLM client (openrouter, gemini, ollama)'
+            description='LLM backend: gemini, ollama, llamacpp, openai (any OpenAI-compatible server), qwen (DashScope), openrouter'
         ),
         DeclareLaunchArgument(
             'llm_api_key',
-            default_value=os.environ.get('GEMINI_API_KEY', ''), # Default to env var for Gemini
-            description='API Key for the chosen LLM service (e.g., OPENROUTER_API_KEY or GEMINI_API_KEY)'
+            default_value='',
+            description='API key. Empty: the provider environment variable (GEMINI_API_KEY, DASHSCOPE_API_KEY, OPENROUTER_API_KEY...); prefer it, a parameter is visible in ros2 param get'
         ),
         DeclareLaunchArgument(
             'llm_model',
-            default_value='gemini-pro',
-            description='Specific LLM model to use (e.g., gemini-pro, openai/gpt-3.5-turbo, llama2)'
+            default_value='',
+            description='Model. Empty: the backend default (gemini-3.6-flash, Ollama qwen3.5:4b). E.g. gemma4:e4b, qwen3.5:9b, gemma-4-26b-a4b-it, qwen-plus'
         ),
         DeclareLaunchArgument(
             'ollama_host',
             default_value='http://localhost:11434',
             description='Host for Ollama server (if using ollama client)'
+        ),
+        DeclareLaunchArgument(
+            'llm_base_url',
+            default_value='',
+            description='Server URL. Empty: the backend default (llama.cpp http://localhost:8080/v1). '
+                        'E.g. http://192.168.1.20:8080/v1 for llama-server on another machine'
+        ),
+        DeclareLaunchArgument(
+            'llm_think',
+            default_value='off',
+            description='Reasoning of Qwen 3.x / Gemma 4 (ollama, llamacpp, openai, qwen): auto, on, off (off is faster)'
         ),
         DeclareLaunchArgument(
             'llm_temperature',
@@ -56,6 +66,8 @@ def generate_launch_description():
                 'llm_api_key': LaunchConfiguration('llm_api_key'),
                 'llm_model': LaunchConfiguration('llm_model'),
                 'ollama_host': LaunchConfiguration('ollama_host'),
+                'llm_base_url': LaunchConfiguration('llm_base_url'),
+                'llm_think': LaunchConfiguration('llm_think'),
                 'llm_temperature': LaunchConfiguration('llm_temperature'),
                 'llm_max_tokens': LaunchConfiguration('llm_max_tokens'),
                 'command_topic': LaunchConfiguration('command_topic'),

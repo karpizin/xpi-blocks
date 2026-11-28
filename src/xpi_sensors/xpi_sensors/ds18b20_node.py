@@ -1,8 +1,8 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Temperature
-import os
 import glob
+from xpi_commons.hardware import hardware_unavailable
 import time
 
 class DS18B20Node(Node):
@@ -35,9 +35,8 @@ class DS18B20Node(Node):
                 self.device_file = device_folder[0] + '/w1_slave'
                 self.get_logger().info(f'DS18B20: Found device file {self.device_file}')
             else:
-                self.get_logger().error(f'DS18B20: Device with ID "{self.device_id}" not found. '
-                                        'Make sure 1-Wire is enabled and sensor is connected. Falling back to mock mode.')
-                self.mock_mode = True
+                hardware_unavailable(
+                    self, f'DS18B20 with ID "{self.device_id}" not found in {self.base_dir}')
 
         if self.mock_mode:
             self.get_logger().warn('DS18B20: Running in MOCK mode. No real 1-Wire data will be read.')
@@ -84,7 +83,8 @@ class DS18B20Node(Node):
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self.read_temp_raw()
-            if not lines: return None # handle if read fails again
+            if not lines:
+                return None # handle if read fails again
 
         equals_pos = lines[1].find('t=')
         if equals_pos != -1:

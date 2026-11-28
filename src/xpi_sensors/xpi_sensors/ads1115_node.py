@@ -5,6 +5,7 @@ from xpi_commons.i2c_helper import get_smbus
 import time
 import struct
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class ADS1115Node(Node):
     """
@@ -103,6 +104,7 @@ class ADS1115Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
         
         self.v_ref = self.PGA[self.pga_setting][1] # Max voltage based on PGA
         self.lsb = self.v_ref / 32768.0 # LSB value (Volts per bit)
@@ -114,10 +116,9 @@ class ADS1115Node(Node):
             self._write_config(self.REG_CONFIG, self.OS_SINGLE | self.MUX['0_GND'] | self.PGA[self.pga_setting][0] | self.DR[self.data_rate] | self.MODE_SINGLE | self.COMP_QUE['DISABLE'])
             self.get_logger().info(f'ADS1115 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize ADS1115: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'ADS1115', e)
+            self.get_logger().error(f'Failed to initialize ADS1115: {e}.')
 
         if mock_mode:
             self.get_logger().warn('ADS1115: Running in MOCK mode. No real I2C data will be read.')
@@ -150,14 +151,17 @@ class ADS1115Node(Node):
         return value
 
     def _get_mux_for_channel(self, channel: int):
-        if channel == 0: return self.MUX['0_GND']
-        if channel == 1: return self.MUX['1_GND']
-        if channel == 2: return self.MUX['2_GND']
-        if channel == 3: return self.MUX['3_GND']
+        if channel == 0:
+            return self.MUX['0_GND']
+        if channel == 1:
+            return self.MUX['1_GND']
+        if channel == 2:
+            return self.MUX['2_GND']
+        if channel == 3:
+            return self.MUX['3_GND']
         return self.MUX['0_GND'] # Default
 
     def timer_callback(self):
-        current_time = self.get_clock().now().to_msg()
         all_voltages = []
 
         for ch in self.channels:
@@ -187,10 +191,16 @@ class ADS1115Node(Node):
                     time.sleep(1.0 / self.data_rate + 0.0001) # Small buffer
                     
                     # Read conversion status
-                    status = self.bus.read_word_data(self.address, self.REG_CONFIG)
-                    while not (status & self.OS_SINGLE): # Wait until OS bit is 1
-                         time.sleep(0.0001)
-                         status = self.bus.read_word_data(self.address, self.REG_CONFIG)
+                    # Config register is MSB first; OS bit (15) = 1 when the conversion is done.
+                    # Bounded wait so a missing/stuck chip cannot hang the timer callback forever.
+                    deadline = time.monotonic() + 0.1
+                    while True:
+                        hi, lo = self.bus.read_i2c_block_data(self.address, self.REG_CONFIG, 2)
+                        if ((hi << 8) | lo) & self.OS_SINGLE:
+                            break
+                        if time.monotonic() > deadline:
+                            raise TimeoutError('conversion did not complete within 100 ms')
+                        time.sleep(0.0001)
 
                     raw_value = self._read_conversion_result()
                     voltage = raw_value * self.lsb

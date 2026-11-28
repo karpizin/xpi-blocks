@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Joy
+from rcl_interfaces.msg import ParameterDescriptor
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool, Float32, Int32
 
 class JoyMapperNode(Node):
@@ -18,6 +19,7 @@ class JoyMapperNode(Node):
         self.declare_parameter('scale_linear', 1.0)
         self.declare_parameter('scale_angular', 1.0)
         self.declare_parameter('deadzone', 0.05)
+        self.declare_parameter('input_topic', 'joy')
 
         # 2. Button/Axis Bindings
         # Format: List of strings "type:index:topic:msg_type:scale/toggle_state"
@@ -26,7 +28,9 @@ class JoyMapperNode(Node):
         # "toggle_btn:0:light_switch:Bool"
         # "momentary_btn:1:horn:Bool"
         # "axis:5:gripper:Float32:180.0" (axis val * 180)
-        self.declare_parameter('bindings', [])
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('bindings', [], ParameterDescriptor(dynamic_typing=True))
 
         # --- State ---
         self.drive_enabled = self.get_parameter('enable_drive').value
@@ -34,11 +38,17 @@ class JoyMapperNode(Node):
         self.publishers_map = {}
         self.toggle_states = {} # Keep track of toggle button states (False/True)
         self.prev_buttons = []  # To detect rising edge
+        self.axis_states = {}
 
         # --- Setup Drive Publisher ---
         if self.drive_enabled:
             self.pub_cmd_vel = self.create_publisher(Twist, 'cmd_vel', 10)
             self.get_logger().info("Drive mixing enabled (cmd_vel)")
+
+        # --- Subscribe to Joy input ---
+        input_topic = self.get_parameter('input_topic').value
+        self.create_subscription(Joy, input_topic, self.joy_callback, 10)
+        self.get_logger().info(f"Listening for Joy messages on '{input_topic}'")
 
         # --- Parse Bindings ---
         self.parsed_bindings = []
@@ -87,21 +97,28 @@ class JoyMapperNode(Node):
         # Init prev_buttons on first run
         if not self.prev_buttons:
             self.prev_buttons = [0] * len(msg.buttons)
-            # Init axis states defaults if not set (safe guard)
-            if not hasattr(self, 'axis_states'): self.axis_states = {}
 
         # --- 1. Drive Handling ---
         if self.drive_enabled:
             twist = Twist()
             
             # Read Axes
-            lin_val = msg.axes[self.get_parameter('axis_linear').value]
-            ang_val = msg.axes[self.get_parameter('axis_angular').value]
+            linear_axis = self.get_parameter('axis_linear').value
+            angular_axis = self.get_parameter('axis_angular').value
+            if linear_axis >= len(msg.axes) or angular_axis >= len(msg.axes):
+                self.get_logger().warning('Configured drive axis index is out of range for incoming Joy message.')
+                self.prev_buttons = list(msg.buttons)
+                return
+
+            lin_val = msg.axes[linear_axis]
+            ang_val = msg.axes[angular_axis]
 
             # Deadzone
             dz = self.get_parameter('deadzone').value
-            if abs(lin_val) < dz: lin_val = 0.0
-            if abs(ang_val) < dz: ang_val = 0.0
+            if abs(lin_val) < dz:
+                lin_val = 0.0
+            if abs(ang_val) < dz:
+                ang_val = 0.0
 
             # Scale
             twist.linear.x = lin_val * self.get_parameter('scale_linear').value
@@ -118,7 +135,8 @@ class JoyMapperNode(Node):
 
             # --- Buttons ---
             if 'btn' in b_type:
-                if idx >= len(msg.buttons): continue
+                if idx >= len(msg.buttons):
+                    continue
                 
                 current_state = msg.buttons[idx]
                 prev_state = self.prev_buttons[idx] if idx < len(self.prev_buttons) else 0
@@ -139,7 +157,8 @@ class JoyMapperNode(Node):
 
             # --- Axes ---
             elif 'axis' in b_type:
-                if idx >= len(msg.axes): continue
+                if idx >= len(msg.axes):
+                    continue
                 val = msg.axes[idx]
 
                 if b_type == 'axis':
@@ -157,7 +176,8 @@ class JoyMapperNode(Node):
                     # Publish only on change to avoid spam, or continuous?
                     # Switches on RC stay in position.
                     # Let's publish on change.
-                    if idx not in self.axis_states: self.axis_states[idx] = not new_state # Force update first time
+                    if idx not in self.axis_states:
+                        self.axis_states[idx] = not new_state # Force update first time
                     
                     if new_state != self.axis_states.get(idx):
                         self.axis_states[idx] = new_state
@@ -167,7 +187,7 @@ class JoyMapperNode(Node):
                         self.get_logger().info(f"Axis Switch {item['topic']} -> {new_state}")
 
         # Update History
-        self.prev_buttons = msg.buttons
+        self.prev_buttons = list(msg.buttons)
 
 def main(args=None):
     rclpy.init(args=args)

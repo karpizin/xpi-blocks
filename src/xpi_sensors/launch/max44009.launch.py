@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='max44009_node.py',
+            executable='max44009_node',
             name='max44009',
             output='screen',
             parameters=[{

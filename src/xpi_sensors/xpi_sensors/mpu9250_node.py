@@ -3,10 +3,11 @@ from rclpy.node import Node
 from sensor_msgs.msg import Imu, MagneticField, Temperature
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
-    from mpu9250_jmdev.registers import *
+    from mpu9250_jmdev.registers import AK8963_ADDRESS, MPU9050_ADDRESS_68
     from mpu9250_jmdev.mpu_9250 import MPU9250
     HAS_HARDWARE = True
 except ImportError:
@@ -52,8 +53,9 @@ class MPU9250Node(Node):
                 self.mpu.configure()
                 self.get_logger().info('MPU9250 initialized successfully.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'MPU9250', e)
                 self.get_logger().error(f'Failed to initialize MPU9250 hardware: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.imu_pub = self.create_publisher(Imu, '~/imu', 10)

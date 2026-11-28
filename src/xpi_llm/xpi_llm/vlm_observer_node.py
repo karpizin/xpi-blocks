@@ -1,14 +1,11 @@
-#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-from std_msgs.msg import String, Empty
+from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 import threading
-import time
-import os
-from xpi_llm.llm_clients import llm_client_factory
+from xpi_llm.llm_clients import llm_client_factory, parse_think
 
 class VLMObserverNode(Node):
     """
@@ -23,8 +20,12 @@ class VLMObserverNode(Node):
         # Parameters
         self.declare_parameter('image_topic', '/camera/image_raw')
         self.declare_parameter('analysis_interval', 60.0) # Seconds (default long for periodic)
-        self.declare_parameter('provider', 'gemini') # gemini, openrouter, ollama
-        self.declare_parameter('model', 'gemini-1.5-flash')
+        # gemini, ollama, llamacpp, openai, qwen, openrouter. Local vision models:
+        # Ollama qwen3.5 / gemma4; llama-server needs the model's --mmproj file.
+        self.declare_parameter('provider', 'gemini')
+        self.declare_parameter('model', '')          # '' = the client's default
+        self.declare_parameter('base_url', '')       # '' = the client's default server
+        self.declare_parameter('think', 'auto')      # reasoning of Qwen 3.x / Gemma 4: auto | on | off
         self.declare_parameter('default_prompt', 'Describe the scene in front of the robot. Be concise.')
         self.declare_parameter('api_key', '')
 
@@ -34,17 +35,19 @@ class VLMObserverNode(Node):
         self.model_name = self.get_parameter('model').value
         self.default_prompt = self.get_parameter('default_prompt').value
         
-        # Get API Key
-        self.api_key = self.get_parameter('api_key').value or os.environ.get('GEMINI_API_KEY')
+        # API key: the parameter, else the provider's environment variable (see llm_client_factory)
+        self.api_key = self.get_parameter('api_key').value
         
         # Initialize LLM Client
         try:
             self.llm_client = llm_client_factory(
                 self.provider, 
-                api_key=self.api_key, 
-                model=self.model_name
+                api_key=self.api_key,
+                model=self.model_name,
+                host=self.get_parameter('base_url').value,
+                think=parse_think(self.get_parameter('think').value),
             )
-            self.get_logger().info(f"VLM Client initialized: {self.provider} ({self.model_name})")
+            self.get_logger().info(f"VLM Client initialized: {self.provider} ({self.llm_client.get_model_name()})")
         except Exception as e:
             self.get_logger().error(f"Failed to initialize VLM client: {e}")
             return
@@ -109,8 +112,8 @@ class VLMObserverNode(Node):
             image_bytes = encoded_img.tobytes()
 
             # Call VLM
-            self.get_logger().info(f"Sending image to VLM...")
-            response, _ = self.llm_client.generate(prompt, image_data=image_bytes)
+            self.get_logger().info("Sending image to VLM...")
+            response, _ = self.llm_client.generate(prompt, media_data=image_bytes, mime_type='image/jpeg')
 
             self.get_logger().info(f"VLM Response: {response}")
 

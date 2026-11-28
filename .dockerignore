@@ -1,0 +1,9 @@
+.git
+.github
+.devcontainer
+.ruff_cache
+**/__pycache__
+**/*.pyc
+build/
+install/
+log/

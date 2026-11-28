@@ -4,6 +4,7 @@ from rclpy.node import Node
 from std_msgs.msg import UInt8MultiArray
 import spidev
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class W25QxxNode(Node):
     """
@@ -49,8 +50,9 @@ class W25QxxNode(Node):
                 self.get_logger().info(f"SPI initialized on bus {bus}, device {device}")
                 self.detect_chip()
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'W25Qxx SPI flash', e)
                 self.get_logger().error(f"Failed to open SPI: {e}")
-                self.mock_mode = True
         
         if self.mock_mode:
             self.get_logger().warn("Running in MOCK mode.")
@@ -60,7 +62,6 @@ class W25QxxNode(Node):
         # Cmd 0x9F: returns [MF7-MF0], [ID15-ID8], [ID7-ID0]
         resp = self.spi.xfer2([self.CMD_READ_ID, 0x00, 0x00, 0x00])
         mf_id = resp[1]
-        mem_type = resp[2]
         capacity = resp[3]
 
         capacity_map = {
@@ -74,7 +75,8 @@ class W25QxxNode(Node):
         self.get_logger().info(f"Detected Flash: {chip_name}, Manufacturer ID: 0x{mf_id:02X}")
 
     def _wait_not_busy(self):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         while True:
             resp = self.spi.xfer2([self.CMD_READ_STATUS_REG1, 0x00])
             status = resp[1]
@@ -83,7 +85,8 @@ class W25QxxNode(Node):
             time.sleep(0.001)
 
     def _write_enable(self):
-        if self.mock_mode: return
+        if self.mock_mode:
+            return
         self.spi.xfer2([self.CMD_WRITE_ENABLE])
 
     def read_data(self, address, length):

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import time
 import board
-import busio
 import adafruit_sgp30
 
 import rclpy

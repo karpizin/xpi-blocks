@@ -3,13 +3,13 @@ from rclpy.node import Node
 from std_msgs.msg import String, Int8MultiArray
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from xpi_commons.i2c_helper import get_smbus, MockSMBus
-import os
-import time
+import logging
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     from luma.core.interface.serial import i2c
     from luma.core.render import canvas
-    from luma.oled.device import ssd1306, ssd1309, ssd1325, ssd1331, ssd1351, sh1106
+    from luma.oled.device import ssd1306, ssd1309, sh1106
     from PIL import ImageDraw, ImageFont, Image
     
     # Mapping string resolution to luma.oled device classes
@@ -25,6 +25,14 @@ except ImportError:
     class i2c:
         def __init__(self, port=0, address=0, bus=None, **kwargs):
             pass
+    class MockDraw:
+        def __init__(self, device):
+            pass
+        def text(self, xy, text, fill=None, font=None):
+            pass
+        def point(self, xy, fill=None):
+            pass
+
     class canvas:
         def __init__(self, device):
             self.device = device
@@ -128,10 +136,10 @@ class SSD1306Node(Node):
                 self.oled_device.clear() # Clear display
                 self.get_logger().info(f'OLED: Initialized {resolution_key} display at 0x{self.i2c_address:02X} on bus {self.i2c_bus}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'SSD1306 OLED', e)
                 self.get_logger().error(f'OLED: Failed to initialize luma.oled: {e}. '
-                                        'Ensure I2C is enabled and `luma.oled` is installed. '
-                                        'Falling back to mock mode.')
-                self.mock_mode = True
+                                        'Ensure I2C is enabled and `luma.oled` is installed.')
         
         if self.mock_mode:
             self.get_logger().warn('OLED: Running in MOCK mode. No real OLED will be controlled.')
@@ -167,16 +175,18 @@ class SSD1306Node(Node):
             self.display_bitmap_callback,
             qos_profile
         )
-        self.get_logger().info(f'OLED: Subscribing to display commands.')
+        self.get_logger().info('OLED: Subscribing to display commands.')
 
 
     def display_text_on_oled(self, text_to_display: str):
         """Helper to render text on the OLED."""
-        if not self.oled_device: return
+        if not self.oled_device:
+            return
         self.oled_device.clear()
+        # luma's canvas() pushes the drawing to the display when the block exits;
+        # device.display() needs an image argument, so it must not be called bare here.
         with canvas(self.oled_device) as draw:
             draw.text((0, 0), text_to_display, fill="white", font=self.font)
-        self.oled_device.display() # Luma uses display() not show()
         self.get_logger().debug(f"OLED: Displayed text: '{text_to_display}'")
 
     def display_text_callback(self, msg: String):
@@ -185,7 +195,8 @@ class SSD1306Node(Node):
     
     def display_bitmap_callback(self, msg: Int8MultiArray):
         """Displays a custom bitmap on the OLED screen."""
-        if not self.oled_device: return
+        if not self.oled_device:
+            return
         
         expected_len = self.width * self.height
         if len(msg.data) != expected_len:
@@ -201,13 +212,12 @@ class SSD1306Node(Node):
                 pixels[x, y] = msg.data[y * self.width + x] * 255 # 0 or 255 for black/white
 
         self.oled_device.display(image)
-        self.get_logger().debug(f"OLED: Displayed custom bitmap.")
+        self.get_logger().debug("OLED: Displayed custom bitmap.")
 
 
     def destroy_node(self):
         if self.oled_device:
-            self.oled_device.clear() # Clear display on shutdown
-            self.oled_device.display()
+            self.oled_device.clear()  # Clear display on shutdown (luma's clear() also refreshes it)
             self.get_logger().info('OLED: Display cleared.')
         super().destroy_node()
 

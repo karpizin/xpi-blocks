@@ -68,7 +68,7 @@ ros2 launch xpi_sensors bme680.launch.py i2c_address:=0x76
 
 ### Parameters
 *   `i2c_address` (int, default: `0x77`): I2C address of the sensor.
-*   `publish_rate` (float, default: `1.0`): Frequency to publish data in Hz.
+*   `polling_rate` (float, default: `1.0`): Frequency to read and publish data in Hz.
 *   `frame_id` (string, default: `bme680_link`): Frame ID for TF tree.
 *   `sea_level_pressure` (float, default: `1013.25`): Used internally for altitude calculation if needed.
 

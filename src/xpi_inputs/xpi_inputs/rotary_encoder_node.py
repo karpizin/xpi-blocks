@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import time
 from gpiozero import DigitalInputDevice
 import rclpy
 from rclpy.node import Node
@@ -54,8 +53,6 @@ class RotaryEncoderNode(Node):
         Simple X2/X4 decoding logic.
         Read A and B. Determine direction.
         """
-        a = self.encoder_a.value
-        b = self.encoder_b.value
         
         # Determine direction based on state transition
         # This is a simplified logic. For robust high-speed quadrature, 

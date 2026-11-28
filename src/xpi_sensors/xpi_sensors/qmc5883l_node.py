@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import math
+import time
 import smbus2
 import rclpy
 from rclpy.node import Node
@@ -83,8 +84,10 @@ class QMC5883LNode(Node):
             heading = math.atan2(y, x) + self.declination
             
             # Correct for wrap around
-            if heading < 0: heading += 2 * math.pi
-            if heading > 2 * math.pi: heading -= 2 * math.pi
+            if heading < 0:
+                heading += 2 * math.pi
+            if heading > 2 * math.pi:
+                heading -= 2 * math.pi
             
             # Convert to degrees
             heading_deg = math.degrees(heading)
@@ -101,7 +104,6 @@ class QMC5883LNode(Node):
         return val
 
 def main(args=None):
-    import time
     rclpy.init(args=args)
     node = QMC5883LNode()
     try:

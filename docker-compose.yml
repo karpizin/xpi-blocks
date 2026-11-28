@@ -1,13 +1,34 @@
 services:
   xpi-blocks:
-    image: ghcr.io/karpizin/xpi-blocks:latest
+    # A released version, not :latest: an update is a deliberate change of this line.
+    # Versions: https://github.com/karpizin/xpi-blocks/releases
+    image: ghcr.io/karpizin/xpi-blocks:0.2.0
     container_name: xpi-blocks-container
-    privileged: true # Required for GPIO and I2C access on RPi
-    network_mode: host # Allows easy communication between nodes and external tools
-    volumes:
-      - /dev:/dev # Access to hardware devices
+    # Host networking: ROS 2 (DDS) discovery with nodes and tools (rviz, rqt) on the LAN.
+    network_mode: host
+    # Pass through only the devices your robot uses, not privileged mode and all of /dev.
+    # Docker refuses to start if a listed device does not exist: enable the interface
+    # (sudo raspi-config -> Interface Options) or comment the line out.
+    # See docs/DEPLOYMENT_DOCKER.md for which block needs which device.
+    devices:
+      - /dev/i2c-1          # I2C sensors, PCA9685, displays
+      - /dev/gpiomem        # GPIO: motors, relays, buttons (gpiozero's native pin factory, Pi 4 and older)
+      # - /dev/spidev0.0    # SPI: MAX7219 LED matrix, PMW3901, W25Qxx, LoRa
+      # - /dev/ttyAMA0      # UART: SBUS/CRSF receivers, LiDARs, PMS5003, HC-12
+      # - /dev/ttyUSB0      # USB-serial adapters
+      # - /dev/ttyACM0      # USB CDC devices (Meshtastic, some GPS)
+      # - /dev/snd          # audio blocks
+      # - /dev/video0       # cameras
+    # WS2812 (rpi_ws281x) drives the LEDs through /dev/mem, which is full access to the
+    # host's memory. Only if you use that block:
+    #   devices: [/dev/mem]
+    #   cap_add: [SYS_RAWIO]
     environment:
       - ROS_DOMAIN_ID=0
+      # ROS 2 topics on this machine only. Any device on the LAN could otherwise drive the
+      # motors with `ros2 topic pub`: DDS has no authentication without SROS2. Set 0 only to
+      # run rviz/rqt from a laptop, on a trusted network (see docs/DEPLOYMENT_DOCKER.md).
+      - ROS_LOCALHOST_ONLY=1
     stdin_open: true
     tty: true
     restart: unless-stopped

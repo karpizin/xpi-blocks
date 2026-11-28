@@ -16,7 +16,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../../blocks/swarm/c
 from driver import MeshtasticDriver
 from engine import ConsensusEngine
 
-from std_msgs.msg import String, Header
+from std_msgs.msg import String
 from sensor_msgs.msg import NavSatFix
 
 class MeshtasticBridgeNode(Node):

@@ -2,8 +2,30 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Range
 from gpiozero import DistanceSensor, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
+import math
 import os
+import time
+from xpi_commons.hardware import hardware_unavailable
+
+
+class _SimulatedDistanceSensor:
+    """Mock-mode stand-in for gpiozero.DistanceSensor: a slowly sweeping distance.
+
+    gpiozero's DistanceSensor on mock pins never sees an echo and blocks forever.
+    """
+
+    def __init__(self, max_distance):
+        self.max_distance = max_distance
+
+    @property
+    def distance(self):
+        phase = (math.sin(time.monotonic() * 0.5) + 1.0) / 2.0   # 0..1
+        return 0.1 + phase * (self.max_distance - 0.1)
+
+    def close(self):
+        pass
+
 
 class SonarNode(Node):
     """
@@ -35,16 +57,24 @@ class SonarNode(Node):
         # 3. Hardware Init
         if mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('Running in MOCK mode.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         try:
-            self.sensor = DistanceSensor(
-                echo=echo,
-                trigger=trig,
-                max_distance=self.max_dist
-            )
+            if mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
+                self.sensor = _SimulatedDistanceSensor(self.max_dist)
+            else:
+                # partial=True: start publishing without waiting for a full queue of readings
+                # (with partial=False a disconnected sensor blocks the constructor forever)
+                self.sensor = DistanceSensor(
+                    echo=echo,
+                    trigger=trig,
+                    max_distance=self.max_dist,
+                    partial=True
+                )
             self.get_logger().info(f'HC-SR04 initialized (Trig={trig}, Echo={echo})')
         except Exception as e:
+            if not mock_mode:
+                hardware_unavailable(self, 'HC-SR04 sonar GPIO', e)
             self.get_logger().error(f'Failed to init sensor: {e}')
             self.sensor = None
 

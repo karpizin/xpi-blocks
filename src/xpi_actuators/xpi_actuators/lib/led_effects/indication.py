@@ -1,5 +1,4 @@
 import time
-import math
 
 class IndicationEffectsMixin:
     def effect_double_blink(self, color=(255, 100, 0), speed=1.0):
@@ -18,11 +17,14 @@ class IndicationEffectsMixin:
         t = (time.time() * speed) % 6.0
         self.clear()
         # S1
-        if (0.0 < t < 0.3) or (0.6 < t < 0.9) or (1.2 < t < 1.5): self.fill(color)
+        if (0.0 < t < 0.3) or (0.6 < t < 0.9) or (1.2 < t < 1.5):
+            self.fill(color)
         # O
-        elif (2.0 < t < 2.8) or (3.1 < t < 3.9) or (4.2 < t < 5.0): self.fill(color)
+        elif (2.0 < t < 2.8) or (3.1 < t < 3.9) or (4.2 < t < 5.0):
+            self.fill(color)
         # S2
-        elif (5.5 < t < 5.8) or (6.1 < t < 6.4) or (6.7 < t < 7.0): self.fill(color)
+        elif (5.5 < t < 5.8) or (6.1 < t < 6.4) or (6.7 < t < 7.0):
+            self.fill(color)
 
     def effect_fast_blink(self, color=(255, 255, 255), speed=5.0):
         if (time.time() * speed) % 1 < 0.5:

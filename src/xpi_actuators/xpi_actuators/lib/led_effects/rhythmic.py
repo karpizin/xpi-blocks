@@ -1,11 +1,12 @@
 import time
 import math
 import random
-from .base import wheel, hsv_to_rgb
+from .base import wheel
 
 class RhythmicEffectsMixin:
     def _get_bpm_data(self, bpm):
-        if bpm <= 0: bpm = 120
+        if bpm <= 0:
+            bpm = 120
         beat_duration = 60.0 / bpm
         current_time = time.time()
         # Progress within current beat (0.0 to 1.0)
@@ -102,8 +103,10 @@ class RhythmicEffectsMixin:
         prog, _ = self._get_bpm_data(speed)
         # Double pulse logic
         val = 0
-        if 0.1 < prog < 0.2: val = (prog - 0.1) * 10
-        elif 0.3 < prog < 0.6: val = 1.0 - (prog - 0.3) * 3.3
+        if 0.1 < prog < 0.2:
+            val = (prog - 0.1) * 10
+        elif 0.3 < prog < 0.6:
+            val = 1.0 - (prog - 0.3) * 3.3
         
         r, g, b = color
         self.fill((int(r*val), int(g*val), int(b*val)))

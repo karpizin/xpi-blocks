@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String, Float32
+from std_msgs.msg import String
 from sensor_msgs.msg import Temperature
 import os
 import subprocess
@@ -50,14 +50,14 @@ class RTCMonitorNode(Node):
                             if "ds3231" in f.read():
                                 temp_path = f"/sys/class/hwmon/{h}/temp1_input"
                                 break
-            except:
+            except OSError:
                 pass
 
         if os.path.exists(temp_path):
             try:
                 with open(temp_path, 'r') as f:
                     return float(f.read()) / 1000.0
-            except:
+            except (OSError, ValueError):
                 return None
         return None
 

@@ -2,8 +2,9 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
 from gpiozero import DigitalOutputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
+from xpi_commons.hardware import hardware_unavailable
 
 class RelayNode(Node):
     """
@@ -29,7 +30,7 @@ class RelayNode(Node):
         # 3. Initialize Hardware (with Mock support)
         if mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('Running in MOCK mode. No real GPIO will be toggled.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
         
         try:
             self.device = DigitalOutputDevice(
@@ -39,8 +40,9 @@ class RelayNode(Node):
             )
             self.get_logger().info(f'Relay/LED initialized on GPIO {self.pin}')
         except Exception as e:
+            if not mock_mode:
+                hardware_unavailable(self, f'Relay on GPIO{self.pin}', e)
             self.get_logger().error(f'Failed to initialize GPIO: {e}')
-            # In a real deployment, we might want to exit, but for now we stay alive to log errors
             self.device = None
 
         # 4. Create Subscriber

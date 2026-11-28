@@ -5,7 +5,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_sensors',
-            executable='ina219_node.py',
+            executable='ina219_node',
             name='ina219',
             output='screen',
             parameters=[{

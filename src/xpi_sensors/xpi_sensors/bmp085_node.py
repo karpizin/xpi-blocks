@@ -5,6 +5,7 @@ from xpi_commons.i2c_helper import get_smbus
 import time
 import struct
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class BMP085Node(Node):
     """
@@ -60,6 +61,7 @@ class BMP085Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
         
         self.calibration_params = {}
         self.delay_time = 0.004 + (0.003 * (1 << self.oss)) # Delay based on OSS
@@ -68,10 +70,9 @@ class BMP085Node(Node):
             self.init_bmp085()
             self.get_logger().info(f'BMP085 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize BMP085: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'BMP085', e)
+            self.get_logger().error(f'Failed to initialize BMP085: {e}.')
 
         if mock_mode:
             self.get_logger().warn('BMP085: Running in MOCK mode. No real I2C data will be read.')
@@ -141,7 +142,6 @@ class BMP085Node(Node):
         ac6 = self.calibration_params['ac6']
         b1 = self.calibration_params['b1']
         b2 = self.calibration_params['b2']
-        mb = self.calibration_params['mb']
         mc = self.calibration_params['mc']
         md = self.calibration_params['md']
 
@@ -202,7 +202,7 @@ class BMP085Node(Node):
                 temp_msg.temperature = temperature_c
                 press_msg.fluid_pressure = pressure_pa # Pascals
 
-                self.get_logger().debug(f'Real: T={temp_msg.temperature:.2f}C, P={press_pa/100:.2f}hPa')
+                self.get_logger().debug(f'Real: T={temp_msg.temperature:.2f}C, P={pressure_pa/100:.2f}hPa')
 
             except Exception as e:
                 self.get_logger().error(f'BMP085: Error reading sensor data: {e}')

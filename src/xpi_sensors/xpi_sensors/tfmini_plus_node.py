@@ -3,7 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import Int32
 import serial
-import time
+from xpi_commons.hardware import hardware_unavailable
 
 class TFminiPlusNode(Node):
     """
@@ -35,8 +35,9 @@ class TFminiPlusNode(Node):
                 self.ser = serial.Serial(port, baud, timeout=0.1)
                 self.get_logger().info(f'TFmini Plus initialized on {port} at {baud} bps.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'TFmini Plus serial port', e)
                 self.get_logger().error(f'Failed to open serial port {port}: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.range_pub = self.create_publisher(Range, '~/range', 10)
@@ -57,7 +58,8 @@ class TFminiPlusNode(Node):
                 if self.ser.read(1) == b'\x59':
                     # Header found, read remaining 7 bytes
                     data = self.ser.read(7)
-                    if len(data) < 7: break
+                    if len(data) < 7:
+                        break
                     
                     dist_l = data[0]
                     dist_h = data[1]

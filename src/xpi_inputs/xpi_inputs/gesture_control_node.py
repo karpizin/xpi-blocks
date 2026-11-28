@@ -67,10 +67,14 @@ class GestureClassifier:
         count = sum(fingers)
         
         # Logic
-        if count == 0: return "FIST"
-        if count == 5: return "OPEN"
-        if index and not middle and not ring and not pinky: return "POINTING"
-        if thumb and not index and not middle: return "THUMB_UP" 
+        if count == 0:
+            return "FIST"
+        if count == 5:
+            return "OPEN"
+        if index and not middle and not ring and not pinky:
+            return "POINTING"
+        if thumb and not index and not middle:
+            return "THUMB_UP" 
         
         return "UNKNOWN"
 
@@ -109,7 +113,8 @@ class GestureControlNode(Node):
         self.get_logger().info(f"Gesture Control Started. Mode: {self.mode}")
 
     def detect_dynamic_gesture(self):
-        if len(self.history_x) < 5: return None
+        if len(self.history_x) < 5:
+            return None
         
         # Simple delta check
         # history holds normalized X (-1.0 to 1.0)
@@ -183,14 +188,20 @@ class GestureControlNode(Node):
                     joy.axes[1] = norm_y
                     
                     # Buttons map to gestures
-                    if gesture_name == 'FIST': joy.buttons[0] = 1
-                    elif gesture_name == 'OPEN': joy.buttons[1] = 1
-                    elif gesture_name == 'POINTING': joy.buttons[2] = 1
-                    elif gesture_name == 'THUMB_UP': joy.buttons[3] = 1
+                    if gesture_name == 'FIST':
+                        joy.buttons[0] = 1
+                    elif gesture_name == 'OPEN':
+                        joy.buttons[1] = 1
+                    elif gesture_name == 'POINTING':
+                        joy.buttons[2] = 1
+                    elif gesture_name == 'THUMB_UP':
+                        joy.buttons[3] = 1
                     
                     # Map swipes to buttons 
-                    if dynamic_gesture == 'SWIPE_LEFT': joy.buttons[4] = 1 
-                    elif dynamic_gesture == 'SWIPE_RIGHT': joy.buttons[5] = 1
+                    if dynamic_gesture == 'SWIPE_LEFT':
+                        joy.buttons[4] = 1 
+                    elif dynamic_gesture == 'SWIPE_RIGHT':
+                        joy.buttons[5] = 1
                     
                     self.pub_joy.publish(joy)
 

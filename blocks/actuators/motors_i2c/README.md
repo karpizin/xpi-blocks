@@ -33,7 +33,7 @@ ros2 run xpi_actuators pca9685_motor_node
 
 **Control Motor A:**
 ```bash
-ros2 topic pub /pca9685_motor_node/motor_a/cmd_speed std_msgs/msg/Float32 "{data: 0.5}" --once
+ros2 topic pub -r 10 /pca9685_motor_node/motor_a/cmd_speed std_msgs/msg/Float32 "{data: 0.5}"
 ```
 
 ## 📡 Interface
@@ -53,3 +53,11 @@ ros2 topic pub /pca9685_motor_node/motor_a/cmd_speed std_msgs/msg/Float32 "{data
     *   `motor_b_pwm` (int, default: `5`)
     *   `motor_b_in1` (int, default: `3`)
     *   `motor_b_in2` (int, default: `4`)
+
+### Safety: command watchdog and speed limit
+The driver stops a motor if no command arrives on its topic for `cmd_timeout` seconds
+(dead-man switch). Publishers must **stream** commands (e.g. 10 Hz), not send a single
+message. Non-finite values (`NaN`, `inf`) are treated as stop; values are clamped to `max_speed`.
+
+*   `cmd_timeout` (float, default: `0.5`): seconds without a command before the motor is stopped. `0` disables the watchdog (not recommended).
+*   `max_speed` (float, default: `1.0`): absolute limit applied to every command (0..1).

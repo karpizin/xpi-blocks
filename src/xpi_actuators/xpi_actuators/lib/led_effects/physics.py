@@ -61,3 +61,24 @@ class PhysicsEffectsMixin:
         # New bubble at bottom
         if random.random() < (0.1 * speed):
             self.set_pixel(0, color)
+
+    def effect_lava(self, speed=1.0):
+        # speed: morphing speed
+        t = time.time() * speed
+        for i in range(self.num_pixels):
+            # Complex noise-like wave from multiple sines
+            v1 = math.sin(i * 0.2 + t)
+            v2 = math.sin(i * 0.1 - t * 0.7)
+            v3 = math.sin(i * 0.4 + t * 0.3)
+            v = (v1 + v2 + v3 + 3.0) / 6.0 # Normalize 0-1
+            
+            # Map to red/black blobs
+            if v > 0.5:
+                # Hot lava: Red to Orange
+                r = int(255 * v)
+                g = int(100 * (v - 0.5) * 2)
+                self.set_pixel(i, (r, g, 0))
+            else:
+                # Darker/Cooling lava: Dark Red to Black
+                r = int(100 * v * 2)
+                self.set_pixel(i, (r, 0, 0))

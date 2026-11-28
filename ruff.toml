@@ -1,0 +1,6 @@
+# Lint rules for CI. Pinned explicitly: newer ruff releases enable many more rules by
+# default, which made `ruff check` fail on unchanged code. Extend `select` deliberately.
+target-version = "py310"  # ROS 2 Humble
+
+[lint]
+select = ["E4", "E7", "E9", "F"]

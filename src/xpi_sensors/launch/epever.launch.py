@@ -21,7 +21,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='xpi_comms',
-            executable='modbus_rtu_node.py',
+            executable='modbus_rtu_node',
             name='epever',
             output='screen',
             parameters=[{

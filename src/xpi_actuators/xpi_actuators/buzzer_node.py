@@ -3,7 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import Bool, String
 from gpiozero import TonalBuzzer, Device
 from gpiozero.tones import Tone
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import time
 import threading
 
@@ -32,7 +32,7 @@ class BuzzerNode(Node):
         mock_mode = self.get_parameter('mock_hardware').value
 
         if mock_mode:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().warn('Buzzer: Running in MOCK mode.')
 
         # Hardware Setup
@@ -71,7 +71,8 @@ class BuzzerNode(Node):
         try:
             # Format: name:settings:notes
             parts = rtttl_str.split(':')
-            if len(parts) < 3: return
+            if len(parts) < 3:
+                return
             
             name = parts[0]
             settings = parts[1].split(',')
@@ -83,15 +84,19 @@ class BuzzerNode(Node):
             bpm = 63
 
             for s in settings:
-                if s.startswith('d='): duration = int(s[2:])
-                if s.startswith('o='): octave = int(s[2:])
-                if s.startswith('b='): bpm = int(s[2:])
+                if s.startswith('d='):
+                    duration = int(s[2:])
+                if s.startswith('o='):
+                    octave = int(s[2:])
+                if s.startswith('b='):
+                    bpm = int(s[2:])
 
             beat_duration = 60.0 / bpm
             self.get_logger().info(f"Playing melody: {name}")
 
             for n in notes:
-                if self.stop_requested: break
+                if self.stop_requested:
+                    break
                 
                 # Parse note string (e.g., "8c#6")
                 n = n.strip().lower()
@@ -127,7 +132,8 @@ class BuzzerNode(Node):
                 
                 # Calculate time
                 play_time = (beat_duration * 4.0) / d
-                if dot: play_time *= 1.5
+                if dot:
+                    play_time *= 1.5
 
                 if freq > 0:
                     self.buzzer.play(Tone(freq))

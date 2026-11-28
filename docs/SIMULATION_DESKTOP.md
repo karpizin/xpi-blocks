@@ -24,7 +24,7 @@ xhost +local:docker
 
 ## 🚀 2. Launching with Docker Compose
 
-We use `docker-compose.sim.yml` to automatically handle GUI forwarding, privileged access, and volume mounting.
+We use `docker-compose.sim.yml` to handle GUI forwarding and volume mounting. The simulation needs no hardware access: start hardware nodes with `mock_hardware:=true`.
 
 ### Build and Start
 ```bash

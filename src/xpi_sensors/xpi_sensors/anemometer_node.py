@@ -3,9 +3,10 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32
 from gpiozero import Button, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class AnemometerNode(Node):
     """
@@ -32,7 +33,7 @@ class AnemometerNode(Node):
         # 2. Mock Hardware Setup
         if mock_mode or os.environ.get('GPIOZERO_PIN_FACTORY') == 'mock':
             self.get_logger().warn('Running in MOCK mode.')
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
 
         # 3. Hardware Init (using Button as it handles debounce and interrupts well)
         try:
@@ -41,6 +42,8 @@ class AnemometerNode(Node):
             self.button.when_pressed = self._pulse_callback
             self.get_logger().info(f'Anemometer initialized on GPIO{pin_num}')
         except Exception as e:
+            if not mock_mode:
+                hardware_unavailable(self, f'Anemometer on GPIO{pin_num}', e)
             self.get_logger().error(f'Failed to init GPIO{pin_num}: {e}')
             self.button = None
 

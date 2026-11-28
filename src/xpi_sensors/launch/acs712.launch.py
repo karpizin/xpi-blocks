@@ -18,20 +18,20 @@ def generate_launch_description():
         # 1. Start the ADC Driver (Reads raw voltage)
         Node(
             package='xpi_sensors',
-            executable='ads1115_node.py',
+            executable='ads1115_node',
             name='ads1115_adc',
             output='screen',
             parameters=[{
                 'i2c_bus': 1,
                 'i2c_address': 0x48,
-                'polling_rate': 10.0
+                'publish_rate': 10.0
             }]
         ),
 
         # 2. Start the Interpreter (Converts Voltage -> Amps)
         Node(
             package='xpi_sensors',
-            executable='analog_sensor_interpreter_node.py',
+            executable='analog_sensor_interpreter_node',
             name='acs712_interpreter',
             output='screen',
             parameters=[{

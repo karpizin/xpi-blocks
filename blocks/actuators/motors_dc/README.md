@@ -25,7 +25,7 @@ The TB6612FNG controls two motors, Motor A and Motor B. Each motor requires two 
 | BIN2          | GPIO 19                 | Configurable via `motor_b_in2_pin`        |
 |               |                         |                                           |
 | **Common**    |                         |                                           |
-| STBY          | (Connect to 3.3V)       | Keep high for normal operation.           |
+| STBY          | 3.3V, or a GPIO         | Keep high for normal operation; `stby_pin` drives it (LOW on shutdown). |
 | VM            | External PSU +          | Motor Power Supply                        |
 | GND           | External PSU - & RPi GND| Common Ground (essential!)                |
 
@@ -50,15 +50,26 @@ The TB6612FNG controls two motors, Motor A and Motor B. Each motor requires two 
 *   `motor_b_pwm_pin` (int, default: `13`): BCM GPIO pin for Motor B PWM.
 *   `motor_b_in1_pin` (int, default: `26`): BCM GPIO pin for Motor B IN1.
 *   `motor_b_in2_pin` (int, default: `19`): BCM GPIO pin for Motor B IN2.
+*   A PWM pin of `-1` disables that motor and leaves its GPIOs alone (e.g. `motor_b_pwm_pin: -1` for a single motor).
+*   `stby_pin` (int, default: `-1`): BCM GPIO wired to STBY. `-1` = STBY tied to 3.3V. Otherwise the
+    node drives it HIGH while running and LOW on shutdown (driver outputs off).
 *   `pwm_frequency` (int, default: `1000`): PWM frequency in Hz.
 *   `mock_hardware` (bool, default: `false`): Run in mock mode without real GPIO.
+
+### Safety: command watchdog and speed limit
+The driver stops a motor if no command arrives on its topic for `cmd_timeout` seconds
+(dead-man switch). Publishers must **stream** commands (e.g. 10 Hz), not send a single
+message. Non-finite values (`NaN`, `inf`) are treated as stop; values are clamped to `max_speed`.
+
+*   `cmd_timeout` (float, default: `0.5`): seconds without a command before the motor is stopped. `0` disables the watchdog (not recommended).
+*   `max_speed` (float, default: `1.0`): absolute limit applied to every command (0..1).
 
 ## ✅ Verification
 1.  Launch the driver as described above.
 2.  Send commands to Motor A:
-    *   Forward at half speed:
+    *   Forward at half speed (`-r 10` streams at 10 Hz; with `--once` the watchdog stops the motor after 0.5 s; press Ctrl+C to stop):
         ```bash
-        ros2 topic pub --once /motor_driver/motor_a/cmd_vel std_msgs/msg/Float32 "{data: 0.5}"
+        ros2 topic pub -r 10 /motor_driver/motor_a/cmd_vel std_msgs/msg/Float32 "{data: 0.5}"
         ```
     *   Stop:
         ```bash
@@ -66,7 +77,7 @@ The TB6612FNG controls two motors, Motor A and Motor B. Each motor requires two 
         ```
     *   Reverse at full speed:
         ```bash
-        ros2 topic pub --once /motor_driver/motor_a/cmd_vel std_msgs/msg/Float32 "{data: -1.0}"
+        ros2 topic pub -r 10 /motor_driver/motor_a/cmd_vel std_msgs/msg/Float32 "{data: -1.0}"
         ```
 3.  Repeat for Motor B using `/motor_driver/motor_b/cmd_vel`.
 

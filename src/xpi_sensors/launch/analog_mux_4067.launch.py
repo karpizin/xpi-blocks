@@ -13,7 +13,7 @@ def generate_launch_description():
 
         Node(
             package='xpi_sensors',
-            executable='analog_mux_4067',
+            executable='analog_mux_4067_node',
             name='analog_mux',
             namespace='analog_mux',
             parameters=[{

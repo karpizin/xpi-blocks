@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int32, String
 from xpi_commons.i2c_helper import get_smbus
+from xpi_commons.hardware import hardware_unavailable
 import time
 import math
 
@@ -39,15 +40,15 @@ class VEML6070Node(Node):
 
         # Init I2C
         self.bus = get_smbus(bus_id, mock=mock_mode)
+        mock_mode = self.bus.mock_mode
 
         try:
             self.init_sensor()
             self.get_logger().info(f"VEML6070 initialized on bus {bus_id}")
         except Exception as e:
-            self.get_logger().error(f"Failed to communicate with VEML6070: {e}")
             if not mock_mode:
-                self.get_logger().warn("Falling back to MOCK mode.")
-                self.bus = get_smbus(bus_id, mock=True)
+                hardware_unavailable(self, f'VEML6070 on I2C bus {bus_id}', e)
+            self.get_logger().error(f"Failed to communicate with VEML6070: {e}")
 
         # Publishers
         self.uv_pub = self.create_publisher(Int32, '~/uv_raw', 10)
@@ -58,20 +59,21 @@ class VEML6070Node(Node):
         self.mock_time = time.monotonic()
 
     def init_sensor(self):
-        if self.bus.mock_mode: return
+        if self.bus.mock_mode:
+            return
         # Command byte: bit 1 is Reserved (1), bit 0 is SD (Shutdown)
-        # Integration time is in bits 2 and 3
-        cmd = (self.it_setting << 2) | 0x02
-        self.bus.write_byte(self.ADDR_COMMAND, cmd)
-        time.sleep(0.2)
-
-    def get_uv_risk_level(self, raw_value):
+# ... (intermediate code)
+    def get_uv_level(self, raw_value):
         # Based on Vishay's application note for 1T integration time
         # Values vary significantly based on integration time and external R_SET
-        if raw_value < 560: return "Low"
-        if raw_value < 1120: return "Moderate"
-        if raw_value < 1494: return "High"
-        if raw_value < 2054: return "Very High"
+        if raw_value < 560:
+            return "Low"
+        if raw_value < 1120:
+            return "Moderate"
+        if raw_value < 1494:
+            return "High"
+        if raw_value < 2054:
+            return "Very High"
         return "Extreme"
 
     def timer_callback(self):
@@ -91,7 +93,7 @@ class VEML6070Node(Node):
             self.uv_pub.publish(msg_uv)
 
             msg_level = String()
-            msg_level.data = self.get_uv_risk_level(uv_raw)
+            msg_level.data = self.get_uv_level(uv_raw)
             self.level_pub.publish(msg_level)
 
             self.get_logger().debug(f"UV Raw: {uv_raw}, Level: {msg_level.data}")

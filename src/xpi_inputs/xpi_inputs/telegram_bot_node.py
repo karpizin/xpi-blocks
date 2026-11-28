@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rcl_interfaces.msg import ParameterDescriptor
 from std_msgs.msg import String, Bool, Float32, Int32, Empty
 from sensor_msgs.msg import Image
 import threading
@@ -9,7 +10,6 @@ import cv2
 import numpy as np
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
-import os
 
 class TelegramBotNode(Node):
     def __init__(self):
@@ -17,9 +17,11 @@ class TelegramBotNode(Node):
 
         # Parameters
         self.declare_parameter('token', '')
-        self.declare_parameter('allowed_users', []) # List of user IDs
-        self.declare_parameter('menu_layout', [])   # List of lists of strings
-        self.declare_parameter('actions', [])       # List of strings "TRIGGER:TOPIC:TYPE:VALUE"
+        # A [] default is typed BYTE_ARRAY by rclpy, so a list from YAML/launch would be
+        # rejected (InvalidParameterTypeException); dynamic typing accepts the real list.
+        self.declare_parameter('allowed_users', [], ParameterDescriptor(dynamic_typing=True)) # List of user IDs
+        self.declare_parameter('menu_layout', [], ParameterDescriptor(dynamic_typing=True))   # List of lists of strings
+        self.declare_parameter('actions', [], ParameterDescriptor(dynamic_typing=True))       # List of strings "TRIGGER:TOPIC:TYPE:VALUE"
 
         self.token = self.get_parameter('token').value
         self.allowed_users = self.get_parameter('allowed_users').value
@@ -70,12 +72,18 @@ class TelegramBotNode(Node):
 
                 # Create Publisher
                 if topic not in self.pubs:
-                    if msg_type == 'Bool': cls = Bool
-                    elif msg_type == 'String': cls = String
-                    elif msg_type == 'Int32': cls = Int32
-                    elif msg_type == 'Float32': cls = Float32
-                    elif msg_type == 'Empty': cls = Empty
-                    else: continue
+                    if msg_type == 'Bool':
+                        cls = Bool
+                    elif msg_type == 'String':
+                        cls = String
+                    elif msg_type == 'Int32':
+                        cls = Int32
+                    elif msg_type == 'Float32':
+                        cls = Float32
+                    elif msg_type == 'Empty':
+                        cls = Empty
+                    else:
+                        continue
                     self.pubs[topic] = self.create_publisher(cls, topic, 10)
 
                 self.action_map[trigger] = {
@@ -117,7 +125,8 @@ class TelegramBotNode(Node):
         return True
 
     async def cmd_start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not await self.check_auth(update): return
+        if not await self.check_auth(update):
+            return
 
         # Build Keyboard
         # menu_layout param comes as list of strings? ROS params are tricky with nested lists.
@@ -137,7 +146,8 @@ class TelegramBotNode(Node):
         await update.message.reply_text("🤖 Bot Active. Control Panel:", reply_markup=reply_markup)
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        if not await self.check_auth(update): return
+        if not await self.check_auth(update):
+            return
 
         text = update.message.text
         
@@ -228,7 +238,6 @@ class TelegramBotNode(Node):
         # But we don't have easy access to the loop from here thread-safely without nest_asyncio or similar.
         # Simplest way: use `asyncio.run_coroutine_threadsafe`.
         if hasattr(self, 'bot_app') and self.allowed_users:
-            loop = self.bot_app.updater.bot._request.loop if hasattr(self.bot_app, 'updater') else None
             # Actually, just get the loop from the thread?
             # Or iterate users and send.
             pass

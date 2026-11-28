@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-import time
-from apds9960.const import *
+from apds9960.const import APDS9960_DIR_UP, APDS9960_DIR_DOWN, APDS9960_DIR_LEFT, APDS9960_DIR_RIGHT, APDS9960_DIR_NEAR, APDS9960_DIR_FAR
 from apds9960 import APDS9960
 import smbus2
 import rclpy

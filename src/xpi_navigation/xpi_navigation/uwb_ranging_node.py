@@ -4,6 +4,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 import json
 import random # For fallback simulator
+import numpy as np
 
 class UWBRangingNode(Node):
     def __init__(self):

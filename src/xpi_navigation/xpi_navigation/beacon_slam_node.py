@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 import numpy as np
 from scipy.optimize import minimize
-from geometry_msgs.msg import PoseWithCovarianceStamped, Point
+from geometry_msgs.msg import PoseWithCovarianceStamped
 from std_msgs.msg import String # For simplified map output in v1
 import json
 

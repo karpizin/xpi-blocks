@@ -35,7 +35,8 @@ class SW6106Node(Node):
         return self.bus.read_word_data(self.address, reg)
 
     def timer_callback(self):
-        if not self.bus: return
+        if not self.bus:
+            return
 
         try:
             # Register 0x08: Battery capacity percentage

@@ -2,9 +2,9 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 import serial
-import struct
 import time
-import os
+import math
+from xpi_commons.hardware import hardware_unavailable
 
 class SbusReceiverNode(Node):
     """
@@ -42,8 +42,9 @@ class SbusReceiverNode(Node):
                 )
                 self.get_logger().info(f'SBUS: Opened UART port {self.uart_port} at {self.baud_rate} baud.')
             except serial.SerialException as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'SBUS serial port', e)
                 self.get_logger().error(f'SBUS: Failed to open serial port {self.uart_port}: {e}')
-                self.mock_mode = True # Fallback to mock if real port fails
 
         if self.mock_mode:
             self.get_logger().warn('SBUS: Running in MOCK mode. No real SBUS data will be read.')
@@ -69,6 +70,8 @@ class SbusReceiverNode(Node):
             self.publish_mock_data()
             return
         
+        if self.ser and not self.ser.is_open:
+            self._try_reopen()
         if self.ser and self.ser.is_open:
             try:
                 # Read all available bytes
@@ -108,9 +111,21 @@ class SbusReceiverNode(Node):
                                 pass # No start byte found, will reset next time
                                 
             except serial.SerialException as e:
-                self.get_logger().error(f'SBUS: Serial read error: {e}')
+                # Never switch to simulated sticks at runtime: stop publishing (motor
+                # watchdogs then stop the robot) and try to reopen the port.
+                self.get_logger().error(f'SBUS: Serial read error: {e}. No SBUS data is published until the port is back.')
                 self.ser.close()
-                self.mock_mode = True # Fallback to mock
+
+    def _try_reopen(self):
+        now = time.monotonic()
+        if now - getattr(self, '_last_reopen', 0.0) < 1.0:
+            return
+        self._last_reopen = now
+        try:
+            self.ser.open()
+            self.get_logger().info(f'SBUS: Reopened UART port {self.uart_port}.')
+        except serial.SerialException:
+            pass
 
     def process_sbus_frame(self, frame):
         # SBUS data is 22 bytes after start byte, 16 channels, 11 bits each

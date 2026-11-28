@@ -34,14 +34,18 @@ This is the **recommended** way to run XPI-Blocks on your Raspberry Pi. Using Do
 
 ## 📦 Pulling Directly from GHCR
 
-You can pull the pre-built and pre-compiled image directly:
+You can pull the pre-built and pre-compiled image directly. Use a released version
+(`0.2.0`, or `0.2` for the latest 0.2.x); `latest` follows `main` and changes without notice:
 ```bash
-docker pull ghcr.io/karpizin/xpi-blocks:latest
+docker pull ghcr.io/karpizin/xpi-blocks:0.2.0
 ```
+Releases are listed on the [releases page](https://github.com/karpizin/xpi-blocks/releases);
+each `vX.Y.Z` tag publishes the image as `X.Y.Z` and `X.Y`.
 
 ### Run a specific launch file without entering the shell:
 ```bash
-docker run -it --privileged --network host -v /dev:/dev ghcr.io/karpizin/xpi-blocks:latest ros2 launch xpi_sensors audio_level.launch.py
+docker run -it --network host --device /dev/i2c-1 --device /dev/gpiomem \
+    ghcr.io/karpizin/xpi-blocks:0.2.0 ros2 launch xpi_sensors bme280.launch.py
 ```
 
 ---
@@ -57,10 +61,44 @@ docker build -t xpi-blocks-local .
 
 ## 🔧 Hardware Access Notes
 
-To ensure the Docker container can talk to your hardware, we use several critical flags:
-*   `--privileged`: Gives the container access to GPIO, I2C, and SPI.
-*   `-v /dev:/dev`: Mounts the host devices into the container.
-*   `--network host`: Allows ROS2 nodes to communicate with other nodes on your Pi and with external tools like `rqt` or `rviz` on your laptop.
+The container gets **only the devices it needs** (`devices:` in `docker-compose.yml`, `--device`
+with `docker run`), not `--privileged` and the whole `/dev`: a privileged container is root on the
+host, and the robot's control nodes listen on the network. Uncomment the devices your blocks use:
+
+| Device | Used by |
+|---|---|
+| `/dev/i2c-1` | I2C sensors (BME280, MPU6050, AHT20, ...), PCA9685, SSD1306, I2C mux |
+| `/dev/gpiomem` | GPIO through gpiozero: motor drivers, relays, buttons, PIR, sonar |
+| `/dev/spidev0.0` | SPI: MAX7219 LED matrix, PMW3901, W25Qxx, LoRa |
+| `/dev/ttyAMA0`, `/dev/ttyUSB0`, `/dev/ttyACM0` | UART: SBUS/CRSF, TF LiDARs, PMS5003, HC-12, Meshtastic, GPS |
+| `/dev/snd` | audio blocks |
+| `/dev/video0` | cameras |
+| `/dev/mem` + `cap_add: [SYS_RAWIO]` | WS2812 (rpi_ws281x); gives full access to host memory, enable only if needed |
+
+Docker refuses to start the container if a listed device does not exist on the host: enable the
+interface (`sudo raspi-config` → Interface Options) or comment the line out. The PPM receiver talks
+to the `pigpiod` daemon on the host over the network and needs no device.
+
+`--network host` lets the nodes talk to other ROS 2 processes on the Pi.
+
+## 🔒 ROS 2 on the network
+The image sets **`ROS_LOCALHOST_ONLY=1`**: topics are visible only on the robot itself. ROS 2
+(DDS) has no authentication, so with the default off any device on the same network could
+publish to the motor, relay and LLM-agent topics (`ros2 topic pub` is enough), bypassing the
+web joystick's token and the BLE pairing.
+
+To use `rviz`/`rqt` from a laptop, open it explicitly and only on a trusted network:
+```bash
+docker run ... -e ROS_LOCALHOST_ONLY=0 -e ROS_DOMAIN_ID=42 ...   # or in docker-compose.yml
+```
+A non-default `ROS_DOMAIN_ID` keeps other ROS 2 systems apart, but it is not security. For a
+robot on a shared network, use SROS2 (encrypted, with per-topic permissions).
+
+## ⚠️ Missing hardware
+A hardware node started without its device **stops with an error** (for example
+`Cannot open /dev/i2c-1: ... or start the node with mock_hardware:=true`). It does not switch to
+simulated data on its own. If you see this inside the container, the device is probably missing
+from `devices:`. For a test run without hardware, pass `mock_hardware:=true` explicitly.
 
 ## ✅ Verification
 Inside the container, run this to see if the hardware is accessible:

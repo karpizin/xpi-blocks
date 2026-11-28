@@ -2,9 +2,8 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import ColorRGBA, Int32MultiArray
 from gpiozero import DigitalOutputDevice, DigitalInputDevice, Device
-from gpiozero.pins.mock import MockFactory
+from gpiozero.pins.mock import MockFactory, MockPWMPin
 import time
-import threading
 
 class TCS3200Node(Node):
     """
@@ -39,7 +38,7 @@ class TCS3200Node(Node):
         mock_mode = self.get_parameter('mock_hardware').value
 
         if mock_mode:
-            Device.pin_factory = MockFactory()
+            Device.pin_factory = MockFactory(pin_class=MockPWMPin)
             self.get_logger().warn('TCS3200: Running in MOCK mode.')
 
         # GPIO Setup

@@ -19,6 +19,20 @@ class OPT3001Node(Node):
         self.poll_rate = self.get_parameter('poll_rate').value
         self.frame_id = self.get_parameter('frame_id').value
 
+        # Constants (must exist before configure_sensor() runs below)
+        self.REG_RESULT = 0x00
+        self.REG_CONFIG = 0x01
+        
+        # Configuration: 
+        # Range Number (15:12) = 1100 (Auto-scale)
+        # Convertion Time (11) = 0 (100ms) or 1 (800ms) - let's stick to default 800ms for stability?
+        # Mode of Conversion (10:9) = 11 (Continuous conversions)
+        # Latch (4) = 1
+        # Default config often used: 0xCC10 (Auto-range, 800ms conversion, Continuous)
+        # Or 0xC410 (Auto-range, 100ms conversion, Continuous) if we want faster updates.
+        # Let's use 0xCC10 (800ms integration) for better low-light performance by default.
+        self.CONFIG_VALUE = 0xCC10 
+
         # I2C Setup
         try:
             self.bus = get_smbus(self.i2c_bus_id)
@@ -34,20 +48,6 @@ class OPT3001Node(Node):
 
         # Timer
         self.timer = self.create_timer(1.0 / self.poll_rate, self.read_sensor)
-
-        # Constants
-        self.REG_RESULT = 0x00
-        self.REG_CONFIG = 0x01
-        
-        # Configuration: 
-        # Range Number (15:12) = 1100 (Auto-scale)
-        # Convertion Time (11) = 0 (100ms) or 1 (800ms) - let's stick to default 800ms for stability?
-        # Mode of Conversion (10:9) = 11 (Continuous conversions)
-        # Latch (4) = 1
-        # Default config often used: 0xCC10 (Auto-range, 800ms conversion, Continuous)
-        # Or 0xC410 (Auto-range, 100ms conversion, Continuous) if we want faster updates.
-        # Let's use 0xCC10 (800ms integration) for better low-light performance by default.
-        self.CONFIG_VALUE = 0xCC10 
 
     def configure_sensor(self):
         # Write configuration to register 0x01

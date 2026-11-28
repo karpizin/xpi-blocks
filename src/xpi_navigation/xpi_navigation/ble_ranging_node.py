@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
 import json
-import math
 from bleak import BleakScanner
 import rclpy
 from rclpy.node import Node

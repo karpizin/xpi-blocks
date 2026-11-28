@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import time
 import board
-import busio
 from adafruit_as7341 import AS7341
 
 import rclpy
