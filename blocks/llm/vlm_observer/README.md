@@ -47,7 +47,7 @@ ros2 topic echo /vlm/detected_objects
 | `image_topic` | `/camera/image_raw` | The ROS topic to listen to. |
 | `analysis_interval` | `30.0` | How often (seconds) to send an image to the AI. |
 | `provider` | `gemini` | `gemini`, `openrouter`, or `ollama`. |
-| `model` | `gemini-1.5-flash` | Specific model name (e.g., `gpt-4o`). |
+| `model` | `gemini-3.6-flash` | Specific model name (e.g., `gpt-4o`). |
 | `prompt` | *Generic description* | The question you want the AI to answer about the image. |
 
 ## ⚠️ Considerations

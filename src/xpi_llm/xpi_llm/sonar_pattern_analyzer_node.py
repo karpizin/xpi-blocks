@@ -18,7 +18,7 @@ class SonarPatternAnalyzerNode(Node):
         # 1. Declare Parameters
         self.declare_parameter('llm_client_type', 'gemini') # openrouter, gemini, ollama
         self.declare_parameter('llm_api_key', '')
-        self.declare_parameter('llm_model', 'gemini-pro')
+        self.declare_parameter('llm_model', 'gemini-3.6-flash')
         self.declare_parameter('ollama_host', 'http://localhost:11434')
         self.declare_parameter('history_size', 30) # More data for pattern detection
         self.declare_parameter('analysis_interval_sec', 10.0) # How often to analyze
@@ -55,7 +55,7 @@ class SonarPatternAnalyzerNode(Node):
             self.llm_client = None
         except ImportError as e:
             self.get_logger().error(f'Missing LLM library: {e}. ')
-            self.get_logger().error('Please install it (e.g., pip install google-generativeai or openai).')
+            self.get_logger().error('Please install it (e.g., pip install google-genai).')
             self.llm_client = None
 
         self.sonar_history = []

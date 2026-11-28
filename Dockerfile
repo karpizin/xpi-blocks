@@ -21,15 +21,16 @@ RUN apt-get update && apt-get install -y \
 # Install LLM and project dependencies via pip
 COPY requirements.txt .
 # setuptools<80: colcon-core (ROS 2 Humble) requires it; a newer one is a broken dependency.
-# Known, checked conflict: mediapipe declares protobuf<5, while meshtastic and the Google
-# client libraries need protobuf 5. mp.solutions.hands (gesture_control) runs fine with
-# protobuf 5; forcing protobuf<5 would make pip downgrade meshtastic to 2.3 and mediapipe
-# to 0.10.9, so the conflict is accepted. Recheck it when changing any of these packages.
+# Known, checked conflict: mediapipe declares protobuf<5, while meshtastic needs protobuf 5.
+# mp.solutions.hands (gesture_control) runs fine with protobuf 5; forcing protobuf<5 would
+# make pip downgrade meshtastic to 2.3 and mediapipe to 0.10.9, so the conflict is accepted.
+# Recheck it when changing any of these packages.
+# google-genai is the Gemini SDK (google-generativeai is deprecated).
 RUN pip3 install --no-cache-dir --upgrade pip wheel "setuptools<80" && \
     pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir \
     openai \
-    google-generativeai
+    google-genai
 
 # Setup workspace
 WORKDIR /xpi_ws

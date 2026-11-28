@@ -36,7 +36,7 @@ Choose your desired LLM client:
 *   **Using Gemini (cloud):**
     ```bash
     export GEMINI_API_KEY="YOUR_GEMINI_API_KEY" # Make sure this is set!
-    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=gemini llm_model:=gemini-pro
+    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=gemini llm_model:=gemini-3.6-flash
     ```
 *   **Using OpenRouter (cloud, with e.g. Mistral 7B):**
     ```bash
@@ -59,7 +59,7 @@ Choose your desired LLM client:
 ### Parameters
 *   `llm_client_type` (string, default: `gemini`): Which LLM backend to use (`openrouter`, `gemini`, `ollama`).
 *   `llm_api_key` (string, default: `''`): API key for cloud LLMs.
-*   `llm_model` (string, default: `gemini-pro`): Specific model name.
+*   `llm_model` (string, default: `gemini-3.6-flash`): Specific model name.
 *   `ollama_host` (string, default: `http://localhost:11434`): URL of your local Ollama server.
 *   `history_size` (int, default: `30`): Number of past sonar readings to send to the LLM for analysis (more for patterns).
 *   `analysis_interval_sec` (float, default: `10.0`): How often the LLM is prompted for analysis.
