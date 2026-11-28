@@ -3,6 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import ColorRGBA, String, Float32
 from rcl_interfaces.msg import ParameterDescriptor  # not exported by rclpy.parameter
 from xpi_actuators.lib.led_effects import LedEffects
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     from rpi_ws281x import PixelStrip, Color
@@ -84,8 +85,9 @@ class WS2812DriverNode(Node):
                 self.strip.begin()
                 self.get_logger().info(f'WS2812: Initialized {self.led_count} LEDs on GPIO {self.led_pin}.')
             except Exception as e:
-                self.get_logger().error(f'WS2812 Init Failed: {e}. Falling back to mock.')
-                self.mock_mode = True
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'WS2812 LED strip', e)
+                self.get_logger().error(f'WS2812 Init Failed: {e}.')
         
         if self.mock_mode:
             self.get_logger().warn('WS2812: Running in MOCK mode.')

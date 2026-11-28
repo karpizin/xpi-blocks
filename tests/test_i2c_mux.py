@@ -1,4 +1,5 @@
 """TCA9548A mux: channel selection over the ~/cmd topic, state on ~/current_channel."""
+import pytest
 from std_msgs.msg import Int32
 from xpi_commons.i2c_helper import MockSMBus
 
@@ -37,12 +38,18 @@ def test_writes_control_byte_on_hardware(ros, monkeypatch):
     assert writes == [(0x70, 0b100), (0x70, 0b100000), (0x70, 0x00)]   # default 2, then 5, off on exit
 
 
-def test_destroy_without_bus_does_not_crash(ros, monkeypatch):
+def test_unavailable_bus_fails_instead_of_mocking(ros, monkeypatch):
     import xpi_commons.i2c_mux_node as mux
+    from xpi_commons.hardware import HardwareUnavailableError
 
     def broken(bus_id, mock=False):
         raise OSError('no /dev/i2c-1')
     monkeypatch.setattr(mux, 'get_smbus', broken)
-    node, state, cmd = _make(ros, mock_hardware=False)
+    with pytest.raises(HardwareUnavailableError, match='mock_hardware:=true'):
+        _make(ros, mock_hardware=False)
+
+
+def test_destroy_without_bus_does_not_crash(ros):
+    node, state, cmd = _make(ros, mock_hardware=True)
+    node.bus = None
     node.destroy_node()
-    assert state.messages[-1].data == -1

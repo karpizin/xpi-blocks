@@ -6,6 +6,7 @@ from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 
 from xpi_actuators.motor_safety import DEFAULT_CMD_TIMEOUT_S, CommandWatchdog, sanitize_speed
+from xpi_commons.hardware import hardware_unavailable
 
 class TB6612DriverNode(Node):
     """
@@ -61,8 +62,9 @@ class TB6612DriverNode(Node):
             self.motor_b_in2 = DigitalOutputDevice(mb_in2_pin, initial_value=False)
             self.get_logger().info(f'TB6612: Motor B initialized (PWM:{mb_pwm_pin}, IN1:{mb_in1_pin}, IN2:{mb_in2_pin})')
         except Exception as e:
+            if not self.mock_mode:
+                hardware_unavailable(self, 'TB6612 motor GPIO', e)
             self.get_logger().error(f'TB6612: Failed to initialize GPIO for motors: {e}')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
             # Create dummy devices for mock mode if not already done
             self.motor_a_pwm = MockOutputDevice()
             self.motor_a_in1 = MockOutputDevice()

@@ -6,6 +6,7 @@ from gpiozero import Button, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class AnemometerNode(Node):
     """
@@ -41,6 +42,8 @@ class AnemometerNode(Node):
             self.button.when_pressed = self._pulse_callback
             self.get_logger().info(f'Anemometer initialized on GPIO{pin_num}')
         except Exception as e:
+            if not mock_mode:
+                hardware_unavailable(self, f'Anemometer on GPIO{pin_num}', e)
             self.get_logger().error(f'Failed to init GPIO{pin_num}: {e}')
             self.button = None
 

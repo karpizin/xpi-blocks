@@ -7,6 +7,7 @@ from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
 import threading
+from xpi_commons.hardware import hardware_unavailable
 
 class A4988DriverNode(Node):
     """
@@ -73,8 +74,9 @@ class A4988DriverNode(Node):
 
             self.disable_motor() # Ensure motor is off initially if enable pin is used
         except Exception as e:
-            self.get_logger().error(f'A4988: Failed to initialize GPIO: {e}. Falling back to mock.')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
+            if not self.mock_mode:
+                hardware_unavailable(self, 'A4988 stepper GPIO', e)
+            self.get_logger().error(f'A4988: Failed to initialize GPIO: {e}.')
             self.step_device = MockDigitalOutputDevice(self.step_pin)
             self.dir_device = MockDigitalOutputDevice(self.dir_pin)
             if self.enable_pin is not None:

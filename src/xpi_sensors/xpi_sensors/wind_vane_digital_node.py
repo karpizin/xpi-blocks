@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32, String
 from xpi_commons.i2c_helper import get_smbus
+from xpi_commons.hardware import hardware_unavailable
 import time
 
 class WindVaneDigitalNode(Node):
@@ -38,17 +39,15 @@ class WindVaneDigitalNode(Node):
 
         # Init I2C
         self.bus = get_smbus(bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
 
         try:
             self.check_status()
             self.get_logger().info(f"AS5600 Digital Wind Vane initialized on bus {bus_id}")
         except Exception as e:
-            self.get_logger().error(f"Failed to communicate with AS5600: {e}")
             if not mock_mode:
-                self.get_logger().warn("Falling back to MOCK mode.")
-                self.bus = get_smbus(bus_id, mock=True)
+                hardware_unavailable(self, f'AS5600 on I2C bus {bus_id}', e)
+            self.get_logger().error(f"Failed to communicate with AS5600: {e}")
 
         # Publishers
         self.dir_pub = self.create_publisher(Float32, '~/direction', 10)

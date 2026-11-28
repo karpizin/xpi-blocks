@@ -9,6 +9,7 @@ import time
 import threading
 
 from xpi_actuators.motor_safety import DEFAULT_CMD_TIMEOUT_S, CommandWatchdog, sanitize_speed
+from xpi_commons.hardware import hardware_unavailable
 
 class L298DriverNode(Node):
     """
@@ -117,8 +118,9 @@ class L298DriverNode(Node):
                 self.stepper_enable_device.on() # Enable the driver
             self.get_logger().info(f'L298 Stepper: Initialized on GPIOs {self.stepper_in_pins}.')
         except Exception as e:
-            self.get_logger().error(f'L298 Stepper: Failed to initialize GPIO: {e}. Falling back to mock.')
-            self.mock_mode = True
+            if not self.mock_mode:
+                hardware_unavailable(self, 'L298 GPIO', e)
+            self.get_logger().error(f'L298 Stepper: Failed to initialize GPIO: {e}.')
             for pin in self.stepper_in_pins:
                 self.pins.append(MockDigitalOutputDevice(pin))
             if self.stepper_enable_pin is not None:
@@ -163,8 +165,9 @@ class L298DriverNode(Node):
 
             self.get_logger().info('L298 DC Dual: Initialized.')
         except Exception as e:
-            self.get_logger().error(f'L298 DC Dual: Failed to initialize GPIO: {e}. Falling back to mock.')
-            self.mock_mode = True
+            if not self.mock_mode:
+                hardware_unavailable(self, 'L298 GPIO', e)
+            self.get_logger().error(f'L298 DC Dual: Failed to initialize GPIO: {e}.')
             self.motor_a_in1 = MockDigitalOutputDevice(self.motor_a_in1_pin)
             self.motor_a_in2 = MockDigitalOutputDevice(self.motor_a_in2_pin)
             self.motor_a_pwm = MockPWMOutputDevice(self.motor_a_pwm_pin) if self.motor_a_pwm_pin else None

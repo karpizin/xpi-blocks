@@ -21,6 +21,8 @@ pip install -r tests/requirements.txt
 python -m pytest tests/ projects/hexapod_master/test -rs
 ```
 See [tests/README.md](../tests/README.md) for what the ROS stub checks.
+`tests/test_no_silent_mock.py` also starts every hardware node with `mock_hardware:=false` and no
+hardware, and fails if a node switches to mock mode on its own or publishes anything.
 
 ### Via colcon (Recommended)
 This command builds packages and runs all tests in the workspace:

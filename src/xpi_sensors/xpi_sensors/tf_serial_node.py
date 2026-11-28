@@ -3,6 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import Int32, Float32
 import serial
+from xpi_commons.hardware import hardware_unavailable
 
 class TFSerialNode(Node):
     """
@@ -45,8 +46,9 @@ class TFSerialNode(Node):
                 self.ser = serial.Serial(port, baud, timeout=0.1)
                 self.get_logger().info(f'TF LiDAR ({self.model}) initialized on {port}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'TF LiDAR serial port', e)
                 self.get_logger().error(f'Failed to open serial port {port}: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.range_pub = self.create_publisher(Range, '~/range', 10)

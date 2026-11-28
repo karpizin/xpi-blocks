@@ -6,6 +6,7 @@ from gpiozero.pins.mock import MockFactory, MockPWMPin
 import math
 import os
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 
 class _SimulatedDistanceSensor:
@@ -72,6 +73,8 @@ class SonarNode(Node):
                 )
             self.get_logger().info(f'HC-SR04 initialized (Trig={trig}, Echo={echo})')
         except Exception as e:
+            if not mock_mode:
+                hardware_unavailable(self, 'HC-SR04 sonar GPIO', e)
             self.get_logger().error(f'Failed to init sensor: {e}')
             self.sensor = None
 

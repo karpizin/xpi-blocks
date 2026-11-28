@@ -5,6 +5,7 @@ from std_msgs.msg import Float32, Float32MultiArray
 import serial
 import struct
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class PMS5003Node(Node):
     """
@@ -47,8 +48,9 @@ class PMS5003Node(Node):
                 )
                 self.get_logger().info(f"Opened serial port {self.port_name} for PMS5003.")
             except serial.SerialException as e:
-                self.get_logger().error(f"Failed to open serial port {self.port_name}: {e}. Falling back to MOCK.")
-                self.mock_mode = True
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'PMS5003 serial port', e)
+                self.get_logger().error(f"Failed to open serial port {self.port_name}: {e}.")
         
         if self.mock_mode:
             self.get_logger().warn("Running PMS5003 in MOCK mode.")

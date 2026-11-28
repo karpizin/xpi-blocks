@@ -5,6 +5,7 @@ from gpiozero import InputDevice, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class GPIODigitalInputNode(Node):
     """
@@ -61,8 +62,9 @@ class GPIODigitalInputNode(Node):
                 self.multi_pin_publisher = self.create_publisher(Int8MultiArray, '~/all_pins_state', 10)
 
         except Exception as e:
+            if not self.mock_mode:
+                hardware_unavailable(self, 'GPIO digital inputs', e)
             self.get_logger().error(f'DigitalInput: Failed to initialize GPIO pins: {e}')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
             # Create dummy devices for mock mode if not already done
             for pin in self.pins:
                 self.input_devices[pin] = MockInputDevice(pin)

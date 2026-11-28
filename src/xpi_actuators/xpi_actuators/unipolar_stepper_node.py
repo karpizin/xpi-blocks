@@ -6,6 +6,7 @@ from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import time
 import threading
+from xpi_commons.hardware import hardware_unavailable
 
 class UnipolarStepperNode(Node):
     """
@@ -57,8 +58,9 @@ class UnipolarStepperNode(Node):
                 self.motor_pins.append(DigitalOutputDevice(pin, initial_value=False))
             self.get_logger().info(f'Stepper: Initialized ULN2003 on GPIOs {self.in_pins}.')
         except Exception as e:
-            self.get_logger().error(f'Stepper: Failed to initialize GPIO for ULN2003: {e}. Falling back to mock.')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
+            if not self.mock_mode:
+                hardware_unavailable(self, 'ULN2003 stepper GPIO', e)
+            self.get_logger().error(f'Stepper: Failed to initialize GPIO for ULN2003: {e}.')
             # Create dummy devices for mock mode if not already done
             for pin in self.in_pins:
                 self.motor_pins.append(MockDigitalOutputDevice(pin))

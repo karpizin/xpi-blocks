@@ -4,6 +4,7 @@ from rclpy.node import Node
 from std_msgs.msg import UInt8MultiArray
 import spidev
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 class W25QxxNode(Node):
     """
@@ -49,8 +50,9 @@ class W25QxxNode(Node):
                 self.get_logger().info(f"SPI initialized on bus {bus}, device {device}")
                 self.detect_chip()
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'W25Qxx SPI flash', e)
                 self.get_logger().error(f"Failed to open SPI: {e}")
-                self.mock_mode = True
         
         if self.mock_mode:
             self.get_logger().warn("Running in MOCK mode.")

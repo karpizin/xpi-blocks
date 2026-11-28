@@ -5,6 +5,7 @@ from geometry_msgs.msg import Vector3
 from std_msgs.msg import String
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
@@ -48,8 +49,9 @@ class BNO055Node(Node):
                 self.sensor = adafruit_bno055.BNO055_I2C(i2c)
                 self.get_logger().info('BNO055 initialized successfully.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'BNO055', e)
                 self.get_logger().error(f'Failed to initialize BNO055 hardware: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.imu_pub = self.create_publisher(Imu, '~/imu', 10)

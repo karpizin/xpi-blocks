@@ -8,6 +8,8 @@
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
+
+  <exec_depend>xpi_commons</exec_depend>
   <depend>std_msgs</depend>
   <exec_depend>python3-serial</exec_depend>
 

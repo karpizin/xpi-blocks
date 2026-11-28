@@ -5,14 +5,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: xpi_sim
-    privileged: true
+    # Simulation needs no hardware: run nodes with mock_hardware:=true.
     network_mode: host
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - /dev:/dev
+    # GPU acceleration for Gazebo/RViz (Intel/AMD), if the host has it:
+    # devices:
+    #   - /dev/dri
     stdin_open: true
     tty: true
     command: /bin/bash

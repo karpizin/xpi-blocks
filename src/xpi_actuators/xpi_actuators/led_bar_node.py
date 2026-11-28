@@ -5,6 +5,7 @@ from gpiozero import LEDBarGraph, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
 import logging
+from xpi_commons.hardware import hardware_unavailable
 
 class LEDBarNode(Node):
     """
@@ -42,8 +43,9 @@ class LEDBarNode(Node):
             )
             self.get_logger().info(f'LEDBar: Initialized with {len(self.pins)} LEDs on GPIOs {self.pins}.')
         except Exception as e:
-            self.get_logger().error(f'LEDBar: Failed to initialize LEDBarGraph: {e}. Falling back to mock.')
-            self.mock_mode = True # Fallback to mock if real GPIO fails
+            if not self.mock_mode:
+                hardware_unavailable(self, 'LED bar GPIO', e)
+            self.get_logger().error(f'LEDBar: Failed to initialize LEDBarGraph: {e}.')
             # Create a mock LEDBarGraph
             self.led_bar = MockLEDBarGraph(self.pins, active_high=not self.invert_logic, initial_value=self.initial_value / len(self.pins))
         

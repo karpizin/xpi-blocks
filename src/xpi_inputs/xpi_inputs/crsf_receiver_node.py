@@ -4,6 +4,7 @@ from sensor_msgs.msg import Joy
 import serial
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class CrsfReceiverNode(Node):
     """
@@ -39,8 +40,9 @@ class CrsfReceiverNode(Node):
                 )
                 self.get_logger().info(f'CRSF: Opened UART port {self.uart_port} at {self.baud_rate} baud.')
             except serial.SerialException as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'CRSF serial port', e)
                 self.get_logger().error(f'CRSF: Failed to open serial port {self.uart_port}: {e}')
-                self.mock_mode = True # Fallback to mock if real port fails
 
         if self.mock_mode:
             self.get_logger().warn('CRSF: Running in MOCK mode. No real CRSF data will be read.')
@@ -67,6 +69,8 @@ class CrsfReceiverNode(Node):
             self.publish_mock_data()
             return
         
+        if self.ser and not self.ser.is_open:
+            self._try_reopen()
         if self.ser and self.ser.is_open:
             try:
                 self.rx_buffer.extend(self.ser.read(self.ser.in_waiting))
@@ -113,10 +117,21 @@ class CrsfReceiverNode(Node):
                         # self.get_logger().debug(f"CRSF: Unhandled packet type 0x{packet_type:02X} with length {packet_len}")
                         
             except serial.SerialException as e:
-                self.get_logger().error(f'CRSF: Serial read error: {e}')
-                if self.ser and self.ser.is_open:
-                    self.ser.close()
-                self.mock_mode = True # Fallback to mock
+                # Never switch to simulated sticks at runtime: stop publishing (motor
+                # watchdogs then stop the robot) and try to reopen the port.
+                self.get_logger().error(f'CRSF: Serial read error: {e}. No CRSF data is published until the port is back.')
+                self.ser.close()
+
+    def _try_reopen(self):
+        now = time.monotonic()
+        if now - getattr(self, '_last_reopen', 0.0) < 1.0:
+            return
+        self._last_reopen = now
+        try:
+            self.ser.open()
+            self.get_logger().info(f'CRSF: Reopened UART port {self.uart_port}.')
+        except serial.SerialException:
+            pass
 
     def process_rc_channels_packet(self, payload):
         """

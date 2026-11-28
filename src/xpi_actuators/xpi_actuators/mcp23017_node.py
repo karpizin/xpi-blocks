@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int32, String
 import time
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
@@ -49,8 +50,9 @@ class MCP23017Node(Node):
                 
                 self.get_logger().info(f'MCP23017 initialized at 0x{addr:02X}')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'MCP23017', e)
                 self.get_logger().error(f'Failed to initialize MCP23017: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.input_pub = self.create_publisher(Int32, '~/inputs', 10)

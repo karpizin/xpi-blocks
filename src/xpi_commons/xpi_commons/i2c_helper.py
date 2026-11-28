@@ -1,6 +1,8 @@
 import os
 import logging
 
+from .hardware import HardwareUnavailableError, MOCK_HINT
+
 # Try to import smbus2, handle failure gracefully for non-Linux/dev environments
 try:
     from smbus2 import SMBus
@@ -71,23 +73,26 @@ def get_smbus(bus_id=1, mock=False):
     
     Args:
         bus_id (int): I2C bus number (usually 1 for RPi).
-        mock (bool): Force mock mode.
+        mock (bool): Use MockSMBus (also when XPI_MOCK_I2C=1).
     
     Returns:
         SMBus-like object with a boolean ``mock_mode`` attribute
         (True for MockSMBus, False for a real smbus2.SMBus).
+
+    Raises:
+        HardwareUnavailableError: the bus cannot be opened and mock was not requested.
     """
-    # Auto-detect mock requirement
-    force_mock = mock or os.environ.get('XPI_MOCK_I2C') == '1'
-    
-    if not force_mock and SMBus is not None:
-        try:
-            bus = SMBus(bus_id)
-            bus.mock_mode = False
-            return bus
-        except (FileNotFoundError, PermissionError) as e:
-            # Fallback if /dev/i2c-x doesn't exist (e.g. running on PC without mock flag)
-            logging.getLogger('xpi_commons').warning(f"Failed to open /dev/i2c-{bus_id}: {e}. Falling back to MOCK.")
-            return MockSMBus(bus_id)
-    
-    return MockSMBus(bus_id)
+    if mock or os.environ.get('XPI_MOCK_I2C') == '1':
+        return MockSMBus(bus_id)
+
+    # No silent fallback to MockSMBus: simulated readings look real and would be
+    # published as sensor data. Mock mode must be requested explicitly.
+    if SMBus is None:
+        raise HardwareUnavailableError(
+            f'Cannot open I2C bus {bus_id}: the smbus2 package is not installed. {MOCK_HINT}')
+    try:
+        bus = SMBus(bus_id)
+    except OSError as e:   # FileNotFoundError, PermissionError, ...
+        raise HardwareUnavailableError(f'Cannot open /dev/i2c-{bus_id}: {e}. {MOCK_HINT}') from e
+    bus.mock_mode = False
+    return bus

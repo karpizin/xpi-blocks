@@ -4,6 +4,7 @@ from sensor_msgs.msg import Temperature
 from xpi_commons.i2c_helper import get_smbus
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class LM75ANode(Node):
     """
@@ -36,17 +37,15 @@ class LM75ANode(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
         
         try:
             self.init_lm75a()
             self.get_logger().info(f'LM75A initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize LM75A: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'LM75A', e)
+            self.get_logger().error(f'Failed to initialize LM75A: {e}.')
 
         if mock_mode:
             self.get_logger().warn('LM75A: Running in MOCK mode. No real I2C data will be read.')

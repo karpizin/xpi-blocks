@@ -4,6 +4,7 @@ from sensor_msgs.msg import Temperature, RelativeHumidity, FluidPressure
 from xpi_commons.i2c_helper import get_smbus
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class BME280Node(Node):
     """
@@ -88,7 +89,6 @@ class BME280Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
         
         self.calibration_params = {}
@@ -98,10 +98,9 @@ class BME280Node(Node):
                 self.init_bme280()
             self.get_logger().info(f'BME280 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize BME280: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'BME280', e)
+            self.get_logger().error(f'Failed to initialize BME280: {e}.')
 
         if mock_mode:
             self.get_logger().warn('BME280: Running in MOCK mode. No real I2C data will be read.')
