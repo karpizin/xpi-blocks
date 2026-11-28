@@ -16,6 +16,11 @@ import pytest
 sys.path.insert(0, os.path.dirname(__file__))
 from test_node_smoke import ENTRY_POINTS, SRC, _describe, _is_bug, _run_main  # noqa: E402
 
+# Nodes whose hardware is optional: these parameters make them use it.
+EXTRA_PARAMS = {
+    'xpi_actuators.cmd_vel_mux_node': {'estop_gpio': 21},   # GPIO only for the stop button
+}
+
 SKIP = {}
 
 
@@ -72,7 +77,7 @@ def test_hardware_nodes_found():
 def test_no_simulated_data_without_mock_flag(ros, no_hardware, module_name):
     if module_name in SKIP:
         pytest.skip(SKIP[module_name])
-    ros.OVERRIDES.update({'mock_hardware': False})
+    ros.OVERRIDES.update({'mock_hardware': False, **EXTRA_PARAMS.get(module_name, {})})
     sys.modules.pop(module_name, None)
     try:
         module = importlib.import_module(module_name)

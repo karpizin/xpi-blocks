@@ -27,6 +27,8 @@ setup(
         'console_scripts': [
             'a4988_driver_node = xpi_actuators.a4988_driver_node:main',
             'buzzer_node = xpi_actuators.buzzer_node:main',
+            'cmd_vel_mux_node = xpi_actuators.cmd_vel_mux_node:main',
+            'diff_drive_node = xpi_actuators.diff_drive_node:main',
             'esc_driver = xpi_actuators.esc_driver_node:main',
             'esc_driver_node = xpi_actuators.esc_driver_node:main',
             'l298_driver_node = xpi_actuators.l298_driver_node:main',
