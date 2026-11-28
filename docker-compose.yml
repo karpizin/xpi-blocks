@@ -1,6 +1,8 @@
 services:
   xpi-blocks:
-    image: ghcr.io/karpizin/xpi-blocks:latest
+    # A released version, not :latest: an update is a deliberate change of this line.
+    # Versions: https://github.com/karpizin/xpi-blocks/releases
+    image: ghcr.io/karpizin/xpi-blocks:0.2.0
     container_name: xpi-blocks-container
     # Host networking: ROS 2 (DDS) discovery with nodes and tools (rviz, rqt) on the LAN.
     network_mode: host
@@ -23,6 +25,10 @@ services:
     #   cap_add: [SYS_RAWIO]
     environment:
       - ROS_DOMAIN_ID=0
+      # ROS 2 topics on this machine only. Any device on the LAN could otherwise drive the
+      # motors with `ros2 topic pub`: DDS has no authentication without SROS2. Set 0 only to
+      # run rviz/rqt from a laptop, on a trusted network (see docs/DEPLOYMENT_DOCKER.md).
+      - ROS_LOCALHOST_ONLY=1
     stdin_open: true
     tty: true
     restart: unless-stopped

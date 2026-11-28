@@ -6,7 +6,7 @@ package_name = 'xpi_actuators'
 
 setup(
     name=package_name,
-    version='0.1.0',
+    version='0.2.0',
     # find_packages: also install subpackages (xpi_actuators.lib, .lib.led_effects)
     packages=find_packages(exclude=['test', 'test.*']),
     data_files=[

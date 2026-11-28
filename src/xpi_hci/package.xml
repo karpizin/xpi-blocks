@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>xpi_hci</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>Human-Computer Interaction blocks for XPI</description>
   <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>Apache-2.0</license>

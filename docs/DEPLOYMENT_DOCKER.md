@@ -34,15 +34,18 @@ This is the **recommended** way to run XPI-Blocks on your Raspberry Pi. Using Do
 
 ## 📦 Pulling Directly from GHCR
 
-You can pull the pre-built and pre-compiled image directly:
+You can pull the pre-built and pre-compiled image directly. Use a released version
+(`0.2.0`, or `0.2` for the latest 0.2.x); `latest` follows `main` and changes without notice:
 ```bash
-docker pull ghcr.io/karpizin/xpi-blocks:latest
+docker pull ghcr.io/karpizin/xpi-blocks:0.2.0
 ```
+Releases are listed on the [releases page](https://github.com/karpizin/xpi-blocks/releases);
+each `vX.Y.Z` tag publishes the image as `X.Y.Z` and `X.Y`.
 
 ### Run a specific launch file without entering the shell:
 ```bash
 docker run -it --network host --device /dev/i2c-1 --device /dev/gpiomem \
-    ghcr.io/karpizin/xpi-blocks:latest ros2 launch xpi_sensors bme280.launch.py
+    ghcr.io/karpizin/xpi-blocks:0.2.0 ros2 launch xpi_sensors bme280.launch.py
 ```
 
 ---
@@ -76,8 +79,20 @@ Docker refuses to start the container if a listed device does not exist on the h
 interface (`sudo raspi-config` → Interface Options) or comment the line out. The PPM receiver talks
 to the `pigpiod` daemon on the host over the network and needs no device.
 
-`--network host` allows ROS2 nodes to communicate with other nodes on your Pi and with external
-tools like `rqt` or `rviz` on your laptop.
+`--network host` lets the nodes talk to other ROS 2 processes on the Pi.
+
+## 🔒 ROS 2 on the network
+The image sets **`ROS_LOCALHOST_ONLY=1`**: topics are visible only on the robot itself. ROS 2
+(DDS) has no authentication, so with the default off any device on the same network could
+publish to the motor, relay and LLM-agent topics (`ros2 topic pub` is enough), bypassing the
+web joystick's token and the BLE pairing.
+
+To use `rviz`/`rqt` from a laptop, open it explicitly and only on a trusted network:
+```bash
+docker run ... -e ROS_LOCALHOST_ONLY=0 -e ROS_DOMAIN_ID=42 ...   # or in docker-compose.yml
+```
+A non-default `ROS_DOMAIN_ID` keeps other ROS 2 systems apart, but it is not security. For a
+robot on a shared network, use SROS2 (encrypted, with per-topic permissions).
 
 ## ⚠️ Missing hardware
 A hardware node started without its device **stops with an error** (for example

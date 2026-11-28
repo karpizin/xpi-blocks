@@ -52,6 +52,11 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && rm -rf build install log 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /xpi_ws/install/setup.bash" >> ~/.bashrc
 
+# DDS discovery on this machine only: other hosts on the LAN cannot see or publish to the
+# robot's topics (motors, relays, the LLM agent's commands). ROS 2 has no authentication
+# without SROS2, so opening it to the network is an explicit choice: ROS_LOCALHOST_ONLY=0.
+ENV ROS_LOCALHOST_ONLY=1
+
 # Create a workspace entrypoint script
 RUN printf '#!/bin/bash\nset -e\nsource "/opt/ros/humble/setup.bash"\nsource "/xpi_ws/install/setup.bash"\nexec "$@"' > /entrypoint.sh && \
     chmod +x /entrypoint.sh
