@@ -4,8 +4,14 @@
   <name>xpi_projects</name>
   <version>0.2.0</version>
   <description>Integrated projects combining multiple XPI blocks</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>Apache-2.0</license>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>xpi_actuators</exec_depend>
+  <exec_depend>xpi_inputs</exec_depend>
+  <exec_depend>xpi_sensors</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

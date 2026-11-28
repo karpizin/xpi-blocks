@@ -3,7 +3,7 @@
   <name>xpi_navigation</name>
   <version>0.2.0</version>
   <description>Indoor navigation and SLAM blocks for XPI</description>
-  <maintainer email="user@example.com">XPI Maintainer</maintainer>
+  <maintainer email="viacheslav.karpizin@gmail.com">Viacheslav Karpizin</maintainer>
   <license>Apache-2.0</license>
 
   <exec_depend>rclpy</exec_depend>

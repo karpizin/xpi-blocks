@@ -75,10 +75,11 @@ class PCA9685Node(Node):
         # 4 registers per channel: ON_L, ON_H, OFF_L, OFF_H
         reg_base = self.LED0_ON_L + (4 * channel)
         try:
-            self.bus.write_byte_data(self.address, reg_base, on & 0xFF)
-            self.bus.write_byte_data(self.address, reg_base + 1, on >> 8)
-            self.bus.write_byte_data(self.address, reg_base + 2, off & 0xFF)
-            self.bus.write_byte_data(self.address, reg_base + 3, off >> 8)
+            # One transaction (MODE1 auto-increment is on): the output never sees a
+            # half-updated ON/OFF pair, which made servos twitch.
+            self.bus.write_i2c_block_data(
+                self.address, reg_base,
+                [on & 0xFF, (on >> 8) & 0x1F, off & 0xFF, (off >> 8) & 0x1F])
         except Exception as e:
             self.get_logger().error(f'I2C Error ch{channel}: {e}')
 
