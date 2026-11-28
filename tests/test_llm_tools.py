@@ -65,10 +65,11 @@ def test_as_float(value, expected):
 @pytest.fixture
 def tool_node(ros, monkeypatch):
     import xpi_llm.tool_calling_node as mod
+    import xpi_llm.llm_params as params_mod
 
     def make(*replies, **params):
         llm = FakeLLM(*replies)
-        monkeypatch.setattr(mod, 'llm_client_factory', lambda *a, **k: llm)
+        monkeypatch.setattr(params_mod, 'llm_client_factory', lambda *a, **k: llm)
         ros.OVERRIDES.update(params)
         node = mod.ToolCallingNode()
 
@@ -133,9 +134,10 @@ def test_text_reply_is_published(tool_node):
 
 def test_commands_run_one_at_a_time_in_order(tool_node, monkeypatch):
     import xpi_llm.tool_calling_node as mod
+    import xpi_llm.llm_params as params_mod
     llm = FakeLLM(call('set_relay_state', relay_id=1, state=True),
                   call('set_relay_state', relay_id=1, state=False), delay=0.02)
-    monkeypatch.setattr(mod, 'llm_client_factory', lambda *a, **k: llm)
+    monkeypatch.setattr(params_mod, 'llm_client_factory', lambda *a, **k: llm)
     node = mod.ToolCallingNode()
     active, peak = [0], [0]
     real = llm.generate
@@ -218,3 +220,37 @@ def test_agent_voltage_within_limit(agent):
 def test_agent_unknown_tool(agent):
     node, llm, say = agent(call('self_destruct'))
     assert 'Unknown tool' in say('x')
+
+
+# ---------------------------------------------------------------- choosing the LLM backend
+@pytest.mark.parametrize('params,expected', [
+    ({}, ('gemini', '', '', False)),
+    ({'llm_client_type': 'ollama', 'llm_model': 'gemma4:e4b', 'llm_think': 'off'},
+     ('ollama', 'gemma4:e4b', 'http://localhost:11434', False)),
+    ({'llm_client_type': 'ollama', 'ollama_host': 'http://pi5.local:11434', 'llm_think': 'auto'},
+     ('ollama', '', 'http://pi5.local:11434', None)),
+    ({'llm_client_type': 'llamacpp', 'llm_base_url': 'http://192.168.1.20:8080/v1'},
+     ('llamacpp', '', 'http://192.168.1.20:8080/v1', False)),
+    ({'llm_client_type': 'qwen', 'llm_model': 'qwen-plus', 'llm_think': 'on'}, ('qwen', 'qwen-plus', '', True)),
+])
+def test_tool_node_backend_parameters(ros, monkeypatch, params, expected):
+    import xpi_llm.llm_params as params_mod
+    import xpi_llm.tool_calling_node as mod
+    seen = []
+    monkeypatch.setattr(params_mod, 'llm_client_factory',
+                        lambda kind, api_key=None, model=None, host=None, think=None:
+                        seen.append((kind, model, host, think)) or FakeLLM())
+    ros.OVERRIDES.update(params)
+    mod.ToolCallingNode()
+    assert seen == [expected]
+
+
+def test_agent_backend_parameters(ros, monkeypatch):
+    import xpi_llm.mcp_agent_node as mod
+    seen = []
+    monkeypatch.setattr(mod, 'llm_client_factory',
+                        lambda kind, api_key=None, model=None, host=None, think=None:
+                        seen.append((kind, model, host, think)) or FakeLLM())
+    ros.OVERRIDES.update({'llm_client_type': 'ollama', 'llm_model': 'qwen3.5:9b', 'llm_think': 'off'})
+    mod.MCPAgentNode()
+    assert seen == [('ollama', 'qwen3.5:9b', '', False)]

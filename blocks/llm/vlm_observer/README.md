@@ -46,8 +46,10 @@ ros2 topic echo /vlm/detected_objects
 | :--- | :--- | :--- |
 | `image_topic` | `/camera/image_raw` | The ROS topic to listen to. |
 | `analysis_interval` | `30.0` | How often (seconds) to send an image to the AI. |
-| `provider` | `gemini` | `gemini`, `openrouter`, or `ollama`. |
-| `model` | `gemini-3.6-flash` | Specific model name (e.g., `gpt-4o`). |
+| `provider` | `gemini` | `gemini`, `ollama`, `llamacpp`, `openai`, `qwen`, `openrouter` ([docs/LOCAL_LLM.md](../../../docs/LOCAL_LLM.md)). |
+| `model` | `''` | Empty: the backend's default (`gemini-3.6-flash`, Ollama `qwen3.5:4b`). Vision models: Qwen 3.5, Gemma 4. |
+| `base_url` | `''` | Server URL for local/compatible backends; llama-server needs the model's `--mmproj`. |
+| `think` | `auto` | Ollama reasoning: `auto`, `on`, `off`. |
 | `prompt` | *Generic description* | The question you want the AI to answer about the image. |
 
 ## ⚠️ Considerations

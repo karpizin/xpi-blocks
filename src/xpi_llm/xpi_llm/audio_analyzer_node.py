@@ -5,7 +5,6 @@ from .llm_clients import llm_client_factory
 import sounddevice as sd
 import scipy.io.wavfile as wav
 import io
-import os
 import threading
 
 class AudioPatternAnalyzer(Node):
@@ -14,7 +13,9 @@ class AudioPatternAnalyzer(Node):
         
         # Parameters
         self.declare_parameter('llm_provider', 'gemini')
-        self.declare_parameter('llm_model', 'gemini-3.6-flash')
+        # Audio input: only the Gemini API takes WAV in this client (Gemini models; Gemma 4 E2B/E4B
+        # understand audio too but Ollama's API takes no audio).
+        self.declare_parameter('llm_model', '')   # '' = the client's default
         self.declare_parameter('api_key', '')
         self.declare_parameter('db_threshold', -30.0) 
         self.declare_parameter('record_duration', 4.0) # Increased for better context
@@ -23,15 +24,12 @@ class AudioPatternAnalyzer(Node):
 
         provider = self.get_parameter('llm_provider').value
         model = self.get_parameter('llm_model').value
-        api_key = self.get_parameter('api_key').value or os.environ.get('GEMINI_API_KEY') or os.environ.get('OPENROUTER_API_KEY')
+        api_key = self.get_parameter('api_key').value   # '' = the provider's environment variable
         
         self.threshold = self.get_parameter('db_threshold').value
         self.record_duration = self.get_parameter('record_duration').value
         self.cooldown = self.get_parameter('cooldown').value
         self.fs = self.get_parameter('sample_rate').value
-
-        if not api_key:
-            self.get_logger().error("API Key not found. Analysis will fail.")
 
         # LLM Client
         self.llm = llm_client_factory(provider, api_key=api_key, model=model)
@@ -47,7 +45,7 @@ class AudioPatternAnalyzer(Node):
         # Subscriber to real-time dB level
         self.db_sub = self.create_subscription(Float32, 'audio_level/db', self.db_callback, 10)
 
-        self.get_logger().info(f"Audio Pattern Analyzer initialized using {provider}:{model}")
+        self.get_logger().info(f"Audio Pattern Analyzer initialized using {provider}:{self.llm.get_model_name()}")
 
     def db_callback(self, msg):
         """Triggers recording if threshold is exceeded and cooldown passed."""

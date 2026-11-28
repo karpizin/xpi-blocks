@@ -2,10 +2,10 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Bool, Float32MultiArray
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-from xpi_llm.llm_clients import DEFAULT_GEMINI_MODEL, llm_client_factory, LLMClient
+from xpi_llm.llm_clients import LLMClient
+from xpi_llm.llm_params import declare_llm_parameters, llm_client_from_parameters
 from xpi_llm.command_queue import CommandQueue
 from xpi_llm.tool_args import as_bool, as_float, as_int, relay_topic
-import os
 
 class ToolCallingNode(Node):
     """
@@ -17,10 +17,10 @@ class ToolCallingNode(Node):
         super().__init__('llm_tool_calling_node')
 
         # 1. Declare Parameters
-        self.declare_parameter('llm_client_type', 'gemini') # openrouter, gemini, ollama
-        self.declare_parameter('llm_api_key', '')
-        self.declare_parameter('llm_model', DEFAULT_GEMINI_MODEL)  # '' = the client's default
-        self.declare_parameter('ollama_host', 'http://localhost:11434')
+        # llm_client_type, llm_model, llm_api_key, llm_base_url, ollama_host, llm_think.
+        # Reasoning off by default: commands for hardware should be answered quickly, and a
+        # small local model can otherwise spend the whole llm_max_tokens thinking.
+        declare_llm_parameters(self, llm_think='off')
         self.declare_parameter('llm_temperature', 0.1) # Keep low for reliable tool calls
         self.declare_parameter('llm_max_tokens', 200)
         self.declare_parameter('command_topic', '~/command')
@@ -30,12 +30,6 @@ class ToolCallingNode(Node):
         self.declare_parameter('pwm_topic', '/pwm_driver/cmd')
         
         # 2. Read Parameters
-        self.llm_client_type = self.get_parameter('llm_client_type').value
-        self.llm_api_key = (self.get_parameter('llm_api_key').value
-                            or os.environ.get('GEMINI_API_KEY' if self.llm_client_type == 'gemini'
-                                              else 'OPENROUTER_API_KEY', ''))
-        self.llm_model = self.get_parameter('llm_model').value
-        self.ollama_host = self.get_parameter('ollama_host').value
         self.llm_temperature = self.get_parameter('llm_temperature').value
         self.llm_max_tokens = self.get_parameter('llm_max_tokens').value
         self.command_topic = self.get_parameter('command_topic').value
@@ -44,14 +38,7 @@ class ToolCallingNode(Node):
         # 3. Initialize LLM Client
         self.llm_client: LLMClient = None
         try:
-            if self.llm_client_type == 'ollama':
-                self.llm_client = llm_client_factory(
-                    self.llm_client_type, host=self.ollama_host, model=self.llm_model
-                )
-            else:
-                self.llm_client = llm_client_factory(
-                    self.llm_client_type, api_key=self.llm_api_key, model=self.llm_model
-                )
+            self.llm_client = llm_client_from_parameters(self)
             self.get_logger().info(f'LLM Client initialized: {self.llm_client.get_model_name()}')
         except ValueError as e:
             self.get_logger().error(f'Failed to initialize LLM client: {e}. '
