@@ -25,7 +25,7 @@ Choose your desired LLM client (parameters similar to `sonar_trend_analyzer`):
 *   **Using Gemini:**
     ```bash
     export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
-    ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=gemini llm_model:=gemini-pro
+    ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=gemini llm_model:=gemini-3.6-flash
     ```
 *   **Using Ollama:**
     ```bash
@@ -47,23 +47,38 @@ The LLM is aware of the following functions it can call:
     *   **Arguments:**
         *   `relay_id`: The ID of the relay to control (0-15).
         *   `state`: `true` for ON, `false` for OFF.
-    *   *Note:* The `relay_id` corresponds to a dynamically remapped topic, e.g., `relay_node_0/cmd`. If you launch a relay node without `name` remapping, it will use `/relay_node/cmd` (which corresponds to `relay_id=0` in this tool).
+    *   *Note:* relay `0` is `/relay_node/cmd` (a `relay_node` started with `ros2 run`); relay `N` is
+        `/relay_node_N/cmd`, so start more relays with `--ros-args -r __node:=relay_node_N`.
 
 2.  **`set_pwm_channel(channel_id: int, duty_cycle: float)`**
     *   **Description:** Sets the PWM duty cycle for a specific channel on the PCA9685 driver.
     *   **Arguments:**
         *   `channel_id`: The channel ID on the PCA9685 (0-15).
         *   `duty_cycle`: Normalized PWM duty cycle from `0.0` (off) to `1.0` (full on). For servos, typical values are `0.05` to `0.10`.
+    *   Only that channel changes: the other channels are sent as `NaN` ("leave unchanged" for
+        `pca9685_node`), so servos and LEDs on other channels keep their position.
+
+### Argument validation
+Tool calls are checked in code, not trusted: `relay_id`/`channel_id` must be whole numbers 0-15
+(`5`, `5.0` from Gemini and `"5"` from Ollama are accepted, `5.5` is not), `state` must be a
+boolean (`"true"`/`"false"` accepted), `duty_cycle` a finite number 0.0-1.0. A call that fails
+validation does nothing and the reason is published on `~/response`.
+
+Commands are handled one at a time, in the order they arrive (at most 4 waiting; more are
+refused with a "Busy" response).
 
 ### Parameters
 *   `llm_client_type` (string, default: `gemini`): Which LLM backend (`openrouter`, `gemini`, `ollama`).
-*   `llm_api_key` (string, default: `''`): API key for cloud LLMs.
-*   `llm_model` (string, default: `gemini-pro`): Specific model name.
+*   `llm_api_key` (string, default: `''`): API key for cloud LLMs. Empty: `GEMINI_API_KEY` or
+    `OPENROUTER_API_KEY` from the environment (preferred: a parameter is visible in `ros2 param get`).
+*   `llm_model` (string, default: `gemini-3.6-flash`): Specific model name.
 *   `ollama_host` (string, default: `http://localhost:11434`): URL of your local Ollama server.
 *   `llm_temperature` (float, default: `0.1`): Lower for more reliable tool calls.
 *   `llm_max_tokens` (int, default: `200`): Maximum length of LLM's response.
 *   `command_topic` (string, default: `~/command`): ROS2 topic to send text commands.
 *   `response_topic` (string, default: `~/response`): ROS2 topic for LLM responses.
+*   `pwm_topic` (string, default: `/pwm_driver/cmd`): PCA9685 driver topic (`/pwm_driver/cmd` with
+    `pca9685.launch.py`, `/pca9685_node/cmd` with `ros2 run`).
 
 ## ✅ Verification
 1.  Launch the `relay_node` (or `pca9685_node`) and `llm_tool_calling_node`.
