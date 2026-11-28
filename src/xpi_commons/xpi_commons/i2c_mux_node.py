@@ -5,6 +5,7 @@ from rclpy.qos import DurabilityPolicy, QoSProfile
 from std_msgs.msg import Int32
 
 from xpi_commons.i2c_helper import get_smbus
+from xpi_commons.hardware import hardware_unavailable
 
 class I2CMuxNode(Node):
     """
@@ -46,8 +47,9 @@ class I2CMuxNode(Node):
             self.mock_mode = self.bus.mock_mode
             self.get_logger().info(f"TCA9548A initialized on bus {self.bus_id} at 0x{self.address:02X}")
         except Exception as e:
+            if not self.mock_mode:
+                hardware_unavailable(self, 'TCA9548A I2C mux', e)
             self.get_logger().error(f"Failed to init I2C Mux: {e}")
-            self.mock_mode = True
 
         if self.mock_mode:
             self.get_logger().warn("Running in MOCK mode.")

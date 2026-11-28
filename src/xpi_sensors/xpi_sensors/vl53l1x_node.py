@@ -3,6 +3,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Range
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
@@ -47,9 +48,9 @@ class VL53L1XNode(Node):
                 self.sensor.start_ranging(self.mode)
                 self.get_logger().info(f'VL53L1X initialized on bus {self.bus_id} in mode {self.mode}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'VL53L1X', e)
                 self.get_logger().error(f'Failed to initialize VL53L1X hardware: {e}')
-                self.mock_mode = True
-                self.get_logger().warn('Falling back to MOCK mode.')
 
         # Publisher
         self.range_pub = self.create_publisher(Range, '~/range', 10)

@@ -3,6 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import String, Int32
 import time
 import threading
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
@@ -53,8 +54,9 @@ class LoRaRawNode(Node):
                 self.lora.set_mode(LoRa.MODE_RXCONT)
                 self.get_logger().info(f'LoRa initialized at {freq}MHz, SF{sf}')
             except Exception as e:
+                if not mock_mode:
+                    hardware_unavailable(self, 'LoRa SX127x', e)
                 self.get_logger().error(f'Failed to initialize LoRa hardware: {e}')
-                mock_mode = True
 
         self.mock_mode = mock_mode
 

@@ -3,6 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import String, Int8MultiArray
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import logging
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     from luma.core.interface.serial import spi, noop
@@ -101,10 +102,10 @@ class LEDMatrixNode(Node):
                 self.device.clear() # Clear display
                 self.get_logger().info(f'LEDMatrix: Initialized with {self.cascaded_devices} cascaded devices on SPI port {self.gpio_port}, device {self.gpio_device}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'MAX7219 LED matrix', e)
                 self.get_logger().error(f'LEDMatrix: Failed to initialize luma.led_matrix: {e}. '
-                                        'Ensure SPI is enabled and `luma.led_matrix` is installed. '
-                                        'Falling back to mock mode.')
-                self.mock_mode = True
+                                        'Ensure SPI is enabled and `luma.led_matrix` is installed.')
         
         if self.mock_mode:
             self.get_logger().warn('LEDMatrix: Running in MOCK mode. No real LED matrix will be controlled.')

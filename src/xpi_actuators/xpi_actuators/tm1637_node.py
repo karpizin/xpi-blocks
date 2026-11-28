@@ -3,6 +3,7 @@ from rclpy.node import Node
 from std_msgs.msg import String, UInt8
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import logging
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     import tm1637
@@ -91,10 +92,10 @@ class TM1637Node(Node):
                 self.display.clear()
                 self.get_logger().info(f'TM1637: Initialized on CLK:{self.clk_pin}, DIO:{self.dio_pin}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'TM1637 display', e)
                 self.get_logger().error(f'TM1637: Failed to initialize TM1637 display: {e}. '
-                                        'Ensure you have `tm1637` installed and GPIOs configured. '
-                                        'Falling back to mock mode.')
-                self.mock_mode = True
+                                        'Ensure you have `tm1637` installed and GPIOs configured.')
         
         if self.mock_mode:
             self.get_logger().warn('TM1637: Running in MOCK mode. No real display will be controlled.')

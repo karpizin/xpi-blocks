@@ -5,6 +5,7 @@ from geometry_msgs.msg import TwistStamped, Point
 from sensor_msgs.msg import Range
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 # Try to import the hardware library
 try:
@@ -56,8 +57,9 @@ class OpticalFlowNode(Node):
                 self.sensor.set_rotation(0)
                 self.get_logger().info(f'PMW3901 initialized on SPI{self.spi_port} CS{self.spi_cs}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'PMW3901', e)
                 self.get_logger().error(f'Failed to initialize PMW3901 hardware: {e}')
-                self.mock_mode = True
 
         # Publishers
         self.vel_pub = self.create_publisher(TwistStamped, '~/velocity', 10)

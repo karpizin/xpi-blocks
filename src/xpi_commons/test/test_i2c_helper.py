@@ -2,8 +2,12 @@
 
 Sensor nodes branch on ``self.bus.mock_mode``; these tests make sure every bus
 returned by ``get_smbus()`` carries that flag and that MockSMBus implements the
-smbus2 methods the nodes call.
+smbus2 methods the nodes call. A bus that cannot be opened must raise, never
+turn into a MockSMBus that publishes simulated data.
 """
+import pytest
+
+from xpi_commons.hardware import HardwareUnavailableError
 from xpi_commons.i2c_helper import MockSMBus, get_smbus
 
 from xpi_commons import i2c_helper
@@ -34,15 +38,22 @@ def test_real_bus_has_mock_mode_false(monkeypatch):
     assert bus.mock_mode is False
 
 
-def test_missing_device_falls_back_to_mock(monkeypatch):
-    def _missing(bus_id):
-        raise FileNotFoundError(f'/dev/i2c-{bus_id}')
+@pytest.mark.parametrize('error', [FileNotFoundError('/dev/i2c-1'), PermissionError('/dev/i2c-1')])
+def test_unavailable_bus_raises_instead_of_mocking(monkeypatch, error):
+    def _fail(bus_id):
+        raise error
 
-    monkeypatch.setattr(i2c_helper, 'SMBus', _missing)
+    monkeypatch.setattr(i2c_helper, 'SMBus', _fail)
     monkeypatch.delenv('XPI_MOCK_I2C', raising=False)
-    bus = get_smbus(1, mock=False)
-    assert isinstance(bus, MockSMBus)
-    assert bus.mock_mode is True
+    with pytest.raises(HardwareUnavailableError, match='mock_hardware:=true'):
+        get_smbus(1, mock=False)
+
+
+def test_missing_smbus2_raises_instead_of_mocking(monkeypatch):
+    monkeypatch.setattr(i2c_helper, 'SMBus', None)
+    monkeypatch.delenv('XPI_MOCK_I2C', raising=False)
+    with pytest.raises(HardwareUnavailableError, match='smbus2'):
+        get_smbus(1, mock=False)
 
 
 def test_env_var_forces_mock(monkeypatch):

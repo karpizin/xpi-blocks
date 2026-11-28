@@ -5,6 +5,7 @@ from xpi_commons.i2c_helper import get_smbus
 import time
 import struct
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class ADS1115Node(Node):
     """
@@ -103,7 +104,6 @@ class ADS1115Node(Node):
 
         # 3. Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
         
         self.v_ref = self.PGA[self.pga_setting][1] # Max voltage based on PGA
@@ -116,10 +116,9 @@ class ADS1115Node(Node):
             self._write_config(self.REG_CONFIG, self.OS_SINGLE | self.MUX['0_GND'] | self.PGA[self.pga_setting][0] | self.DR[self.data_rate] | self.MODE_SINGLE | self.COMP_QUE['DISABLE'])
             self.get_logger().info(f'ADS1115 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize ADS1115: {e}. Falling back to mock.')
-            self.bus.close() # Ensure mock bus is used if real fails
-            self.bus = get_smbus(self.bus_id, mock=True) # Re-init as mock
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'ADS1115', e)
+            self.get_logger().error(f'Failed to initialize ADS1115: {e}.')
 
         if mock_mode:
             self.get_logger().warn('ADS1115: Running in MOCK mode. No real I2C data will be read.')

@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int32, String
 from xpi_commons.i2c_helper import get_smbus
+from xpi_commons.hardware import hardware_unavailable
 import time
 import math
 
@@ -39,17 +40,15 @@ class VEML6070Node(Node):
 
         # Init I2C
         self.bus = get_smbus(bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
 
         try:
             self.init_sensor()
             self.get_logger().info(f"VEML6070 initialized on bus {bus_id}")
         except Exception as e:
-            self.get_logger().error(f"Failed to communicate with VEML6070: {e}")
             if not mock_mode:
-                self.get_logger().warn("Falling back to MOCK mode.")
-                self.bus = get_smbus(bus_id, mock=True)
+                hardware_unavailable(self, f'VEML6070 on I2C bus {bus_id}', e)
+            self.get_logger().error(f"Failed to communicate with VEML6070: {e}")
 
         # Publishers
         self.uv_pub = self.create_publisher(Int32, '~/uv_raw', 10)

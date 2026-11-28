@@ -4,6 +4,7 @@ from sensor_msgs.msg import Temperature, RelativeHumidity
 from xpi_commons.i2c_helper import get_smbus
 import time
 import math
+from xpi_commons.hardware import hardware_unavailable
 
 class AHT20Node(Node):
     """
@@ -29,15 +30,15 @@ class AHT20Node(Node):
 
         # Init I2C
         self.bus = get_smbus(self.bus_id, mock=mock_mode)
-        # get_smbus() may fall back to MockSMBus; keep the local flag in sync with the bus
         mock_mode = self.bus.mock_mode
 
         try:
             self.init_sensor()
             self.get_logger().info(f'AHT20 initialized at 0x{self.address:02X} on bus {self.bus_id}.')
         except Exception as e:
-            self.get_logger().error(f'Failed to initialize AHT20: {e}. Falling back to mock.')
-            mock_mode = True
+            if not mock_mode:
+                hardware_unavailable(self, 'AHT20', e)
+            self.get_logger().error(f'Failed to initialize AHT20: {e}.')
 
         if mock_mode:
             self.get_logger().warn('AHT20: Running in MOCK mode.')

@@ -4,6 +4,7 @@ from std_msgs.msg import String, Int8MultiArray
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from xpi_commons.i2c_helper import get_smbus, MockSMBus
 import logging
+from xpi_commons.hardware import hardware_unavailable
 
 try:
     from luma.core.interface.serial import i2c
@@ -135,10 +136,10 @@ class SSD1306Node(Node):
                 self.oled_device.clear() # Clear display
                 self.get_logger().info(f'OLED: Initialized {resolution_key} display at 0x{self.i2c_address:02X} on bus {self.i2c_bus}.')
             except Exception as e:
+                if not self.mock_mode:
+                    hardware_unavailable(self, 'SSD1306 OLED', e)
                 self.get_logger().error(f'OLED: Failed to initialize luma.oled: {e}. '
-                                        'Ensure I2C is enabled and `luma.oled` is installed. '
-                                        'Falling back to mock mode.')
-                self.mock_mode = True
+                                        'Ensure I2C is enabled and `luma.oled` is installed.')
         
         if self.mock_mode:
             self.get_logger().warn('OLED: Running in MOCK mode. No real OLED will be controlled.')

@@ -46,6 +46,12 @@ To ensure compatibility across Raspberry Pi generations (4, 5, Zero 2W) and allo
 *   **Libraries:** We standardize on **`gpiozero`** for GPIO and **`smbus2`** (via `xpi_commons`) for I2C.
     *   *Why?* `gpiozero` provides a clean, object-oriented API. `smbus2` offers robust I2C access. Both support mock factories.
 *   **Mocking:** All drivers must support `GPIOZERO_PIN_FACTORY=mock` for testing in CI/CD environments and on non-Pi hardware.
+*   **No silent fallback:** simulated data is published only when it is asked for with `mock_hardware:=true`.
+    If the hardware cannot be initialized without it, the node must fail with a clear error
+    (`xpi_commons.hardware.hardware_unavailable()`), never switch to mock on its own: simulated
+    readings look real, and everything downstream (an LLM agent included) would act on them. A
+    runtime read error stops publishing until the device is back; it does not switch to mock either.
+    `tests/test_no_silent_mock.py` checks this for every node with a `mock_hardware` parameter.
 
 ## 5. Topics & Interfaces
 *   **Standard Types:** Use `sensor_msgs`, `geometry_msgs`, `std_msgs` whenever possible.

@@ -6,6 +6,7 @@ from std_msgs.msg import Float32
 from gpiozero import PWMOutputDevice, DigitalOutputDevice, Device
 from gpiozero.pins.mock import MockFactory, MockPWMPin
 import os
+from xpi_commons.hardware import hardware_unavailable
 
 from xpi_actuators.motor_safety import DEFAULT_CMD_TIMEOUT_S, CommandWatchdog, sanitize_speed
 
@@ -67,6 +68,8 @@ class VNH2SP30Node(Node):
             self.initialized = True
             self.get_logger().info('VNH2SP30 High-Power Driver Initialized.')
         except Exception as e:
+            if not self.mock_mode:
+                hardware_unavailable(self, 'VNH2SP30 motor GPIO', e)
             self.get_logger().error(f'Failed to init VNH2SP30 GPIO: {e}')
             return
 
