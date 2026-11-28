@@ -11,7 +11,7 @@ def generate_launch_description():
             description='I2C Address of the BME680 sensor'
         ),
         DeclareLaunchArgument(
-            'publish_rate',
+            'polling_rate',
             default_value='1.0',
             description='Rate in Hz to publish sensor readings'
         ),
@@ -32,7 +32,7 @@ def generate_launch_description():
             name='bme680_env_sensor',
             parameters=[{
                 'i2c_address': LaunchConfiguration('i2c_address'),
-                'publish_rate': LaunchConfiguration('publish_rate'),
+                'polling_rate': LaunchConfiguration('polling_rate'),
                 'frame_id': LaunchConfiguration('frame_id'),
                 'sea_level_pressure': LaunchConfiguration('sea_level_pressure')
             }],

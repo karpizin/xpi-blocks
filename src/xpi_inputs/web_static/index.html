@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XPI-Blocks Web Controller</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
+    <meta name="referrer" content="no-referrer">
+    <script src="nipplejs.min.js"></script>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #222; color: white; font-family: sans-serif; touch-action: none; }
         #zone_left { position: absolute; left: 0; bottom: 0; width: 50%; height: 50%; border-right: 1px solid #444; }
@@ -26,7 +27,11 @@
     <script>
         const statusEl = document.getElementById('status');
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+        // Access token: from the link printed in the robot's log, http://<robot>:8080/#token=...
+        // (the #fragment is never sent in HTTP requests or Referer headers).
+        const token = new URLSearchParams(window.location.hash.slice(1)).get('token')
+            || new URLSearchParams(window.location.search).get('token') || '';
+        const wsUrl = `${wsProtocol}//${window.location.host}/ws?token=${encodeURIComponent(token)}`;
         
         let ws;
         let reconnectInterval = 1000;
@@ -35,16 +40,25 @@
         let axisLinear = 0.0;
         let axisAngular = 0.0;
 
+        let everConnected = false;
+
         function connect() {
+            if (!token) {
+                statusEl.textContent = 'No token: open the link from the robot log (…/#token=…)';
+                statusEl.style.color = '#f80';
+                return;
+            }
             ws = new WebSocket(wsUrl);
             
             ws.onopen = () => {
+                everConnected = true;
                 statusEl.textContent = 'Connected ✅';
                 statusEl.style.color = '#0f0';
             };
             
             ws.onclose = () => {
-                statusEl.textContent = 'Disconnected ❌';
+                statusEl.textContent = everConnected ? 'Disconnected ❌'
+                    : 'Not connected ❌ (wrong token?)';
                 statusEl.style.color = '#f00';
                 setTimeout(connect, reconnectInterval);
             };

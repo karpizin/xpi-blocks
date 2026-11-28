@@ -36,7 +36,7 @@ Choose your desired LLM client:
 *   **Using Gemini (cloud):**
     ```bash
     export GEMINI_API_KEY="YOUR_GEMINI_API_KEY" # Make sure this is set!
-    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=gemini llm_model:=gemini-pro
+    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=gemini llm_model:=gemini-3.6-flash
     ```
 *   **Using OpenRouter (cloud, with e.g. Mistral 7B):**
     ```bash
@@ -46,7 +46,9 @@ Choose your desired LLM client:
 *   **Using Ollama (local, with e.g. Llama 2):**
     ```bash
     # Ensure Ollama server is running and `llama2` model is pulled
-    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=ollama llm_model:=llama2 ollama_host:=http://localhost:11434
+    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=ollama llm_model:=qwen3.5:4b llm_think:=off
+    # or llama.cpp: llama-server -hf ggml-org/gemma-4-E2B-it-GGUF:Q4_0 --jinja
+    ros2 launch xpi_llm sonar_pattern_analyzer.launch.py llm_client_type:=llamacpp
     ```
 
 ## 📡 Interface
@@ -57,10 +59,12 @@ Choose your desired LLM client:
 *   `~/sonar_pattern` (`std_msgs/String`): The LLM's textual analysis of the sonar patterns.
 
 ### Parameters
-*   `llm_client_type` (string, default: `gemini`): Which LLM backend to use (`openrouter`, `gemini`, `ollama`).
+*   `llm_client_type` (string, default: `gemini`): LLM backend: `gemini`, `ollama`, `llamacpp`, `openai`, `qwen`, `openrouter`. See [docs/LOCAL_LLM.md](../../../docs/LOCAL_LLM.md).
 *   `llm_api_key` (string, default: `''`): API key for cloud LLMs.
-*   `llm_model` (string, default: `gemini-pro`): Specific model name.
-*   `ollama_host` (string, default: `http://localhost:11434`): URL of your local Ollama server.
+*   `llm_model` (string, default: `''`): Model; empty = the backend's default (`gemini-3.6-flash`, Ollama `qwen3.5:4b`). E.g. `gemma4:e4b`, `qwen3.5:9b`, `gemma-4-26b-a4b-it`.
+*   `ollama_host` (string, default: `http://localhost:11434`): URL of your Ollama server (used when `llm_base_url` is empty).
+*   `llm_base_url` (string, default: `''`): Server URL for `ollama`, `llamacpp`, `openai`, `qwen`; empty = the backend's default.
+*   `llm_think` (string, default: `auto`): Ollama reasoning for Qwen 3.x / Gemma 4: `auto`, `on`, `off` (`off` is faster).
 *   `history_size` (int, default: `30`): Number of past sonar readings to send to the LLM for analysis (more for patterns).
 *   `analysis_interval_sec` (float, default: `10.0`): How often the LLM is prompted for analysis.
 *   `llm_temperature` (float, default: `0.5`): Creativity/randomness of LLM response.

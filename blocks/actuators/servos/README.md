@@ -58,6 +58,9 @@ Use the PCA9685 to control the brightness of up to 16 LEDs.
 *   `~/cmd` (`std_msgs/Float32MultiArray`):
     *   Send array of floats [0.0 ... 1.0] representing duty cycle.
     *   Index 0 = Channel 0, Index 15 = Channel 15.
+    *   **Only the channels you send change.** A shorter array leaves the higher channels as
+        they are, and `NaN` (`.nan` in YAML) leaves that channel as it is. `0.0` switches a
+        channel off, so `[0, 0, 0.5]` also turns off channels 0 and 1.
     *   **Servo Control:** Standard servos expect 50Hz.
         *   0.05 (5%) ≈ 1ms pulse (-90°)
         *   0.075 (7.5%) ≈ 1.5ms pulse (0°)
@@ -73,11 +76,11 @@ ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0.
 
 ### Arm ESC (Channel 1):
 ```bash
-# Send 0% throttle
-ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0.0, 0.05]}"
+# Send 0% throttle on channel 1, channel 0 unchanged
+ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [.nan, 0.05]}"
 ```
 
 ### Set LED (Channel 15) to 50% brightness:
 ```bash
-ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.5]}"
+ros2 topic pub --once /pwm_driver/cmd std_msgs/msg/Float32MultiArray "{data: [.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,.nan,0.5]}"
 ```

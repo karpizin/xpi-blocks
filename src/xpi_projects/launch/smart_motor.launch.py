@@ -9,10 +9,11 @@ def generate_launch_description():
             executable='tb6612_driver',
             name='motor_driver',
             parameters=[{
-                'pin_pwma': 18,
-                'pin_ain1': 23,
-                'pin_ain2': 24,
-                'pin_stby': 25
+                'motor_a_pwm_pin': 18,
+                'motor_a_in1_pin': 23,
+                'motor_a_in2_pin': 24,
+                'motor_b_pwm_pin': -1,   # single motor: leave motor B's default GPIOs alone
+                'stby_pin': 25
             }]
         ),
         
@@ -34,8 +35,7 @@ def generate_launch_description():
             executable='ina219_node',
             name='motor_power',
             parameters=[{
-                'i2c_bus': 1,
-                'polling_rate': 10.0
+                'polling_rate': 10.0     # INA219 is on the board's default I2C bus (bus 1)
             }]
         )
     ])

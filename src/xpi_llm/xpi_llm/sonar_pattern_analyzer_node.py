@@ -2,7 +2,8 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Range
 from std_msgs.msg import String
-from xpi_llm.llm_clients import llm_client_factory, LLMClient
+from xpi_llm.llm_clients import LLMClient
+from xpi_llm.llm_params import declare_llm_parameters, llm_client_from_parameters
 import threading
 import math
 
@@ -16,10 +17,7 @@ class SonarPatternAnalyzerNode(Node):
         super().__init__('sonar_pattern_analyzer_node')
 
         # 1. Declare Parameters
-        self.declare_parameter('llm_client_type', 'gemini') # openrouter, gemini, ollama
-        self.declare_parameter('llm_api_key', '')
-        self.declare_parameter('llm_model', 'gemini-pro')
-        self.declare_parameter('ollama_host', 'http://localhost:11434')
+        declare_llm_parameters(self)   # llm_client_type, llm_model, llm_api_key, llm_base_url, ...
         self.declare_parameter('history_size', 30) # More data for pattern detection
         self.declare_parameter('analysis_interval_sec', 10.0) # How often to analyze
         self.declare_parameter('llm_temperature', 0.5)
@@ -27,10 +25,6 @@ class SonarPatternAnalyzerNode(Node):
         self.declare_parameter('sonar_topic', '/sonar_front/range')
 
         # 2. Read Parameters
-        self.llm_client_type = self.get_parameter('llm_client_type').value
-        self.llm_api_key = self.get_parameter('llm_api_key').value
-        self.llm_model = self.get_parameter('llm_model').value
-        self.ollama_host = self.get_parameter('ollama_host').value
         self.history_size = self.get_parameter('history_size').value
         self.analysis_interval = self.get_parameter('analysis_interval_sec').value
         self.llm_temperature = self.get_parameter('llm_temperature').value
@@ -40,14 +34,7 @@ class SonarPatternAnalyzerNode(Node):
         # 3. Initialize LLM Client
         self.llm_client: LLMClient = None
         try:
-            if self.llm_client_type == 'ollama':
-                self.llm_client = llm_client_factory(
-                    self.llm_client_type, host=self.ollama_host, model=self.llm_model
-                )
-            else:
-                self.llm_client = llm_client_factory(
-                    self.llm_client_type, api_key=self.llm_api_key, model=self.llm_model
-                )
+            self.llm_client = llm_client_from_parameters(self)
             self.get_logger().info(f'LLM Client initialized: {self.llm_client.get_model_name()}')
         except ValueError as e:
             self.get_logger().error(f'Failed to initialize LLM client: {e}. ')
@@ -55,7 +42,7 @@ class SonarPatternAnalyzerNode(Node):
             self.llm_client = None
         except ImportError as e:
             self.get_logger().error(f'Missing LLM library: {e}. ')
-            self.get_logger().error('Please install it (e.g., pip install google-generativeai or openai).')
+            self.get_logger().error('Please install it (e.g., pip install google-genai).')
             self.llm_client = None
 
         self.sonar_history = []

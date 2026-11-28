@@ -2,10 +2,11 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Bool, Float32, Int32
 from sensor_msgs.msg import Temperature, RelativeHumidity, Illuminance, BatteryState
-from xpi_llm.llm_clients import llm_client_factory
+from xpi_llm.llm_clients import llm_client_factory, parse_think
+from xpi_llm.command_queue import CommandQueue
+from xpi_llm.tool_args import as_bool, as_float, as_int, relay_topic
 import json
 import math
-import os
 import threading
 import time
 
@@ -19,8 +20,13 @@ class MCPAgentNode(Node):
         super().__init__('mcp_agent_node')
 
         # 1. Parameters
-        self.declare_parameter('llm_model', 'gemini-1.5-flash')
-        self.declare_parameter('api_key', '')
+        # gemini, ollama, llamacpp, openai, qwen, openrouter (see llm_clients.CLIENT_TYPES).
+        # Local, with tool calling: ollama + qwen3.5 / gemma4, or llama-server --jinja.
+        self.declare_parameter('llm_client_type', 'gemini')
+        self.declare_parameter('llm_model', '')       # '' = the client's default
+        self.declare_parameter('api_key', '')         # '' = the provider's environment variable
+        self.declare_parameter('llm_base_url', '')    # '' = the client's default server
+        self.declare_parameter('llm_think', 'off')    # reasoning of Qwen 3.x / Gemma 4: auto | on | off
         self.declare_parameter('command_topic', '~/command')
         self.declare_parameter('response_topic', '~/response')
         # Motion safety: limits enforced in code, whatever the LLM asks for
@@ -31,12 +37,16 @@ class MCPAgentNode(Node):
         self.declare_parameter('max_move_speed', 0.5)      # |speed| limit for move_robot (0..1)
         self.declare_parameter('max_move_duration', 5.0)   # s, upper bound for one move_robot call
         self.declare_parameter('move_keepalive_hz', 10.0)  # re-publish rate; motor drivers stop if commands stop
+        self.declare_parameter('max_dac_voltage', 3.3)     # V, upper bound for set_analog_voltage
         
-        self.llm_model = self.get_parameter('llm_model').value
-        api_key = self.get_parameter('api_key').value or os.environ.get('GEMINI_API_KEY')
-
         # 2. LLM Client
-        self.llm = llm_client_factory('gemini', api_key=api_key, model=self.llm_model)
+        self.llm = llm_client_factory(
+            self.get_parameter('llm_client_type').value,
+            api_key=self.get_parameter('api_key').value,
+            model=self.get_parameter('llm_model').value,
+            host=self.get_parameter('llm_base_url').value,
+            think=parse_think(self.get_parameter('llm_think').value))
+        self.llm_model = self.llm.get_model_name()
 
         # 3. Context (MCP Resources)
         self.robot_state = {
@@ -66,7 +76,8 @@ class MCPAgentNode(Node):
         self.create_subscription(String, '/vlm/scene_description', lambda m: self._update_perception('scene', m.data), 10)
 
         # 5. Publishers for Tools
-        self.relay_pub = self.create_publisher(Bool, '/relay_node/cmd', 10)
+        # Relay N -> /relay_node/cmd (N=0) or /relay_node_<N>/cmd, as in tool_calling_node
+        self.relay_pubs = {i: self.create_publisher(Bool, relay_topic(i), 10) for i in range(16)}
         self.display_pub = self.create_publisher(String, '/tft_display/draw_commands', 10)
         self.led_pub = self.create_publisher(Int32, '/ws2812/effect', 10)
         self.motor_a_pub = self.create_publisher(Float32, self.get_parameter('motor_a_topic').value, 10)
@@ -77,6 +88,7 @@ class MCPAgentNode(Node):
         self._move_lock = threading.Lock()
         self._move_cancel = None   # threading.Event of the move in progress
         self.dac_pub = self.create_publisher(Float32, '/mcp4725/cmd_voltage', 10)
+        self.max_dac_voltage = max(0.0, float(self.get_parameter('max_dac_voltage').value))
         
         # VLM Trigger Tool
         self.vlm_trigger_pub = self.create_publisher(String, '/vlm_observer_node/trigger', 10)
@@ -85,7 +97,10 @@ class MCPAgentNode(Node):
         self.cmd_sub = self.create_subscription(String, self.get_parameter('command_topic').value, self.command_callback, 10)
         self.resp_pub = self.create_publisher(String, self.get_parameter('response_topic').value, 10)
 
-        self.get_logger().info(f"MCP Agent initialized using {self.llm_model}")
+        self.commands = CommandQueue(
+            self._process, on_error=lambda e: self.get_logger().error(f"LLM Error: {e}"))
+
+        self.get_logger().info(f"MCP Agent initialized using {self.llm.get_model_name()}")
 
     def _update_resource(self, name, value):
         self.robot_state["sensors"][name] = value
@@ -109,8 +124,8 @@ class MCPAgentNode(Node):
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "relay_id": {"type": "integer"},
-                            "state": {"type": "boolean"}
+                            "relay_id": {"type": "integer", "description": "Relay number, 0 to 15.", "minimum": 0, "maximum": 15},
+                            "state": {"type": "boolean", "description": "true = ON, false = OFF."}
                         },
                         "required": ["relay_id", "state"]
                     }
@@ -152,7 +167,7 @@ class MCPAgentNode(Node):
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "effect_id": {"type": "integer"}
+                            "effect_id": {"type": "integer", "minimum": 0, "maximum": 100}
                         },
                         "required": ["effect_id"]
                     }
@@ -175,7 +190,10 @@ class MCPAgentNode(Node):
         ]
 
     def command_callback(self, msg):
-        threading.Thread(target=self._process, args=(msg.data,)).start()
+        # One command at a time, in order: a "stop" is never overtaken by an earlier "go"
+        if not self.commands.submit(msg.data):
+            self.get_logger().warn("Too many commands waiting; dropping this one.")
+            self.resp_pub.publish(String(data="Busy: too many commands waiting, try again."))
 
     def _process(self, user_text):
         system_prompt = (
@@ -199,33 +217,45 @@ class MCPAgentNode(Node):
             self.resp_pub.publish(String(data=f"Error: {str(e)}"))
 
     def _execute_tool(self, tool_call):
-        name = tool_call["name"]
-        args = tool_call["arguments"]
-        
+        """Run one tool call. Arguments are validated here, whatever the model sent."""
+        name = tool_call.get("name")
+        args = tool_call.get("arguments") or {}
+        if not isinstance(args, dict):
+            return f"Rejected {name}: arguments must be an object."
+
         if name == "get_visual_update":
             prompt = args.get("custom_prompt", "")
-            msg = String(data=prompt)
-            self.vlm_trigger_pub.publish(msg)
+            self.vlm_trigger_pub.publish(String(data=prompt if isinstance(prompt, str) else ""))
             return "Requested visual update from VLM."
 
         if name == "control_relay":
-            msg = Bool(data=args["state"])
-            self.relay_pub.publish(msg)
-            return f"Relay {args.get('relay_id', 0)} -> {args['state']}"
-        
+            relay_id = as_int(args.get("relay_id"), 0, 15)
+            state = as_bool(args.get("state"))
+            if relay_id is None or state is None:
+                return (f"Rejected control_relay: relay_id must be an integer 0-15 and state true/false "
+                        f"(got {args.get('relay_id')!r}, {args.get('state')!r}).")
+            self.relay_pubs[relay_id].publish(Bool(data=state))
+            return f"Relay {relay_id} -> {'ON' if state else 'OFF'}"
+
         if name == "move_robot":
             return self._move_robot(args.get("speed"), args.get("duration", 1.0))
 
         if name == "set_led_effect":
-            self.led_pub.publish(Int32(data=int(args["effect_id"])))
-            return f"LED Effect -> {args['effect_id']}"
-        
+            effect = as_int(args.get("effect_id"), 0, 100)
+            if effect is None:
+                return f"Rejected set_led_effect: effect_id must be an integer 0-100 (got {args.get('effect_id')!r})."
+            self.led_pub.publish(Int32(data=effect))
+            return f"LED Effect -> {effect}"
+
         if name == "set_analog_voltage":
-            voltage = float(args["voltage"])
+            voltage = as_float(args.get("voltage"), 0.0, self.max_dac_voltage)
+            if voltage is None:
+                return (f"Rejected set_analog_voltage: voltage must be 0-{self.max_dac_voltage} V "
+                        f"(got {args.get('voltage')!r}).")
             self.dac_pub.publish(Float32(data=voltage))
             return f"DAC output set to {voltage}V"
-        
-        return "Unknown tool"
+
+        return f"Unknown tool: {name}"
 
     # --- Motion (move_robot) -------------------------------------------------
     @staticmethod
@@ -292,6 +322,7 @@ class MCPAgentNode(Node):
         return f"Driving at {speed} for {duration}s{note}"
 
     def destroy_node(self):
+        self.commands.stop()
         self._cancel_move()
         self._publish_speed(0.0)
         super().destroy_node()

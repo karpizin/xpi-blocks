@@ -27,7 +27,7 @@ rpi_ws281x
 pigpio
 transforms3d
 meshtastic
-google-generativeai
+google-genai
 adafruit-circuitpython-24lc32
 adafruit-circuitpython-as7341
 adafruit-circuitpython-bme680

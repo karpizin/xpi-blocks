@@ -21,10 +21,7 @@ EXTRA_PARAMS = {
     'xpi_actuators.cmd_vel_mux_node': {'estop_gpio': 21},   # GPIO only for the stop button
 }
 
-SKIP = {
-    # rpi_ws281x maps /dev/mem in C and crashes the interpreter off-target
-    'xpi_actuators.ws2812_driver_node': 'rpi_ws281x segfaults without a Raspberry Pi',
-}
+SKIP = {}
 
 
 def _source(module):

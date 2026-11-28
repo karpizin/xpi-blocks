@@ -21,15 +21,16 @@ RUN apt-get update && apt-get install -y \
 # Install LLM and project dependencies via pip
 COPY requirements.txt .
 # setuptools<80: colcon-core (ROS 2 Humble) requires it; a newer one is a broken dependency.
-# Known, checked conflict: mediapipe declares protobuf<5, while meshtastic and the Google
-# client libraries need protobuf 5. mp.solutions.hands (gesture_control) runs fine with
-# protobuf 5; forcing protobuf<5 would make pip downgrade meshtastic to 2.3 and mediapipe
-# to 0.10.9, so the conflict is accepted. Recheck it when changing any of these packages.
+# Known, checked conflict: mediapipe declares protobuf<5, while meshtastic needs protobuf 5.
+# mp.solutions.hands (gesture_control) runs fine with protobuf 5; forcing protobuf<5 would
+# make pip downgrade meshtastic to 2.3 and mediapipe to 0.10.9, so the conflict is accepted.
+# Recheck it when changing any of these packages.
+# google-genai is the Gemini SDK (google-generativeai is deprecated).
 RUN pip3 install --no-cache-dir --upgrade pip wheel "setuptools<80" && \
     pip3 install --no-cache-dir -r requirements.txt && \
     pip3 install --no-cache-dir \
     openai \
-    google-generativeai
+    google-genai
 
 # Setup workspace
 WORKDIR /xpi_ws
@@ -50,6 +51,11 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && rm -rf build install log 
 # Add sourcing to bashrc for interactive shells
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /xpi_ws/install/setup.bash" >> ~/.bashrc
+
+# DDS discovery on this machine only: other hosts on the LAN cannot see or publish to the
+# robot's topics (motors, relays, the LLM agent's commands). ROS 2 has no authentication
+# without SROS2, so opening it to the network is an explicit choice: ROS_LOCALHOST_ONLY=0.
+ENV ROS_LOCALHOST_ONLY=1
 
 # Create a workspace entrypoint script
 RUN printf '#!/bin/bash\nset -e\nsource "/opt/ros/humble/setup.bash"\nsource "/xpi_ws/install/setup.bash"\nexec "$@"' > /entrypoint.sh && \

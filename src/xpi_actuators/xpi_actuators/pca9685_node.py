@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from xpi_commons.i2c_helper import get_smbus
+import math
 import time
 
 class PCA9685Node(Node):
@@ -35,7 +36,8 @@ class PCA9685Node(Node):
 
         # 4. Subscriber
         # Expects array of values. Index 0 -> Channel 0.
-        # Values: 0.0 to 1.0 (PWM duty cycle)
+        # Values: 0.0 to 1.0 (PWM duty cycle). NaN, or a shorter array, leaves a channel
+        # unchanged, so one channel can be set without touching the others.
         self.sub = self.create_subscription(
             Float32MultiArray,
             '~/cmd',
@@ -90,8 +92,10 @@ class PCA9685Node(Node):
         for i, val in enumerate(msg.data):
             if i > 15:
                 break
-            
-            # Clamp 0.0 - 1.0
+            if math.isnan(val):
+                continue   # leave this channel as it is
+
+            # Clamp 0.0 - 1.0 (+/-inf clamp to full on/off)
             val = max(0.0, min(1.0, val))
             
             if val == 0.0:
