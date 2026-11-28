@@ -16,10 +16,7 @@ import pytest
 sys.path.insert(0, os.path.dirname(__file__))
 from test_node_smoke import ENTRY_POINTS, SRC, _describe, _is_bug, _run_main  # noqa: E402
 
-SKIP = {
-    # rpi_ws281x maps /dev/mem in C and crashes the interpreter off-target
-    'xpi_actuators.ws2812_driver_node': 'rpi_ws281x segfaults without a Raspberry Pi',
-}
+SKIP = {}
 
 
 def _source(module):
