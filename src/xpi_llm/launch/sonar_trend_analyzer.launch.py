@@ -18,8 +18,8 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'llm_model',
-            default_value='gemini-pro',
-            description='Specific LLM model to use (e.g., gemini-pro, openai/gpt-3.5-turbo, llama2)'
+            default_value='gemini-3.6-flash',
+            description='Specific LLM model to use (e.g., gemini-3.6-flash, openai/gpt-4o-mini, llama3.2)'
         ),
         DeclareLaunchArgument(
             'ollama_host',

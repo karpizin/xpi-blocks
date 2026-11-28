@@ -18,7 +18,7 @@ class SonarTrendAnalyzerNode(Node):
         # 1. Declare Parameters
         self.declare_parameter('llm_client_type', 'gemini') # openrouter, gemini, ollama
         self.declare_parameter('llm_api_key', '')
-        self.declare_parameter('llm_model', 'gemini-pro')
+        self.declare_parameter('llm_model', 'gemini-3.6-flash')
         self.declare_parameter('ollama_host', 'http://localhost:11434')
         self.declare_parameter('history_size', 20) # Number of sonar readings to keep
         self.declare_parameter('analysis_interval_sec', 5.0) # How often to analyze
@@ -55,7 +55,7 @@ class SonarTrendAnalyzerNode(Node):
             self.llm_client = None
         except ImportError as e:
             self.get_logger().error(f'Missing LLM library: {e}. ')
-            self.get_logger().error('Please install it (e.g., pip install google-generativeai or openai).')
+            self.get_logger().error('Please install it (e.g., pip install google-genai).')
             self.llm_client = None
 
         self.sonar_history = []
@@ -121,7 +121,7 @@ class SonarTrendAnalyzerNode(Node):
         """Internal method to call LLM, run in a separate thread."""
         try:
             self.get_logger().debug(f"Sending prompt to LLM: {prompt}")
-            llm_response = self.llm_client.generate(
+            llm_response, _ = self.llm_client.generate(
                 prompt,
                 temperature=self.llm_temperature,
                 max_tokens=self.llm_max_tokens

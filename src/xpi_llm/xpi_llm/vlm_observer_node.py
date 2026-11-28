@@ -22,7 +22,7 @@ class VLMObserverNode(Node):
         self.declare_parameter('image_topic', '/camera/image_raw')
         self.declare_parameter('analysis_interval', 60.0) # Seconds (default long for periodic)
         self.declare_parameter('provider', 'gemini') # gemini, openrouter, ollama
-        self.declare_parameter('model', 'gemini-1.5-flash')
+        self.declare_parameter('model', 'gemini-3.6-flash')
         self.declare_parameter('default_prompt', 'Describe the scene in front of the robot. Be concise.')
         self.declare_parameter('api_key', '')
 
@@ -108,7 +108,7 @@ class VLMObserverNode(Node):
 
             # Call VLM
             self.get_logger().info("Sending image to VLM...")
-            response, _ = self.llm_client.generate(prompt, image_data=image_bytes)
+            response, _ = self.llm_client.generate(prompt, media_data=image_bytes, mime_type='image/jpeg')
 
             self.get_logger().info(f"VLM Response: {response}")
 

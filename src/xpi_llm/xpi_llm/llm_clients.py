@@ -69,7 +69,6 @@ class OpenRouterClient(LLMClient):
             ]
         else:
             content = prompt
-# ... (rest of the class)
 
         messages = [{"role": "user", "content": content}]
         
@@ -98,9 +97,14 @@ class OpenRouterClient(LLMClient):
                     tool_call = tool_calls[0]
                     function_call = tool_call.get("function")
                     if function_call:
-                        return "", {"name": function_call["name"], "arguments": json.loads(function_call["arguments"])}
+                        try:
+                            arguments = json.loads(function_call.get("arguments") or "{}")
+                        except (TypeError, ValueError):
+                            logger.error(f"OpenRouter returned invalid tool arguments: {function_call}")
+                            return "Error: Invalid tool call from OpenRouter.", {}
+                        return "", {"name": function_call["name"], "arguments": arguments}
                 
-                return message.get("content", ""), {}
+                return message.get("content") or "", {}
             else:
                 logger.error(f"OpenRouter response missing choices: {result}")
                 return "Error: No response from OpenRouter.", {}
@@ -114,80 +118,78 @@ class OpenRouterClient(LLMClient):
     def get_model_name(self) -> str:
         return self.model
 
+DEFAULT_GEMINI_MODEL = "gemini-3.6-flash"
+
+
+def openai_tools_to_gemini(tools):
+    """OpenAI-style tools ({"type": "function", "function": {...}}) -> Gemini function declarations.
+
+    Gemini takes {"name", "description", "parameters"} with an OpenAPI-subset schema; passing
+    the OpenAI wrapper as is means the model never sees the functions.
+    """
+    declarations = []
+    for tool in tools or []:
+        fn = tool.get("function", tool) if isinstance(tool, dict) else None
+        if not fn or "name" not in fn:
+            raise ValueError(f"Not a function tool: {tool!r}")
+        decl = {"name": fn["name"], "description": fn.get("description", "")}
+        params = fn.get("parameters")
+        if params and params.get("properties"):
+            decl["parameters"] = params
+        declarations.append(decl)
+    return declarations
+
+
 class GeminiClient(LLMClient):
-    """LLM client for Google Gemini API."""
-    def __init__(self, api_key: str, model: str = "gemini-1.5-flash"): # Defaulting to a VLM capable model
+    """LLM client for the Google Gemini API (google-genai SDK).
+
+    ``client`` lets tests pass a google.genai.Client with a fake transport.
+    """
+    def __init__(self, api_key: str, model: str = DEFAULT_GEMINI_MODEL, client=None):
         try:
-            import google.generativeai as genai
-            from google.generativeai.types import HarmCategory, HarmBlockThreshold
-            self.genai = genai
-            self.HarmCategory = HarmCategory
-            self.HarmBlockThreshold = HarmBlockThreshold
+            from google import genai
+            from google.genai import types
         except ImportError:
-            raise ImportError("Please install google-generativeai: pip install google-generativeai")
-        
-        if not api_key:
-            raise ValueError("Gemini API key is required.")
-        self.genai.configure(api_key=api_key)
-        self.model = model
+            raise ImportError("Please install google-genai: pip install google-genai")
+        self.types = types
+        if client is None:
+            if not api_key:
+                raise ValueError("Gemini API key is required.")
+            client = genai.Client(api_key=api_key)
+        self.client = client
+        self.model = model or DEFAULT_GEMINI_MODEL
         logger.info(f"GeminiClient initialized with model: {self.model}")
 
     def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
-        model = self.genai.GenerativeModel(self.model)
-        
-        generation_config = self.genai.types.GenerationConfig(
-            temperature=temperature,
-            max_output_tokens=max_tokens,
-        )
-        
-        safety_settings = {
-            self.HarmCategory.HARM_CATEGORY_HARASSMENT: self.HarmBlockThreshold.BLOCK_NONE,
-            self.HarmCategory.HARM_CATEGORY_HATE_SPEECH: self.HarmBlockThreshold.BLOCK_NONE,
-            self.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: self.HarmBlockThreshold.BLOCK_NONE,
-            self.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: self.HarmBlockThreshold.BLOCK_NONE,
-        }
-
-        content = [prompt]
+        t = self.types
+        contents = [prompt]
         if media_data:
-            # Gemini expects 'data' and 'mime_type' for blobs
-            media_blob = {
-                "mime_type": mime_type,
-                "data": media_data
-            }
-            content.append(media_blob)
+            contents.append(t.Part.from_bytes(data=media_data, mime_type=mime_type))
+
+        config = t.GenerateContentConfig(temperature=temperature, max_output_tokens=max_tokens)
+        if tools:
+            config.tools = [t.Tool(function_declarations=openai_tools_to_gemini(tools))]
+            # We execute tools ourselves, after validating the arguments
+            config.automatic_function_calling = t.AutomaticFunctionCallingConfig(disable=True)
 
         try:
-            if tools:
-                response = model.generate_content(
-                    content,
-                    tools=tools,
-                    tool_config=self.genai.types.ToolConfig(function_calling_config=self.genai.types.FunctionCallingConfig(mode='AUTO')),
-                    generation_config=generation_config,
-                    safety_settings=safety_settings
-                )
-            else:
-                response = model.generate_content(
-                    content,
-                    generation_config=generation_config,
-                    safety_settings=safety_settings
-                )
-
-            if response.candidates:
-                candidate = response.candidates[0]
-                if candidate.function_calls:
-                    func_call = candidate.function_calls[0]
-                    return "", {"name": func_call.name, "arguments": func_call.args}
-                
-                if candidate.content and candidate.content.parts:
-                    return candidate.content.parts[0].text, {}
-            
-            return "Error: No valid response from Gemini.", {}
-
+            response = self.client.models.generate_content(
+                model=self.model, contents=contents, config=config)
         except Exception as e:
             logger.error(f"Gemini API error: {e}")
-            if "safety settings" in str(e):
-                return "Error: Gemini response blocked by safety settings. Try rephrasing.", {}
             return f"Error: Gemini API error: {e}", {}
+
+        calls = response.function_calls or []
+        if calls:
+            call = calls[0]
+            return "", {"name": call.name, "arguments": dict(call.args or {})}
+        text = response.text
+        if text:
+            return text, {}
+        feedback = getattr(response, "prompt_feedback", None)
+        if feedback is not None and getattr(feedback, "block_reason", None):
+            return f"Error: Gemini blocked the request ({feedback.block_reason}).", {}
+        return "Error: No valid response from Gemini.", {}
 
     def get_model_name(self) -> str:
         return self.model
@@ -197,10 +199,27 @@ class OllamaClient(LLMClient):
     # Ollama currently does not natively support complex function calling in its base API.
     # We will simulate it by prompting the model to output JSON.
     def __init__(self, host: str = "http://localhost:11434", model: str = "llava"): # Defaulting to llava for vision
-        self.host = host
-        self.model = model
+        self.host = (host or "http://localhost:11434").rstrip("/")
+        self.model = model or "llava"
         self.api_url = f"{self.host}/api/generate"
         logger.info(f"OllamaClient initialized with host: {self.host}, model: {self.model}.")
+
+    @staticmethod
+    def _parse_tool_call(text):
+        """The {"tool_call": {...}} object in a reply, also inside a ```json fence; else None."""
+        start = text.find("{")
+        while start != -1:
+            try:
+                obj, _ = json.JSONDecoder().raw_decode(text[start:])
+            except json.JSONDecodeError:
+                start = text.find("{", start + 1)
+                continue
+            call = obj.get("tool_call") if isinstance(obj, dict) else None
+            if isinstance(call, dict) and isinstance(call.get("name"), str) \
+                    and isinstance(call.get("arguments", {}), dict):
+                return {"name": call["name"], "arguments": call.get("arguments", {})}
+            start = text.find("{", start + 1)
+        return None
 
     def generate(self, prompt: str, tools: list = None, media_data: bytes = None, mime_type: str = "image/jpeg", temperature: float = 0.7, max_tokens: int = 150) -> tuple[str, dict]:
         full_prompt = prompt
@@ -223,7 +242,7 @@ class OllamaClient(LLMClient):
 
         if tools and not media_data: 
             # For Ollama, we inject the tool definitions into the prompt and instruct the model to use them.
-            tool_definitions = json.dumps([t['function'] for t in tools], indent=2)
+            tool_definitions = json.dumps([t.get('function', t) for t in tools], indent=2)
             full_prompt = (
                 f"{prompt}\n\n"
                 f"You have access to the following tools:\n```json\n{tool_definitions}\n```\n"
@@ -237,42 +256,45 @@ class OllamaClient(LLMClient):
             response = requests.post(self.api_url, json=data, timeout=120)
             response.raise_for_status()
             result = response.json()
-            if result and result.get("response"):
-                llm_response_text = result["response"]
-                # Try to parse if it's a tool call (only if we injected tools)
-                if tools:
-                    try:
-                        parsed_json = json.loads(llm_response_text)
-                        if "tool_call" in parsed_json and "name" in parsed_json["tool_call"] and "arguments" in parsed_json["tool_call"]:
-                            return "", parsed_json["tool_call"]
-                    except json.JSONDecodeError:
-                        pass 
-                
-                return llm_response_text, {}
-            else:
-                logger.error(f"Ollama response missing 'response' field: {result}")
-                return "Error: No response from Ollama.", {}
         except requests.exceptions.Timeout:
             logger.error("Ollama request timed out.")
             return "Error: Ollama request timed out.", {}
         except requests.exceptions.ConnectionError:
             logger.error(f"Could not connect to Ollama server at {self.host}. Is it running?")
-            return f"Error: Could not connect to Ollama server at {self.host}."
+            return f"Error: Could not connect to Ollama server at {self.host}.", {}
         except requests.exceptions.RequestException as e:
             logger.error(f"Ollama API error: {e}")
             return f"Error: Ollama API error: {e}", {}
+        except ValueError as e:   # body is not JSON
+            logger.error(f"Ollama returned invalid JSON: {e}")
+            return "Error: Invalid response from Ollama.", {}
+
+        llm_response_text = result.get("response") if isinstance(result, dict) else None
+        if not llm_response_text:
+            logger.error(f"Ollama response missing 'response' field: {result}")
+            return "Error: No response from Ollama.", {}
+        if tools:
+            call = self._parse_tool_call(llm_response_text)
+            if call:
+                return "", call
+        return llm_response_text, {}
 
     def get_model_name(self) -> str:
         return self.model
 
 def llm_client_factory(client_type: str, api_key: str = None, model: str = None, host: str = None) -> LLMClient:
-    """Factory function to create an LLM client based on type."""
-    if client_type.lower() == "openrouter":
-        return OpenRouterClient(api_key=api_key, model=model)
-    elif client_type.lower() == "gemini":
-        return GeminiClient(api_key=api_key, model=model)
-    elif client_type.lower() == "ollama":
-        return OllamaClient(host=host, model=model)
+    """Factory function to create an LLM client based on type.
+
+    ``model``/``host`` left as None (or '') keep each client's own default.
+    """
+    kind = (client_type or "").lower()
+    opts = {"model": model} if model else {}
+    if kind == "openrouter":
+        return OpenRouterClient(api_key=api_key, **opts)
+    elif kind == "gemini":
+        return GeminiClient(api_key=api_key, **opts)
+    elif kind == "ollama":
+        return OllamaClient(**({"host": host} if host else {}), **opts)
     else:
         raise ValueError(f"Unknown LLM client type: {client_type}")
 
