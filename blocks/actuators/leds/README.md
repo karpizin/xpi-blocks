@@ -82,7 +82,11 @@ Connect the data input of your WS2812 strip to a suitable GPIO pin on the Raspbe
     *   **Wiring:** Double-check data pin (DIN) connection to the correct GPIO.
     *   **Resistor/Level Shifter:** Try adding the optional resistor or a 5V logic level shifter.
     *   **DMA conflict:** If other hardware is using DMA, try a different `led_dma` channel or `led_pin`.
-*   **"rpi_ws281x not found"**: Ensure `pip install rpi_ws281x` was successful.
+*   **"rpi_ws281x is not installed"**: Ensure `pip install rpi_ws281x` was successful.
+*   **The node stops at startup with `ws2811_init failed ...`**: `rpi_ws281x` could not initialize
+    the strip, for example `Hardware revision is not supported` (not a Raspberry Pi, or a board the
+    library does not support) or no access to `/dev/mem` (permissions). The node exits with that error
+    instead of running without LEDs; use `mock_hardware:=true` to run without a strip.
 
 ---
 
