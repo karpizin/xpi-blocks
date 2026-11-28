@@ -26,6 +26,9 @@ class TB6612DriverNode(Node):
         self.declare_parameter('motor_b_pwm_pin', 13)  # GPIO BCM
         self.declare_parameter('motor_b_in1_pin', 26)  # GPIO BCM
         self.declare_parameter('motor_b_in2_pin', 19)  # GPIO BCM
+        # A pin of -1 leaves that GPIO alone: motor_b_pwm_pin = -1 for a single-motor setup.
+        # STBY: -1 = wired to VCC; otherwise driven HIGH while the node runs, LOW on shutdown.
+        self.declare_parameter('stby_pin', -1)          # GPIO BCM
 
         self.declare_parameter('pwm_frequency', 1000)  # Hz
         self.declare_parameter('mock_hardware', False)
@@ -50,17 +53,37 @@ class TB6612DriverNode(Node):
             self.get_logger().warn('TB6612: Running in MOCK mode. No real GPIO will be used.')
             Device.pin_factory = MockFactory(pin_class=MockPWMPin)  # PWM-capable mock pins
 
-        # 3. Hardware Init
-        try:
-            self.motor_a_pwm = PWMOutputDevice(ma_pwm_pin, frequency=pwm_freq, initial_value=0)
-            self.motor_a_in1 = DigitalOutputDevice(ma_in1_pin, initial_value=False)
-            self.motor_a_in2 = DigitalOutputDevice(ma_in2_pin, initial_value=False)
-            self.get_logger().info(f'TB6612: Motor A initialized (PWM:{ma_pwm_pin}, IN1:{ma_in1_pin}, IN2:{ma_in2_pin})')
+        stby_pin = self.get_parameter('stby_pin').value
+        self.motor_a_enabled = ma_pwm_pin >= 0
+        self.motor_b_enabled = mb_pwm_pin >= 0
+        if not (self.motor_a_enabled or self.motor_b_enabled):
+            raise ValueError('TB6612: both motor_a_pwm_pin and motor_b_pwm_pin are -1, nothing to drive')
 
-            self.motor_b_pwm = PWMOutputDevice(mb_pwm_pin, frequency=pwm_freq, initial_value=0)
-            self.motor_b_in1 = DigitalOutputDevice(mb_in1_pin, initial_value=False)
-            self.motor_b_in2 = DigitalOutputDevice(mb_in2_pin, initial_value=False)
-            self.get_logger().info(f'TB6612: Motor B initialized (PWM:{mb_pwm_pin}, IN1:{mb_in1_pin}, IN2:{mb_in2_pin})')
+        # 3. Hardware Init
+        self.stby = None
+        try:
+            if self.motor_a_enabled:
+                self.motor_a_pwm = PWMOutputDevice(ma_pwm_pin, frequency=pwm_freq, initial_value=0)
+                self.motor_a_in1 = DigitalOutputDevice(ma_in1_pin, initial_value=False)
+                self.motor_a_in2 = DigitalOutputDevice(ma_in2_pin, initial_value=False)
+                self.get_logger().info(f'TB6612: Motor A initialized (PWM:{ma_pwm_pin}, IN1:{ma_in1_pin}, IN2:{ma_in2_pin})')
+            else:
+                self.motor_a_pwm = self.motor_a_in1 = self.motor_a_in2 = MockOutputDevice()
+                self.get_logger().info('TB6612: Motor A disabled (motor_a_pwm_pin = -1)')
+
+            if self.motor_b_enabled:
+                self.motor_b_pwm = PWMOutputDevice(mb_pwm_pin, frequency=pwm_freq, initial_value=0)
+                self.motor_b_in1 = DigitalOutputDevice(mb_in1_pin, initial_value=False)
+                self.motor_b_in2 = DigitalOutputDevice(mb_in2_pin, initial_value=False)
+                self.get_logger().info(f'TB6612: Motor B initialized (PWM:{mb_pwm_pin}, IN1:{mb_in1_pin}, IN2:{mb_in2_pin})')
+            else:
+                self.motor_b_pwm = self.motor_b_in1 = self.motor_b_in2 = MockOutputDevice()
+                self.get_logger().info('TB6612: Motor B disabled (motor_b_pwm_pin = -1)')
+
+            if stby_pin >= 0:
+                # Enable the driver only after the inputs are low (outputs off)
+                self.stby = DigitalOutputDevice(stby_pin, initial_value=True)
+                self.get_logger().info(f'TB6612: STBY on GPIO {stby_pin} (HIGH = driver enabled)')
         except Exception as e:
             if not self.mock_mode:
                 hardware_unavailable(self, 'TB6612 motor GPIO', e)
@@ -155,7 +178,10 @@ class TB6612DriverNode(Node):
         self.motor_b_pwm.close()
         self.motor_b_in1.close()
         self.motor_b_in2.close()
-        
+        if self.stby is not None:
+            self.stby.off()      # driver in standby: outputs high-impedance
+            self.stby.close()
+
         self.get_logger().info('TB6612: Motors stopped and GPIO closed.')
         super().destroy_node()
 
