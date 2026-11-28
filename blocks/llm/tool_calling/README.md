@@ -27,9 +27,11 @@ Choose your desired LLM client (parameters similar to `sonar_trend_analyzer`):
     export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
     ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=gemini llm_model:=gemini-3.6-flash
     ```
-*   **Using Ollama:**
+*   **Local (Ollama or llama.cpp; Qwen 3.5, Gemma 4):**
     ```bash
-    ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=ollama llm_model:=llama2 ollama_host:=http://localhost:11434
+    ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=ollama llm_model:=qwen3.5:4b llm_think:=off
+    # or llama.cpp: llama-server -hf ggml-org/gemma-4-E2B-it-GGUF:Q4_0 --jinja
+    ros2 launch xpi_llm tool_calling.launch.py llm_client_type:=llamacpp
     ```
 
 ## 📡 Interface
@@ -68,11 +70,13 @@ Commands are handled one at a time, in the order they arrive (at most 4 waiting;
 refused with a "Busy" response).
 
 ### Parameters
-*   `llm_client_type` (string, default: `gemini`): Which LLM backend (`openrouter`, `gemini`, `ollama`).
+*   `llm_client_type` (string, default: `gemini`): LLM backend: `gemini`, `ollama`, `llamacpp`, `openai`, `qwen`, `openrouter`. See [docs/LOCAL_LLM.md](../../../docs/LOCAL_LLM.md).
 *   `llm_api_key` (string, default: `''`): API key for cloud LLMs. Empty: `GEMINI_API_KEY` or
     `OPENROUTER_API_KEY` from the environment (preferred: a parameter is visible in `ros2 param get`).
-*   `llm_model` (string, default: `gemini-3.6-flash`): Specific model name.
-*   `ollama_host` (string, default: `http://localhost:11434`): URL of your local Ollama server.
+*   `llm_model` (string, default: `''`): Model; empty = the backend's default (`gemini-3.6-flash`, Ollama `qwen3.5:4b`). E.g. `gemma4:e4b`, `qwen3.5:9b`, `gemma-4-26b-a4b-it`.
+*   `ollama_host` (string, default: `http://localhost:11434`): URL of your Ollama server (used when `llm_base_url` is empty).
+*   `llm_base_url` (string, default: `''`): Server URL for `ollama`, `llamacpp`, `openai`, `qwen`; empty = the backend's default.
+*   `llm_think` (string, default: `auto`): Ollama reasoning for Qwen 3.x / Gemma 4: `auto`, `on`, `off` (`off` is faster).
 *   `llm_temperature` (float, default: `0.1`): Lower for more reliable tool calls.
 *   `llm_max_tokens` (int, default: `200`): Maximum length of LLM's response.
 *   `command_topic` (string, default: `~/command`): ROS2 topic to send text commands.

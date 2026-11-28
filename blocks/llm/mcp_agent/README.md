@@ -7,7 +7,7 @@ Unlike simple command executors, the MCP Agent is **context-aware**: it continuo
 ## 🧠 Features
 *   **Real-time Context:** Injects current temperature, CO2 levels, noise, and battery status into the system prompt.
 *   **Tool Orchestration:** Allows the LLM to autonomously decide when to use actuators (e.g., "It's too stuffy here, I'll turn on the fan").
-*   **Gemini Integration:** Uses the `google-genai` SDK; the model is set with `llm_model` (default `gemini-3.6-flash`).
+*   **Any LLM backend:** `llm_client_type` = `gemini` (default; also Gemma 4 via `gemma-4-26b-a4b-it`), `ollama` (local Qwen 3.5, Gemma 4), `llamacpp`, `openai`, `qwen`, `openrouter`; `llm_model`, `api_key`, `llm_base_url`, `llm_think`. See [docs/LOCAL_LLM.md](../../../docs/LOCAL_LLM.md).
 
 ---
 

@@ -2,12 +2,11 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String, Bool, Float32, Int32
 from sensor_msgs.msg import Temperature, RelativeHumidity, Illuminance, BatteryState
-from xpi_llm.llm_clients import DEFAULT_GEMINI_MODEL, llm_client_factory
+from xpi_llm.llm_clients import llm_client_factory, parse_think
 from xpi_llm.command_queue import CommandQueue
 from xpi_llm.tool_args import as_bool, as_float, as_int, relay_topic
 import json
 import math
-import os
 import threading
 import time
 
@@ -21,8 +20,13 @@ class MCPAgentNode(Node):
         super().__init__('mcp_agent_node')
 
         # 1. Parameters
-        self.declare_parameter('llm_model', DEFAULT_GEMINI_MODEL)
-        self.declare_parameter('api_key', '')
+        # gemini, ollama, llamacpp, openai, qwen, openrouter (see llm_clients.CLIENT_TYPES).
+        # Local, with tool calling: ollama + qwen3.5 / gemma4, or llama-server --jinja.
+        self.declare_parameter('llm_client_type', 'gemini')
+        self.declare_parameter('llm_model', '')       # '' = the client's default
+        self.declare_parameter('api_key', '')         # '' = the provider's environment variable
+        self.declare_parameter('llm_base_url', '')    # '' = the client's default server
+        self.declare_parameter('llm_think', 'off')    # reasoning of Qwen 3.x / Gemma 4: auto | on | off
         self.declare_parameter('command_topic', '~/command')
         self.declare_parameter('response_topic', '~/response')
         # Motion safety: limits enforced in code, whatever the LLM asks for
@@ -35,11 +39,14 @@ class MCPAgentNode(Node):
         self.declare_parameter('move_keepalive_hz', 10.0)  # re-publish rate; motor drivers stop if commands stop
         self.declare_parameter('max_dac_voltage', 3.3)     # V, upper bound for set_analog_voltage
         
-        self.llm_model = self.get_parameter('llm_model').value
-        api_key = self.get_parameter('api_key').value or os.environ.get('GEMINI_API_KEY')
-
         # 2. LLM Client
-        self.llm = llm_client_factory('gemini', api_key=api_key, model=self.llm_model)
+        self.llm = llm_client_factory(
+            self.get_parameter('llm_client_type').value,
+            api_key=self.get_parameter('api_key').value,
+            model=self.get_parameter('llm_model').value,
+            host=self.get_parameter('llm_base_url').value,
+            think=parse_think(self.get_parameter('llm_think').value))
+        self.llm_model = self.llm.get_model_name()
 
         # 3. Context (MCP Resources)
         self.robot_state = {
