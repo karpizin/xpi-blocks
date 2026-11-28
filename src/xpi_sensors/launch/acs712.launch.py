@@ -24,7 +24,7 @@ def generate_launch_description():
             parameters=[{
                 'i2c_bus': 1,
                 'i2c_address': 0x48,
-                'polling_rate': 10.0
+                'publish_rate': 10.0
             }]
         ),
 

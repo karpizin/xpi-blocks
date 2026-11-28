@@ -25,7 +25,7 @@ The TB6612FNG controls two motors, Motor A and Motor B. Each motor requires two 
 | BIN2          | GPIO 19                 | Configurable via `motor_b_in2_pin`        |
 |               |                         |                                           |
 | **Common**    |                         |                                           |
-| STBY          | (Connect to 3.3V)       | Keep high for normal operation.           |
+| STBY          | 3.3V, or a GPIO         | Keep high for normal operation; `stby_pin` drives it (LOW on shutdown). |
 | VM            | External PSU +          | Motor Power Supply                        |
 | GND           | External PSU - & RPi GND| Common Ground (essential!)                |
 
@@ -50,6 +50,9 @@ The TB6612FNG controls two motors, Motor A and Motor B. Each motor requires two 
 *   `motor_b_pwm_pin` (int, default: `13`): BCM GPIO pin for Motor B PWM.
 *   `motor_b_in1_pin` (int, default: `26`): BCM GPIO pin for Motor B IN1.
 *   `motor_b_in2_pin` (int, default: `19`): BCM GPIO pin for Motor B IN2.
+*   A PWM pin of `-1` disables that motor and leaves its GPIOs alone (e.g. `motor_b_pwm_pin: -1` for a single motor).
+*   `stby_pin` (int, default: `-1`): BCM GPIO wired to STBY. `-1` = STBY tied to 3.3V. Otherwise the
+    node drives it HIGH while running and LOW on shutdown (driver outputs off).
 *   `pwm_frequency` (int, default: `1000`): PWM frequency in Hz.
 *   `mock_hardware` (bool, default: `false`): Run in mock mode without real GPIO.
 
