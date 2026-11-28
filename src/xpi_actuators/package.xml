@@ -10,6 +10,7 @@
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>xpi_commons</depend>
   <exec_depend>python3-gpiozero</exec_depend>
   <exec_depend>python3-smbus2</exec_depend>
